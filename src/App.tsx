@@ -1,6 +1,10 @@
 import React from 'react'
 import { Main } from './pages/main'
-import { createTheme, ThemeProvider } from '@mui/material'
+import { Box, createTheme, ThemeProvider } from '@mui/material'
+import { Routes, Route } from 'react-router-dom'
+import { Whitepaper } from './pages/whitepaper'
+import { Header } from './components/header'
+import { Footer } from './components/footer'
 
 function App() {
   const theme = createTheme({
@@ -33,7 +37,14 @@ function App() {
   return (
     <div>
       <ThemeProvider theme={theme}>
-        <Main />
+        <Box sx={{ backgroundColor: 'primary.main' }}>
+          <Header />
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="/whitepaper" element={<Whitepaper />} />
+          </Routes>
+          <Footer />
+        </Box>
       </ThemeProvider>
     </div>
   )

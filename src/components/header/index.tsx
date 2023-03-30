@@ -11,13 +11,19 @@ import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 //import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
+import { Link, useNavigate } from 'react-router-dom'
 
-const pages = ['Whitepaper', 'How it works', 'Blog']
+const pages = [
+  { page: 'Whitepaper', route: 'whitepaper' },
+  { page: 'How it works', route: 'howitworks' },
+  { page: 'Blog', route: 'blog' },
+]
 const settings = ['Profile', 'Dashboard', 'Logout']
 
 export const Header = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
+  const navigate = useNavigate()
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
@@ -26,8 +32,9 @@ export const Header = () => {
     setAnchorElUser(event.currentTarget)
   }
 
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (route: string) => {
     setAnchorElNav(null)
+    navigate(`/${route}`)
   }
 
   const handleCloseUserMenu = () => {
@@ -38,7 +45,9 @@ export const Header = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Avatar sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} alt="FJ" src="/images/F1.png" />
+          <Link to="/">
+            <Avatar sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} alt="FJ" src="/images/F1.png" />
+          </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -70,19 +79,25 @@ export const Header = () => {
               }}
             >
               {pages.map(page => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.route} onClick={() => handleCloseNavMenu(page.route)}>
+                  <Typography textAlign="center">{page.page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <Avatar alt="FJ" src="/images/F1.png" />
+            <Link to="/">
+              <Avatar alt="FJ" src="/images/F1.png" />
+            </Link>
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end', mr: 2 }}>
             {pages.map(page => (
-              <Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, color: 'inherit', display: 'block' }}>
-                {page}
+              <Button
+                key={page.route}
+                onClick={() => handleCloseNavMenu(page.route)}
+                sx={{ my: 2, color: 'inherit', display: 'block' }}
+              >
+                {page.page}
               </Button>
             ))}
           </Box>
