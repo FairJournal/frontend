@@ -14,9 +14,10 @@ import MenuItem from '@mui/material/MenuItem'
 import { Link, useNavigate } from 'react-router-dom'
 
 const pages = [
-  { page: 'Whitepaper', route: 'whitepaper' },
+  { page: 'About Us', route: 'aboutus' },
   { page: 'How it works', route: 'howitworks' },
   { page: 'Blog', route: 'blog' },
+  { page: 'Community', route: 'community' },
 ]
 const settings = ['Profile', 'Dashboard', 'Logout']
 

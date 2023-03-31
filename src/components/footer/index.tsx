@@ -10,7 +10,8 @@ export const Footer = () => {
         backgroundColor: '#F0E9E4',
         paddingTop: '1rem',
         paddingBottom: '1rem',
-        mt: 8,
+        position: 'absolute',
+        bottom: 0,
       }}
     >
       <Container maxWidth="lg">

@@ -1,6 +1,6 @@
 import { Container } from '@mui/material'
 import React from 'react'
 
-export const Whitepaper = () => {
+export const Community = () => {
   return <Container maxWidth="lg"></Container>
 }

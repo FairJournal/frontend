@@ -6,38 +6,38 @@ const cardsData = [
   {
     id: '1',
     src: './images/M1.png',
-    title: 'Decentralized',
-    text: 'Fair Journal is a decentralized platform that is powered by blockchain technology. This means that there is no central authority controlling the platform, and users have complete control over their content and data.',
+    title: 'Decentralized:',
+    text: 'As mentioned before, Fair Journal is a decentralized platform that is powered by blockchain technology. This means that there is no central authority controlling the platform, and users have complete control over their content and data. This ensures that the platform is resistant to censorship and provides users with the freedom to express themselves without fear of being silenced or removed.',
   },
   {
     id: '2',
     src: './images/M2.png',
-    title: 'Censorship-resistant',
-    text: 'Because Fair Journal is decentralized, it is highly resistant to censorship. This means that you can share their ideas and opinions without fear of being silenced or removed from the platform.    ',
+    title: 'Censorship-resistant:',
+    text: 'Because Fair Journal is decentralized, it is highly resistant to censorship. This means that users can share their ideas and opinions without fear of being silenced or removed from the platform. In contrast, centralized blog platforms often have the power to remove or censor content that they deem to be inappropriate or controversial.',
   },
   {
     id: '3',
     src: './images/M3.png',
-    title: 'Ownership',
-    text: 'Fair Journal is designed to give you complete ownership and control over your data. This means that you can decide how your data is used and who has access to it.',
+    title: 'Ownership of your data:',
+    text: "Fair Journal is designed to give users complete ownership and control over their data. This means that users can decide how their data is used and who has access to it. In contrast, centralized blogs often retain ownership of user data, which can be used for targeted advertising or sold to third parties without the user's consent.",
   },
   {
     id: '4',
     src: './images/M4.png',
-    title: 'Control',
-    text: 'With Fair Journal, you have complete control over your content. They can decide how their content is published, shared, and distributed, and you can choose whether or not to monetize you content.',
+    title: 'Complete control of your content:',
+    text: 'With Fair Journal, users have complete control over their content. They can decide how their content is published, shared, and distributed, and they can choose whether or not to monetize their content. This gives users the ability to earn revenue from their content in a fair and transparent manner, without having to rely on ad revenue or other monetization strategies that are controlled by centralized blog platforms.',
   },
   {
     id: '5',
     src: './images/M5.png',
-    title: 'Fair compensation',
-    text: 'Fair Journal is designed to provide fair compensation for creators. Through features such as donations and NFT purchases, you can support the creators you love and help them earn a living from their work.',
+    title: 'Fair compensation for creators:',
+    text: 'Fair Journal is designed to provide fair compensation for creators. Through features such as donations and NFT purchases, users can support the creators they love and help them earn a living from their work. This is in contrast to centralized blog platforms, which often do not provide fair compensation for creators and may even exploit them for their content.',
   },
   {
     id: '6',
     src: './images/M6.png',
-    title: 'Community-driven',
-    text: ' Fair Journal is a community-driven platform that is built on the principles of collaboration and openness. You can share your ideas and collaborate with other users to create new content.',
+    title: 'Community-driven:',
+    text: ' Fair Journal is a community-driven platform that is built on the principles of collaboration and openness. Users can share their ideas and collaborate with other users to create new content and build a vibrant and supportive community. This is in contrast to centralized blog platforms, which often prioritize individual success over community collaboration and can foster a competitive rather than supportive environment.',
   },
 ]
 
@@ -87,7 +87,7 @@ export const Main = () => {
           )
         })}
       </Grid>
-      <Box>
+      <Box sx={{ pb: 16 }}>
         <Typography variant="h3" gutterBottom sx={{ mt: 4, textAlign: 'center' }}>
           Join Fair Journal today!
         </Typography>
