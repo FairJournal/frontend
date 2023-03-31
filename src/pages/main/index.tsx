@@ -1,6 +1,6 @@
-import { Box, Button, Container, Grid, Typography } from '@mui/material'
 import React from 'react'
-import { ActionAreaCard } from '../../components/card'
+import { Box, Button, Container, Grid, Typography } from '@mui/material'
+import { CardMediaMain } from '../../components/card'
 
 const cardsData = [
   {
@@ -82,7 +82,7 @@ export const Main = () => {
         {cardsData.map(el => {
           return (
             <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-              <ActionAreaCard img={el.src} title={el.title} text={el.text} />
+              <CardMediaMain img={el.src} title={el.title} text={el.text} />
             </Grid>
           )
         })}
