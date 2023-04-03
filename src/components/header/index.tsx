@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as React from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -12,6 +13,9 @@ import Button from '@mui/material/Button'
 //import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+// eslint-disable-next-line unused-imports/no-unused-imports
+import { logout, selectMain, login } from '../../store/slices/mainSlice'
 
 const pages = [
   { page: 'About Us', route: 'aboutus' },
@@ -22,6 +26,9 @@ const pages = [
 const settings = ['Profile', 'Dashboard', 'Logout']
 
 export const Header = () => {
+  const { wallet, token } = useAppSelector(selectMain)
+  const dispatch = useAppDispatch()
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
   const navigate = useNavigate()
@@ -36,6 +43,8 @@ export const Header = () => {
   const handleCloseNavMenu = (route: string) => {
     setAnchorElNav(null)
     navigate(`/${route}`)
+    dispatch(logout())
+    //dispatch(login())
   }
 
   const handleCloseUserMenu = () => {
@@ -102,7 +111,7 @@ export const Header = () => {
               </Button>
             ))}
           </Box>
-          <Button variant="outlined" color="inherit">
+          <Button variant="outlined" color="inherit" onClick={() => console.log(wallet, token)}>
             Connect wallet
           </Button>
           {/* <Box sx={{ flexGrow: 0 }}>
