@@ -3,11 +3,12 @@ import { Main } from './pages/main'
 import { Box, createTheme, ThemeProvider } from '@mui/material'
 import { Routes, Route } from 'react-router-dom'
 import { AboutUs } from './pages/aboutus'
-import { Header } from './components/header'
 import { Footer } from './components/footer'
 import { HowItWorks } from './pages/howitworks'
 import { Blog } from './pages/blog'
 import { Community } from './pages/community'
+import { Dashboard } from './pages/dashboard'
+import { Profile } from './pages/profile'
 
 function App() {
   const theme = createTheme({
@@ -33,9 +34,13 @@ function App() {
     palette: {
       primary: {
         main: '#FAF7F5',
+        light: '#F2F3F4',
       },
       secondary: {
         main: '#000000',
+      },
+      success: {
+        main: '#0EB8B7',
       },
     },
   })
@@ -50,13 +55,14 @@ function App() {
             position: 'relative',
           }}
         >
-          <Header />
           <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/aboutus" element={<AboutUs />} />
             <Route path="/howitworks" element={<HowItWorks />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/community" element={<Community />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
           <Footer />
         </Box>

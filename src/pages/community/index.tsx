@@ -1,6 +1,12 @@
-import { Container } from '@mui/material'
 import React from 'react'
+import { Container } from '@mui/material'
+import { Header } from '../../components/header'
 
 export const Community = () => {
-  return <Container maxWidth="lg"></Container>
+  return (
+    <>
+      <Header />
+      <Container maxWidth="lg"></Container>
+    </>
+  )
 }
