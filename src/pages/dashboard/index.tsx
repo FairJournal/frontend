@@ -20,11 +20,13 @@ import {
   AppBar,
   CssBaseline,
   Button,
+  Grid,
 } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '../../store/hooks'
 import { logout } from '../../store/slices/mainSlice'
 import { Settings } from '../../components/settings'
+import { ArticlCard } from '../../components/articleCard'
 
 const drawerWidth = 240
 
@@ -41,6 +43,39 @@ const dataList = [
   { title: 'Settings', id: '2', icon: <InboxIcon /> },
 ]
 
+const articles = [
+  {
+    id: '1',
+    img: '/images/M4.png',
+    title: 'How it works',
+    description: 'Injected by the documentation to work in an iframe t need it on your project...',
+  },
+  {
+    id: '2',
+    img: '/images/M5.png',
+    title: 'How it works',
+    description: 'Injected by the documentation to work in an iframe t need it on your project...',
+  },
+  {
+    id: '3',
+    img: '/images/M3.png',
+    title: 'How it works',
+    description: 'Injected by the documentation to work in an iframe t need it on your project...',
+  },
+  {
+    id: '4',
+    img: '/images/M2.png',
+    title: 'How it works',
+    description: 'Injected by the documentation to work in an iframe t need it on your project...',
+  },
+  {
+    id: '5',
+    img: '/images/M1.png',
+    title: 'How it works',
+    description: 'Injected by the documentation to work in an iframe t need it on your project...',
+  },
+]
+
 export const Dashboard = (props: Props) => {
   const { window } = props
   const [mobileOpen, setMobileOpen] = React.useState(false)
@@ -55,6 +90,7 @@ export const Dashboard = (props: Props) => {
 
   const changeTab = (tab: string) => {
     setTab(tab)
+    handleDrawerToggle()
   }
 
   const logOut = () => {
@@ -64,9 +100,8 @@ export const Dashboard = (props: Props) => {
 
   const drawer = (
     <div>
-      <Toolbar />
       <Link to="/" style={{ textDecoration: 'none', color: '#000000' }}>
-        <Typography variant="h5" sx={{ textAlign: 'center', mb: 2 }}>
+        <Typography variant="h5" sx={{ textAlign: 'center', mb: 2, mt: 2 }}>
           Fair Journal
         </Typography>
       </Link>
@@ -144,6 +179,9 @@ export const Dashboard = (props: Props) => {
           {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
           <Drawer
             container={container}
+            PaperProps={{
+              sx: { backgroundColor: 'primary.light' },
+            }}
             variant="temporary"
             open={mobileOpen}
             onClose={handleDrawerToggle}
@@ -159,6 +197,9 @@ export const Dashboard = (props: Props) => {
           </Drawer>
           <Drawer
             variant="permanent"
+            PaperProps={{
+              sx: { backgroundColor: 'primary.light' },
+            }}
             sx={{
               display: { xs: 'none', sm: 'block' },
               '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
@@ -171,10 +212,13 @@ export const Dashboard = (props: Props) => {
         <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
           <Toolbar />
           {tab === '1' && (
-            <Typography paragraph>
-              11111111Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-              labore et
-            </Typography>
+            <Grid container spacing={2} sx={{ pt: 2, mb: 8 }}>
+              {articles.map(el => (
+                <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <ArticlCard img={el.img} title={el.title} text={el.description} isEdit={true} />
+                </Grid>
+              ))}
+            </Grid>
           )}
           {tab === '2' && <Settings />}
         </Box>
