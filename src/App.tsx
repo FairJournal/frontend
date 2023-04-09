@@ -9,6 +9,7 @@ import { Blog } from './pages/blog'
 import { Community } from './pages/community'
 import { Dashboard } from './pages/dashboard'
 import { Profile } from './pages/profile'
+import { Write } from './pages/write'
 
 function App() {
   const theme = createTheme({
@@ -63,6 +64,7 @@ function App() {
             <Route path="/community" element={<Community />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/write" element={<Write />} />
           </Routes>
           <Footer />
         </Box>

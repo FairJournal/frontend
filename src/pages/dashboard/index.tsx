@@ -98,6 +98,10 @@ export const Dashboard = (props: Props) => {
     navigate('/')
   }
 
+  const goWrite = () => {
+    navigate('/write')
+  }
+
   const drawer = (
     <div>
       <Link to="/" style={{ textDecoration: 'none', color: '#000000' }}>
@@ -169,7 +173,7 @@ export const Dashboard = (props: Props) => {
                 </Box>
               </Box>
             </Link>
-            <Button variant="outlined" color="success" sx={{ m: 1 }}>
+            <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
               <AddIcon />
               Write
             </Button>
