@@ -1,9 +1,12 @@
 import React, { useRef, useCallback } from 'react'
 import { createReactEditorJS } from 'react-editor-js'
-import { Link } from 'react-router-dom'
 import { EDITOR_JS_TOOLS } from './tools'
-import { Container, Avatar, Typography, Toolbar, Box, AppBar, Button } from '@mui/material'
+import { Container, Toolbar, AppBar, Button } from '@mui/material'
 import { OutputData } from '@editorjs/editorjs'
+import { SmallAvatar } from '../../components/smallAvatar'
+import { shortenString } from '../../utils'
+import { useAppSelector } from '../../store/hooks'
+import { selectMain } from '../../store/slices/mainSlice'
 
 const ReactEditorJS = createReactEditorJS()
 
@@ -19,6 +22,7 @@ interface EditorCore {
 
 export const Write = () => {
   const editorCore = useRef<EditorCore | null>(null)
+  const { wallet, profile } = useAppSelector(selectMain)
 
   const handleInitialize = useCallback((instance: EditorCore) => {
     editorCore.current = instance
@@ -29,6 +33,8 @@ export const Write = () => {
     // eslint-disable-next-line no-console
     console.log(savedData)
   }, [])
+
+  const shortWallet = shortenString(wallet)
 
   return (
     <>
@@ -41,22 +47,7 @@ export const Write = () => {
       >
         <AppBar position="fixed">
           <Toolbar sx={{ display: 'flex', justifyContent: { md: 'space-between', xs: 'space-around' } }}>
-            <Link
-              to="/dashboard"
-              style={{ textDecoration: 'none', color: '#000000', display: 'flex', alignItems: 'center' }}
-            >
-              <Box sx={{ display: 'flex', mt: 0, mb: 0 }}>
-                <Avatar alt="Avatar" src="/images/M4.png" sx={{ width: 56, height: 56, mr: 1 }} />
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Typography variant="subtitle2" sx={{ mb: 0, mt: 1 }}>
-                    Igor Cgernyshev
-                  </Typography>
-                  <Typography variant="caption" gutterBottom>
-                    0x423...343222
-                  </Typography>
-                </Box>
-              </Box>
-            </Link>
+            <SmallAvatar shortWallet={shortWallet} to="/dashboard" profile={profile} />
             <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={handleSave}>
               Publish
             </Button>

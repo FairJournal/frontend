@@ -4,7 +4,6 @@ import MailIcon from '@mui/icons-material/Mail'
 import MenuIcon from '@mui/icons-material/Menu'
 import AddIcon from '@mui/icons-material/Add'
 import {
-  Avatar,
   Container,
   Typography,
   Toolbar,
@@ -23,10 +22,12 @@ import {
   Grid,
 } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAppDispatch } from '../../store/hooks'
-import { logout } from '../../store/slices/mainSlice'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { logout, selectMain } from '../../store/slices/mainSlice'
 import { Settings } from '../../components/settings'
 import { ArticlCard } from '../../components/articleCard'
+import { shortenString } from '../../utils'
+import { SmallAvatar } from '../../components/smallAvatar'
 
 const drawerWidth = 240
 
@@ -77,6 +78,7 @@ const articles = [
 ]
 
 export const Dashboard = (props: Props) => {
+  const { profile, wallet } = useAppSelector(selectMain)
   const { window } = props
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const [tab, setTab] = React.useState('1')
@@ -135,6 +137,7 @@ export const Dashboard = (props: Props) => {
   )
 
   const container = window !== undefined ? () => window().document.body : undefined
+  const shortWallet = shortenString(wallet)
 
   return (
     <Container maxWidth="lg">
@@ -157,22 +160,7 @@ export const Dashboard = (props: Props) => {
             >
               <MenuIcon />
             </IconButton>
-            <Link
-              to="/profile"
-              style={{ textDecoration: 'none', color: '#000000', display: 'flex', alignItems: 'center' }}
-            >
-              <Box sx={{ display: 'flex', mt: 0, mb: 0 }}>
-                <Avatar alt="Avatar" src="/images/M4.png" sx={{ width: 56, height: 56, mr: 1 }} />
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <Typography variant="subtitle2" sx={{ mb: 0, mt: 1 }}>
-                    Igor Cgernyshev
-                  </Typography>
-                  <Typography variant="caption" gutterBottom>
-                    0x423...343222
-                  </Typography>
-                </Box>
-              </Box>
-            </Link>
+            <SmallAvatar shortWallet={shortWallet} to="/profile" profile={profile} />
             <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
               <AddIcon />
               Write
