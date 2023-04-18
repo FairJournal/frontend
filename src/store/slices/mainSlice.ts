@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 import type { PayloadAction } from '@reduxjs/toolkit'
+import { OutputData } from '@editorjs/editorjs'
 
 export type Profile = {
   id: string
@@ -12,12 +13,14 @@ export interface MainState {
   wallet: string
   token: string
   profile: Profile
+  current: Array<OutputData>
 }
 
 const initialState: MainState = {
   wallet: '0xb59519826deef8e7438fF30E20d8cDeA318B8ADf',
   token: '0xb59519826deef8e7438fF30E20d8cDeA318B8ADf',
   profile: { id: '1', avatar: '', title: '', bio: '' },
+  current: [],
 }
 export const MainSlice = createSlice({
   name: 'main',
@@ -34,11 +37,14 @@ export const MainSlice = createSlice({
     changeProfile: (state, action: PayloadAction<Profile>) => {
       state.profile = action.payload
     },
+    saveArticle: (state, action: PayloadAction<OutputData>) => {
+      state.current.push(action.payload)
+    },
   },
 })
 
 export const selectMain = (state: RootState) => state.main
 
-export const { logout, login, changeProfile } = MainSlice.actions
+export const { logout, login, changeProfile, saveArticle } = MainSlice.actions
 
 export default MainSlice.reducer

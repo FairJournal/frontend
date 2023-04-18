@@ -10,6 +10,7 @@ import { Community } from './pages/community'
 import { Dashboard } from './pages/dashboard'
 import { Profile } from './pages/profile'
 import { Write } from './pages/write'
+import { RenderArticle } from './pages/renderarticle'
 
 function App() {
   const theme = createTheme({
@@ -65,6 +66,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/write" element={<Write />} />
+            <Route path="/:wallet/:hash" element={<RenderArticle />} />
           </Routes>
           <Footer />
         </Box>

@@ -6,7 +6,8 @@ import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { shortenString } from '../../utils'
 import { useAppSelector } from '../../store/hooks'
-import { selectMain } from '../../store/slices/mainSlice'
+import { saveArticle, selectMain } from '../../store/slices/mainSlice'
+import { useDispatch } from 'react-redux'
 
 const ReactEditorJS = createReactEditorJS()
 
@@ -23,6 +24,7 @@ interface EditorCore {
 export const Write = () => {
   const editorCore = useRef<EditorCore | null>(null)
   const { wallet, profile } = useAppSelector(selectMain)
+  const dispatch = useDispatch()
 
   const handleInitialize = useCallback((instance: EditorCore) => {
     editorCore.current = instance
@@ -32,6 +34,8 @@ export const Write = () => {
     const savedData = await editorCore.current?.save()
     // eslint-disable-next-line no-console
     console.log(savedData)
+
+    if (savedData !== undefined) dispatch(saveArticle(savedData))
   }, [])
 
   const shortWallet = shortenString(wallet)
