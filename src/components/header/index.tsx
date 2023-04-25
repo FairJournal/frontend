@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import * as React from 'react'
+import React, { useEffect } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -15,6 +15,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 // eslint-disable-next-line unused-imports/no-unused-imports
 import { logout, selectMain, login } from '../../store/slices/mainSlice'
+import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
 
 const pages = [
   { page: 'About Us', route: 'aboutus' },
@@ -22,20 +23,30 @@ const pages = [
   { page: 'Blog', route: 'blog' },
   { page: 'Community', route: 'community' },
 ]
-const settings = ['Profile', 'Dashboard', 'Logout']
 
 export const Header = () => {
-  const { wallet, token } = useAppSelector(selectMain)
+  const { wallet } = useAppSelector(selectMain)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
+  const [tonConnectUI] = useTonConnectUI()
+  const walletTon = useTonWallet()
+
+  useEffect(() => {
+    if (walletTon) {
+      dispatch(login(walletTon?.account.address))
+    } else {
+      dispatch(login(''))
+    }
+  }, [walletTon])
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
   }
 
-  const connectWallet = () => {
-    dispatch(login())
+  const connectWallet = async () => {
+    const result = await tonConnectUI.connectWallet()
+    dispatch(login(result.account.address))
   }
 
   const handleCloseNavMenu = (route: string) => {
@@ -108,9 +119,11 @@ export const Header = () => {
               Dashboard
             </Button>
           ) : (
-            <Button variant="outlined" color="inherit" onClick={connectWallet}>
-              Connect wallet
-            </Button>
+            <>
+              <Button variant="outlined" color="inherit" onClick={connectWallet}>
+                Connect wallet
+              </Button>
+            </>
           )}
         </Toolbar>
       </Container>

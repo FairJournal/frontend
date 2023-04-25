@@ -17,7 +17,7 @@ export interface MainState {
 }
 
 const initialState: MainState = {
-  wallet: '0xb59519826deef8e7438fF30E20d8cDeA318B8ADf',
+  wallet: '',
   token: '0xb59519826deef8e7438fF30E20d8cDeA318B8ADf',
   profile: { id: '1', avatar: '', title: '', bio: '' },
   current: [],
@@ -30,8 +30,8 @@ export const MainSlice = createSlice({
       state.wallet = ''
       state.token = ''
     },
-    login: state => {
-      state.wallet = '111'
+    login: (state, action: PayloadAction<string>) => {
+      state.wallet = action.payload
       state.token = '2222'
     },
     changeProfile: (state, action: PayloadAction<Profile>) => {

@@ -5,13 +5,15 @@ import { AvatarPicker } from './avatarPicker'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { changeProfile, selectMain } from '../../store/slices/mainSlice'
 import { shortenString } from '../../utils'
+import { useTonAddress } from '@tonconnect/ui-react'
 
 export const Settings = () => {
-  const { wallet, profile } = useAppSelector(selectMain)
+  const { profile } = useAppSelector(selectMain)
   const dispatch = useAppDispatch()
   const [avatar, setAvatar] = useState(profile.avatar)
   const [title, setTitle] = useState(profile.title)
   const [bio, setBio] = useState(profile.bio)
+  const userFriendlyAddress = useTonAddress()
 
   const handleAvatarChange = (newAvatar: string) => {
     setAvatar(newAvatar)
@@ -22,7 +24,7 @@ export const Settings = () => {
     dispatch(changeProfile({ id: profile.id, avatar, title, bio }))
   }
 
-  const shortWallet = shortenString(wallet)
+  const shortWallet = shortenString(userFriendlyAddress)
 
   return (
     <Paper sx={{ with: '600px', backgroundColor: 'primary.main', pt: 2 }} elevation={3}>

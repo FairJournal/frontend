@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -28,6 +28,7 @@ import { Settings } from '../../components/settings'
 import { ArticlCard } from '../../components/articleCard'
 import { shortenString } from '../../utils'
 import { SmallAvatar } from '../../components/smallAvatar'
+import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 
 const drawerWidth = 240
 
@@ -78,13 +79,14 @@ const articles = [
 ]
 
 export const Dashboard = (props: Props) => {
-  const { profile, wallet } = useAppSelector(selectMain)
+  const { profile } = useAppSelector(selectMain)
   const { window } = props
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const [tab, setTab] = React.useState('1')
-
+  const [tonConnectUI] = useTonConnectUI()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const userFriendlyAddress = useTonAddress()
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -96,6 +98,7 @@ export const Dashboard = (props: Props) => {
   }
 
   const logOut = () => {
+    tonConnectUI.disconnect()
     dispatch(logout)
     navigate('/')
   }
@@ -137,7 +140,7 @@ export const Dashboard = (props: Props) => {
   )
 
   const container = window !== undefined ? () => window().document.body : undefined
-  const shortWallet = shortenString(wallet)
+  const shortWallet = shortenString(userFriendlyAddress)
 
   return (
     <Container maxWidth="lg">

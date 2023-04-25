@@ -11,6 +11,7 @@ import { Dashboard } from './pages/dashboard'
 import { Profile } from './pages/profile'
 import { Write } from './pages/write'
 import { RenderArticle } from './pages/renderarticle'
+import { TonConnectUIProvider } from '@tonconnect/ui-react'
 
 function App() {
   const theme = createTheme({
@@ -49,28 +50,30 @@ function App() {
 
   return (
     <div>
-      <ThemeProvider theme={theme}>
-        <Box
-          sx={{
-            backgroundColor: 'primary.main',
-            minHeight: '100vh',
-            position: 'relative',
-          }}
-        >
-          <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="/aboutus" element={<AboutUs />} />
-            <Route path="/howitworks" element={<HowItWorks />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/write" element={<Write />} />
-            <Route path="/:wallet/:hash" element={<RenderArticle />} />
-          </Routes>
-          <Footer />
-        </Box>
-      </ThemeProvider>
+      <TonConnectUIProvider manifestUrl="https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json">
+        <ThemeProvider theme={theme}>
+          <Box
+            sx={{
+              backgroundColor: 'primary.main',
+              minHeight: '100vh',
+              position: 'relative',
+            }}
+          >
+            <Routes>
+              <Route path="/" element={<Main />} />
+              <Route path="/aboutus" element={<AboutUs />} />
+              <Route path="/howitworks" element={<HowItWorks />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/write" element={<Write />} />
+              <Route path="/:wallet/:hash" element={<RenderArticle />} />
+            </Routes>
+            <Footer />
+          </Box>
+        </ThemeProvider>
+      </TonConnectUIProvider>
     </div>
   )
 }

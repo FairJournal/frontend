@@ -1,4 +1,6 @@
-export const shortenString = (str: string): string => {
+export const shortenString = (str: string | null): string => {
+  if (!str) return ''
+
   if (str.length <= 10) {
     return str
   }

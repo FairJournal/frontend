@@ -8,6 +8,7 @@ import { shortenString } from '../../utils'
 import { useAppSelector } from '../../store/hooks'
 import { saveArticle, selectMain } from '../../store/slices/mainSlice'
 import { useDispatch } from 'react-redux'
+import { useTonAddress } from '@tonconnect/ui-react'
 
 const ReactEditorJS = createReactEditorJS()
 
@@ -23,8 +24,9 @@ interface EditorCore {
 
 export const Write = () => {
   const editorCore = useRef<EditorCore | null>(null)
-  const { wallet, profile } = useAppSelector(selectMain)
+  const { profile } = useAppSelector(selectMain)
   const dispatch = useDispatch()
+  const userFriendlyAddress = useTonAddress()
 
   const handleInitialize = useCallback((instance: EditorCore) => {
     editorCore.current = instance
@@ -38,7 +40,7 @@ export const Write = () => {
     if (savedData !== undefined) dispatch(saveArticle(savedData))
   }, [])
 
-  const shortWallet = shortenString(wallet)
+  const shortWallet = shortenString(userFriendlyAddress)
 
   return (
     <>

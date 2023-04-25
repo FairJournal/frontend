@@ -5,6 +5,7 @@ import { ArticlCard } from '../../components/articleCard'
 import { useAppSelector } from '../../store/hooks'
 import { selectMain } from '../../store/slices/mainSlice'
 import { shortenString } from '../../utils'
+import { useTonAddress } from '@tonconnect/ui-react'
 
 const articles = [
   {
@@ -40,8 +41,9 @@ const articles = [
 ]
 
 export const Profile = () => {
-  const { wallet, profile } = useAppSelector(selectMain)
-  const shortWallet = shortenString(wallet)
+  const { profile } = useAppSelector(selectMain)
+  const userFriendlyAddress = useTonAddress()
+  const shortWallet = shortenString(userFriendlyAddress)
 
   return (
     <>
