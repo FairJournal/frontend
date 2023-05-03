@@ -1,5 +1,15 @@
 import * as React from 'react'
-import { Card, CardContent, CardHeader, CardMedia, IconButton, Typography, CardActionArea } from '@mui/material'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  IconButton,
+  Typography,
+  CardActionArea,
+  Menu,
+  MenuItem,
+} from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 
 export const ArticlCard = ({
@@ -13,14 +23,43 @@ export const ArticlCard = ({
   text: string
   isEdit: boolean
 }) => {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
   return (
     <Card sx={{ maxWidth: 300, backgroundColor: 'primary.light' }}>
       <CardHeader
         action={
           isEdit ? (
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
+            <>
+              <IconButton aria-label="settings" onClick={handleMenu}>
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleClose}>Edit</MenuItem>
+                <MenuItem onClick={handleClose}>Remove</MenuItem>
+              </Menu>
+            </>
           ) : (
             ''
           )

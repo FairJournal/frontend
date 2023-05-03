@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 
 interface smallAvatarProps {
   to: string
-  profile: Profile
+  profile: Profile | null
   shortWallet: string
 }
 
@@ -14,10 +14,10 @@ export const SmallAvatar: React.FC<smallAvatarProps> = ({ to, profile, shortWall
   return (
     <Link to={to} style={{ textDecoration: 'none', color: '#000000', display: 'flex', alignItems: 'center' }}>
       <Box sx={{ display: 'flex', mt: 0, mb: 0 }}>
-        <Avatar alt="Avatar" src={profile.avatar} sx={{ width: 56, height: 56, mr: 1 }} />
+        <Avatar alt="Avatar" src={profile?.avatar} sx={{ width: 56, height: 56, mr: 1 }} />
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography variant="subtitle2" sx={{ mb: 0, mt: 1 }}>
-            {profile.title}
+            {profile?.title}
           </Typography>
           <Typography variant="caption" gutterBottom>
             {shortWallet}

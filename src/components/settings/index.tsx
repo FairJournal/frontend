@@ -10,9 +10,9 @@ import { useTonAddress } from '@tonconnect/ui-react'
 export const Settings = () => {
   const { profile } = useAppSelector(selectMain)
   const dispatch = useAppDispatch()
-  const [avatar, setAvatar] = useState(profile.avatar)
-  const [title, setTitle] = useState(profile.title)
-  const [bio, setBio] = useState(profile.bio)
+  const [avatar, setAvatar] = useState(profile ? profile.avatar : '')
+  const [title, setTitle] = useState(profile ? profile.title : '')
+  const [bio, setBio] = useState(profile ? profile.bio : '')
   const userFriendlyAddress = useTonAddress()
 
   const handleAvatarChange = (newAvatar: string) => {
@@ -20,8 +20,9 @@ export const Settings = () => {
   }
 
   const saveSettings = () => {
-    console.log({ id: profile.id, avatar, title, bio })
-    dispatch(changeProfile({ id: profile.id, avatar, title, bio }))
+    if (profile) {
+      dispatch(changeProfile({ id: profile?.id, avatar, title, bio }))
+    }
   }
 
   const shortWallet = shortenString(userFriendlyAddress)

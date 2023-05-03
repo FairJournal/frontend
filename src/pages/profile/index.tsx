@@ -50,16 +50,16 @@ export const Profile = () => {
       <Header />
       <Container maxWidth="lg">
         <Box sx={{ display: 'flex', mt: 4, mb: 2 }}>
-          <Avatar alt="Avatar" src={profile.avatar} sx={{ width: 150, height: 150, mr: 2 }} />
+          <Avatar alt="Avatar" src={profile?.avatar} sx={{ width: 150, height: 150, mr: 2 }} />
           <Box>
             <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
-              {profile.title}
+              {profile?.title}
             </Typography>
             <Chip label={shortWallet} />
           </Box>
         </Box>
         <Typography variant="subtitle1" gutterBottom>
-          {profile.bio}
+          {profile?.bio}
         </Typography>
         <Divider sx={{ mt: 2 }} />
         <Grid container spacing={2} sx={{ pt: 2, pb: 4 }}>

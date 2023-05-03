@@ -23,12 +23,13 @@ import {
 } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { logout, selectMain } from '../../store/slices/mainSlice'
+import { login, logout, selectMain } from '../../store/slices/mainSlice'
 import { Settings } from '../../components/settings'
 import { ArticlCard } from '../../components/articleCard'
 import { shortenString } from '../../utils'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
+import { Header } from '../../components/header'
 
 const drawerWidth = 240
 
@@ -142,82 +143,127 @@ export const Dashboard = (props: Props) => {
   const container = window !== undefined ? () => window().document.body : undefined
   const shortWallet = shortenString(userFriendlyAddress)
 
+  const connectWallet = async () => {
+    const result = await tonConnectUI.connectWallet()
+    dispatch(login(result.account.address))
+  }
+
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          sx={{
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
-            ml: { sm: `${drawerWidth}px` },
-          }}
-        >
-          <Toolbar sx={{ display: 'flex', justifyContent: { md: 'space-between', xs: 'space-around' } }}>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } }}
+    <>
+      {profile === null ? (
+        <>
+          <Header />
+          <Container maxWidth="lg">
+            <Box
+              sx={{
+                minHeight: '80vh',
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%',
+                justifyContent: 'center',
+              }}
             >
-              <MenuIcon />
-            </IconButton>
-            <SmallAvatar shortWallet={shortWallet} to="/profile" profile={profile} />
-            <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
-              <AddIcon />
-              Write
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }} aria-label="mailbox folders">
-          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-          <Drawer
-            container={container}
-            PaperProps={{
-              sx: { backgroundColor: 'primary.light' },
-            }}
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-            sx={{
-              display: { xs: 'block', sm: 'none' },
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-            }}
-          >
-            {drawer}
-          </Drawer>
-          <Drawer
-            variant="permanent"
-            PaperProps={{
-              sx: { backgroundColor: 'primary.light' },
-            }}
-            sx={{
-              display: { xs: 'none', sm: 'block' },
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-            }}
-            open
-          >
-            {drawer}
-          </Drawer>
-        </Box>
-        <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
-          <Toolbar />
-          {tab === '1' && (
-            <Grid container spacing={2} sx={{ pt: 2, mb: 8 }}>
-              {articles.map(el => (
-                <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <ArticlCard img={el.img} title={el.title} text={el.description} isEdit={true} />
-                </Grid>
-              ))}
-            </Grid>
-          )}
-          {tab === '2' && <Settings />}
-        </Box>
-      </Box>
-    </Container>
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography align="center" variant="h5" sx={{ mb: 2, mt: 2 }}>
+                  To create articles, you need to connect a wallet.
+                </Typography>
+                <Box>
+                  <Button variant="outlined" color="inherit" onClick={connectWallet}>
+                    Connect wallet
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+          </Container>
+        </>
+      ) : (
+        <Container maxWidth="lg">
+          <Box sx={{ display: 'flex' }}>
+            <CssBaseline />
+            <AppBar
+              position="fixed"
+              sx={{
+                width: { sm: `calc(100% - ${drawerWidth}px)` },
+                ml: { sm: `${drawerWidth}px` },
+              }}
+            >
+              <Toolbar sx={{ display: 'flex', justifyContent: { md: 'space-between', xs: 'space-around' } }}>
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  edge="start"
+                  onClick={handleDrawerToggle}
+                  sx={{ mr: 2, display: { sm: 'none' } }}
+                >
+                  <MenuIcon />
+                </IconButton>
+                <SmallAvatar shortWallet={shortWallet} to="/profile" profile={profile} />
+                <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
+                  <AddIcon />
+                  Write
+                </Button>
+              </Toolbar>
+            </AppBar>
+            <Box
+              component="nav"
+              sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+              aria-label="mailbox folders"
+            />
+            <Drawer
+              container={container}
+              PaperProps={{
+                sx: { backgroundColor: 'primary.light' },
+              }}
+              variant="temporary"
+              open={mobileOpen}
+              onClose={handleDrawerToggle}
+              ModalProps={{
+                keepMounted: true, // Better open performance on mobile.
+              }}
+              sx={{
+                display: { xs: 'block', sm: 'none' },
+                '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+              }}
+            >
+              {drawer}
+            </Drawer>
+            <Drawer
+              variant="permanent"
+              PaperProps={{
+                sx: { backgroundColor: 'primary.light' },
+              }}
+              sx={{
+                display: { xs: 'none', sm: 'block' },
+                '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+              }}
+              open
+            >
+              {drawer}
+            </Drawer>
+            <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}>
+              <Toolbar />
+              {tab === '1' && (
+                <>
+                  {articles.length > 0 ? (
+                    <Grid container spacing={2} sx={{ pt: 2, mb: 8, textAlign: 'center' }}>
+                      {articles.map(el => (
+                        <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+                          <ArticlCard img={el.img} title={el.title} text={el.description} isEdit={true} />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  ) : (
+                    <Typography align="center" variant="h5" sx={{ mb: 2, mt: 2 }}>
+                      You don't have any articles yet, let's create!
+                    </Typography>
+                  )}
+                </>
+              )}
+              {tab === '2' && <Settings />}
+            </Box>
+          </Box>
+        </Container>
+      )}
+    </>
   )
 }

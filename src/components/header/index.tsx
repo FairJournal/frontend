@@ -19,9 +19,9 @@ import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
 
 const pages = [
   { page: 'About Us', route: 'aboutus' },
-  { page: 'How it works', route: 'howitworks' },
-  { page: 'Blog', route: 'blog' },
-  { page: 'Community', route: 'community' },
+  // { page: 'How it works', route: 'howitworks' },
+  // { page: 'Blog', route: 'blog' },
+  // { page: 'Community', route: 'community' },
 ]
 
 export const Header = () => {
@@ -35,8 +35,6 @@ export const Header = () => {
   useEffect(() => {
     if (walletTon) {
       dispatch(login(walletTon?.account.address))
-    } else {
-      dispatch(login(''))
     }
   }, [walletTon])
 

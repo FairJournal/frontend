@@ -1,7 +1,8 @@
 import React from 'react'
-import { Box, Button, Container, Grid, Typography } from '@mui/material'
+import { Box, Button, Container, Fade, Grid, Typography, Zoom } from '@mui/material'
 import { CardMediaMain } from '../../components/card'
 import { Header } from '../../components/header'
+import { useNavigate } from 'react-router-dom'
 
 const cardsData = [
   {
@@ -43,6 +44,8 @@ const cardsData = [
 ]
 
 export const Main = () => {
+  const navigate = useNavigate()
+
   return (
     <>
       <Header />
@@ -54,31 +57,40 @@ export const Main = () => {
             md={7}
             sx={{ display: 'flex', alignItems: 'center', p: 2, textAlign: { xs: 'center', md: 'start' } }}
           >
-            <Box>
-              <Typography variant="h2" gutterBottom sx={{ mt: 4 }}>
-                Fair Journal
-              </Typography>
-              <Typography variant="h4" gutterBottom>
-                Your voice, Your story, Your platform
-              </Typography>
-              <Button variant="contained" color="success" sx={{ m: 1, color: '#ffffff' }}>
-                Get Started
-              </Button>
-              <Button variant="outlined" color="inherit" sx={{ m: 1 }}>
-                Learn More
-              </Button>
-            </Box>
+            <Zoom in={true} timeout={1500}>
+              <Box>
+                <Typography variant="h2" gutterBottom sx={{ mt: 4 }}>
+                  Fair Journal
+                </Typography>
+                <Typography variant="h4" gutterBottom>
+                  Your voice, Your story, Your platform
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="success"
+                  sx={{ m: 1, color: '#ffffff' }}
+                  onClick={() => navigate('/dashboard')}
+                >
+                  Get Started
+                </Button>
+                <Button variant="outlined" color="inherit" sx={{ m: 1 }} onClick={() => navigate('/aboutus')}>
+                  Learn More
+                </Button>
+              </Box>
+            </Zoom>
           </Grid>
           <Grid item md={5} sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <Box
-              component="img"
-              sx={{
-                width: '100%',
-                //maxWidth: 500,
-              }}
-              alt="The house from the offer."
-              src="./images/main.png"
-            />
+            <Fade in={true} timeout={1500}>
+              <Box
+                component="img"
+                sx={{
+                  width: '100%',
+                  //maxWidth: 500,
+                }}
+                alt="The house from the offer."
+                src="./images/main.png"
+              />
+            </Fade>
           </Grid>
         </Grid>
         <Grid container spacing={2} sx={{ pt: 2, mb: 8 }}>
@@ -95,7 +107,12 @@ export const Main = () => {
             Join Fair Journal today!
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Button variant="contained" color="success" sx={{ ml: 'auto', mr: 'auto', color: '#ffffff' }}>
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ ml: 'auto', mr: 'auto', color: '#ffffff' }}
+              onClick={() => navigate('/dashboard')}
+            >
               Get Started
             </Button>
           </Box>
