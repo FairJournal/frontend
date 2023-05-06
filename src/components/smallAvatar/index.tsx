@@ -1,12 +1,12 @@
 import React from 'react'
 import Avatar from '@mui/material/Avatar'
 import { Box, Typography } from '@mui/material'
-import { Profile } from '../../store/slices/mainSlice'
 import { Link } from 'react-router-dom'
+import { User } from '../../types'
 
 interface smallAvatarProps {
   to: string
-  profile: Profile | null
+  profile: User | null
   shortWallet: string
 }
 
@@ -17,7 +17,7 @@ export const SmallAvatar: React.FC<smallAvatarProps> = ({ to, profile, shortWall
         <Avatar alt="Avatar" src={profile?.avatar} sx={{ width: 56, height: 56, mr: 1 }} />
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <Typography variant="subtitle2" sx={{ mb: 0, mt: 1 }}>
-            {profile?.title}
+            {profile?.name}
           </Typography>
           <Typography variant="caption" gutterBottom>
             {shortWallet}

@@ -16,6 +16,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 // eslint-disable-next-line unused-imports/no-unused-imports
 import { logout, selectMain, login } from '../../store/slices/mainSlice'
 import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
+import { loginUser } from '../../api/users'
 
 const pages = [
   { page: 'About Us', route: 'aboutus' },
@@ -34,9 +35,12 @@ export const Header = () => {
 
   useEffect(() => {
     if (walletTon) {
-      dispatch(login(walletTon?.account.address))
+      ;(async () => {
+        const user = await loginUser(walletTon.account.address)
+        dispatch(login(user))
+      })()
     }
-  }, [walletTon])
+  }, [])
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
@@ -44,7 +48,8 @@ export const Header = () => {
 
   const connectWallet = async () => {
     const result = await tonConnectUI.connectWallet()
-    dispatch(login(result.account.address))
+    const user = await loginUser(result.account.address)
+    dispatch(login(user))
   }
 
   const handleCloseNavMenu = (route: string) => {

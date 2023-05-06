@@ -2,23 +2,16 @@ import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { OutputData } from '@editorjs/editorjs'
+import { User } from '../../types'
 
-export type Profile = {
-  id: string
-  avatar: string
-  title: string
-  bio: string
-}
 export interface MainState {
   wallet: string
-  token: string
-  profile: Profile | null
+  profile: User | null
   current: Array<OutputData>
 }
 
 const initialState: MainState = {
   wallet: '',
-  token: '0xb59519826deef8e7438fF30E20d8cDeA318B8ADf',
   profile: null,
   current: [],
 }
@@ -27,16 +20,16 @@ export const MainSlice = createSlice({
   initialState,
   reducers: {
     logout: state => {
+      // eslint-disable-next-line no-console
+      console.log('1')
       state.wallet = ''
-      state.token = ''
       state.profile = null
     },
-    login: (state, action: PayloadAction<string>) => {
-      state.wallet = action.payload
-      state.token = '2222'
-      state.profile = { id: '1', avatar: '', title: '', bio: '' }
+    login: (state, action: PayloadAction<User>) => {
+      state.wallet = action.payload.wallet
+      state.profile = action.payload
     },
-    changeProfile: (state, action: PayloadAction<Profile>) => {
+    changeProfile: (state, action: PayloadAction<User>) => {
       state.profile = action.payload
     },
     saveArticle: (state, action: PayloadAction<OutputData>) => {

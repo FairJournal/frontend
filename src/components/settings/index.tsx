@@ -11,8 +11,8 @@ export const Settings = () => {
   const { profile } = useAppSelector(selectMain)
   const dispatch = useAppDispatch()
   const [avatar, setAvatar] = useState(profile ? profile.avatar : '')
-  const [title, setTitle] = useState(profile ? profile.title : '')
-  const [bio, setBio] = useState(profile ? profile.bio : '')
+  const [name, setName] = useState(profile ? profile.name : '')
+  const [description, setDescription] = useState(profile ? profile.description : '')
   const userFriendlyAddress = useTonAddress()
 
   const handleAvatarChange = (newAvatar: string) => {
@@ -21,7 +21,7 @@ export const Settings = () => {
 
   const saveSettings = () => {
     if (profile) {
-      dispatch(changeProfile({ id: profile?.id, avatar, title, bio }))
+      dispatch(changeProfile({ ...profile, name, description, avatar }))
     }
   }
 
@@ -35,10 +35,10 @@ export const Settings = () => {
           <Grid item md={5} xs={10}>
             <TextField
               id="standard-basic"
-              label={`Name ${title.length}/30`}
+              label={`Name ${name.length}/30`}
               variant="outlined"
-              value={title}
-              onChange={event => setTitle(event.target.value)}
+              value={name}
+              onChange={event => setName(event.target.value)}
               sx={{ display: 'block', mb: 2 }}
               inputProps={{ maxLength: 30 }}
               fullWidth
@@ -50,10 +50,10 @@ export const Settings = () => {
         <Box>
           <TextField
             id="standard-basic"
-            label={`Bio ${bio.length}/180`}
+            label={`Bio ${description.length}/180`}
             variant="outlined"
-            value={bio}
-            onChange={event => setBio(event.target.value)}
+            value={description}
+            onChange={event => setDescription(event.target.value)}
             sx={{ display: 'block', mb: 2 }}
             inputProps={{ maxLength: 180 }}
             multiline

@@ -30,6 +30,7 @@ import { shortenString } from '../../utils'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { Header } from '../../components/header'
+import { loginUser } from '../../api/users'
 
 const drawerWidth = 240
 
@@ -98,9 +99,9 @@ export const Dashboard = (props: Props) => {
     handleDrawerToggle()
   }
 
-  const logOut = () => {
-    tonConnectUI.disconnect()
-    dispatch(logout)
+  const logOut = async () => {
+    await tonConnectUI.disconnect()
+    dispatch(logout())
     navigate('/')
   }
 
@@ -145,7 +146,8 @@ export const Dashboard = (props: Props) => {
 
   const connectWallet = async () => {
     const result = await tonConnectUI.connectWallet()
-    dispatch(login(result.account.address))
+    const user = await loginUser(result.account.address)
+    dispatch(login(user))
   }
 
   return (

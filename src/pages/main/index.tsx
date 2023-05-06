@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, Container, Fade, Grid, Typography, Zoom } from '@mui/material'
+import { Box, Button, Container, Fade, Grid, Typography } from '@mui/material'
 import { CardMediaMain } from '../../components/card'
 import { Header } from '../../components/header'
 import { useNavigate } from 'react-router-dom'
@@ -57,7 +57,7 @@ export const Main = () => {
             md={7}
             sx={{ display: 'flex', alignItems: 'center', p: 2, textAlign: { xs: 'center', md: 'start' } }}
           >
-            <Zoom in={true} timeout={1500}>
+            <Fade in={true} timeout={1500}>
               <Box>
                 <Typography variant="h2" gutterBottom sx={{ mt: 4 }}>
                   Fair Journal
@@ -77,7 +77,7 @@ export const Main = () => {
                   Learn More
                 </Button>
               </Box>
-            </Zoom>
+            </Fade>
           </Grid>
           <Grid item md={5} sx={{ display: { xs: 'none', md: 'flex' } }}>
             <Fade in={true} timeout={1500}>

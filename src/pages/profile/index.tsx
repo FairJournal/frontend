@@ -53,13 +53,13 @@ export const Profile = () => {
           <Avatar alt="Avatar" src={profile?.avatar} sx={{ width: 150, height: 150, mr: 2 }} />
           <Box>
             <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
-              {profile?.title}
+              {profile?.name}
             </Typography>
             <Chip label={shortWallet} />
           </Box>
         </Box>
         <Typography variant="subtitle1" gutterBottom>
-          {profile?.bio}
+          {profile?.description}
         </Typography>
         <Divider sx={{ mt: 2 }} />
         <Grid container spacing={2} sx={{ pt: 2, pb: 4 }}>
