@@ -6,9 +6,10 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { changeProfile, selectMain } from '../../store/slices/mainSlice'
 import { shortenString } from '../../utils'
 import { useTonAddress } from '@tonconnect/ui-react'
+import { updateUser } from '../../api/users'
 
 export const Settings = () => {
-  const { profile } = useAppSelector(selectMain)
+  const { profile, wallet } = useAppSelector(selectMain)
   const dispatch = useAppDispatch()
   const [avatar, setAvatar] = useState(profile ? profile.avatar : '')
   const [name, setName] = useState(profile ? profile.name : '')
@@ -19,9 +20,16 @@ export const Settings = () => {
     setAvatar(newAvatar)
   }
 
-  const saveSettings = () => {
+  const saveSettings = async () => {
     if (profile) {
+      const res = updateUser(profile.id, {
+        name,
+        description,
+        avatar,
+        wallet,
+      })
       dispatch(changeProfile({ ...profile, name, description, avatar }))
+      console.log(res)
     }
   }
 
