@@ -11,16 +11,16 @@ import {
   MenuItem,
 } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import { formatDate } from '../../utils'
+import { OutputBlockData } from '@editorjs/editorjs'
 
 export const ArticlCard = ({
-  img,
-  title,
-  text,
+  blocks,
+  time,
   isEdit,
 }: {
-  img: string
-  title: string
-  text: string
+  time: number
+  blocks: OutputBlockData<string, any>[]
   isEdit: boolean
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -32,8 +32,13 @@ export const ArticlCard = ({
     setAnchorEl(event.currentTarget)
   }
 
+  const timeArticle = formatDate(time)
+  const title = blocks.find(el => el.type === 'header')?.data.text ?? 'New article!'
+  const text = blocks.find(el => el.type === 'paragraph')?.data.text ?? ''
+  const image = '/images/M1.png'
+
   return (
-    <Card sx={{ maxWidth: 300, backgroundColor: 'primary.light' }}>
+    <Card sx={{ maxWidth: 300, minWidth: 250, backgroundColor: 'primary.light' }}>
       <CardHeader
         action={
           isEdit ? (
@@ -64,10 +69,10 @@ export const ArticlCard = ({
             ''
           )
         }
-        subheader="September 14, 2016"
+        subheader={timeArticle}
       />
       <CardActionArea>
-        <CardMedia component="img" height="200" image={img} alt={title} />
+        <CardMedia component="img" height="200" image={image} alt={title} />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             {title}

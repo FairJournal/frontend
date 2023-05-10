@@ -20,3 +20,11 @@ export const base64ToBlob = (base64String: string, type = 'image/png') => {
 
   return new Blob([ab], { type })
 }
+
+export const formatDate = (timestamp: number): string => {
+  const date = new Date(timestamp)
+  const options = { year: 'numeric', month: 'long', day: 'numeric' } as Intl.DateTimeFormatOptions
+  const dateString = date.toLocaleDateString('en-US', options)
+
+  return `${dateString}`
+}

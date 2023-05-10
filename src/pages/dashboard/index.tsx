@@ -1,4 +1,5 @@
-import React from 'react'
+/* eslint-disable no-console */
+import React, { useEffect } from 'react'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -23,14 +24,14 @@ import {
 } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { login, logout, selectMain } from '../../store/slices/mainSlice'
+import { getAllArticles, login, logout, selectMain } from '../../store/slices/mainSlice'
 import { Settings } from '../../components/settings'
 import { ArticlCard } from '../../components/articleCard'
 import { shortenString } from '../../utils'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { Header } from '../../components/header'
-import { loginUser } from '../../api/users'
+import { getArticlesByUserId, loginUser } from '../../api/users'
 
 const drawerWidth = 240
 
@@ -81,7 +82,7 @@ const articles = [
 ]
 
 export const Dashboard = (props: Props) => {
-  const { profile } = useAppSelector(selectMain)
+  const { profile, articles } = useAppSelector(selectMain)
   const { window } = props
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const [tab, setTab] = React.useState('1')
@@ -89,6 +90,15 @@ export const Dashboard = (props: Props) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const userFriendlyAddress = useTonAddress()
+
+  useEffect(() => {
+    ;(async () => {
+      if (profile) {
+        const articles = await getArticlesByUserId(profile.id)
+        dispatch(getAllArticles(articles))
+      }
+    })()
+  }, [profile])
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -250,7 +260,7 @@ export const Dashboard = (props: Props) => {
                     <Grid container spacing={2} sx={{ pt: 2, mb: 8, textAlign: 'center' }}>
                       {articles.map(el => (
                         <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                          <ArticlCard img={el.img} title={el.title} text={el.description} isEdit={true} />
+                          <ArticlCard blocks={el.blocks} time={el.time} isEdit={true} />
                         </Grid>
                       ))}
                     </Grid>

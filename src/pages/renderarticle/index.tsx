@@ -8,10 +8,10 @@ import { useAppSelector } from '../../store/hooks'
 import { selectMain } from '../../store/slices/mainSlice'
 
 export const RenderArticle = () => {
-  const { profile, current } = useAppSelector(selectMain)
+  const { profile, articles } = useAppSelector(selectMain)
 
   const { wallet, hash } = useParams()
-  const data = current[0]
+  const data = articles[0]
 
   return (
     <>

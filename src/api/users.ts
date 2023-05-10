@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
-import { User } from '../types'
+import { UpdateUserPayload, User } from '../types'
 
 export const loginUser = async (wallet: string) => {
-  // eslint-disable-next-line no-console
   const response = await fetch(`${process.env.REACT_APP_URL_API}/auth`, {
     method: 'POST',
     headers: {
@@ -18,13 +17,6 @@ export const loginUser = async (wallet: string) => {
   const user: User = await response.json()
 
   return user
-}
-
-interface UpdateUserPayload {
-  wallet: string
-  avatar: string
-  name: string
-  description: string
 }
 
 export const updateUser = async (id: number, payload: UpdateUserPayload) => {
@@ -45,4 +37,44 @@ export const updateUser = async (id: number, payload: UpdateUserPayload) => {
     const error = await response.text()
     throw new Error(`Failed to update user: ${error}`)
   }
+}
+
+interface ArticlePayload {
+  authorId: number
+  hash: string
+  content: object
+}
+
+export const createArticle = async (payload: ArticlePayload): Promise<number> => {
+  const response = await fetch(`${process.env.REACT_APP_URL_API}/articles`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  if (!response.ok) {
+    const error = await response.text()
+    throw new Error(`Failed to create article: ${error}`)
+  }
+
+  const newArticle = await response.json()
+
+  return newArticle.id
+}
+
+export const getArticlesByUserId = async (id: number) => {
+  const response = await fetch(`${process.env.REACT_APP_URL_API}/users/${id}/articles`)
+
+  if (!response.ok) {
+    const error = await response.text()
+    throw new Error(`Failed to get articles for user with id ${id}: ${error}`)
+  }
+  const articles = await response.json()
+  const result = articles.map((item: { id: number; hash: string; content: string }) => {
+    return { id: item.id, time: JSON.parse(item.content).time, blocks: JSON.parse(item.content).blocks }
+  })
+
+  return result
 }

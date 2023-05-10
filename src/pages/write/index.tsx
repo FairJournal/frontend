@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useRef, useCallback } from 'react'
 import { createReactEditorJS } from 'react-editor-js'
 import { EDITOR_JS_TOOLS } from './tools'
@@ -9,6 +10,8 @@ import { useAppSelector } from '../../store/hooks'
 import { saveArticle, selectMain } from '../../store/slices/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useTonAddress } from '@tonconnect/ui-react'
+import { createArticle } from '../../api/users'
+import { useNavigate } from 'react-router-dom'
 
 const ReactEditorJS = createReactEditorJS()
 
@@ -27,17 +30,29 @@ export const Write = () => {
   const { profile } = useAppSelector(selectMain)
   const dispatch = useDispatch()
   const userFriendlyAddress = useTonAddress()
+  const navigate = useNavigate()
 
   const handleInitialize = useCallback((instance: EditorCore) => {
     editorCore.current = instance
   }, [])
 
   const handleSave = useCallback(async () => {
-    const savedData = await editorCore.current?.save()
-    // eslint-disable-next-line no-console
-    console.log(savedData)
+    try {
+      console.log('1')
 
-    if (savedData !== undefined) dispatch(saveArticle(savedData))
+      if (profile) {
+        const savedData = await editorCore.current?.save()
+        console.log(savedData)
+
+        if (savedData !== undefined && savedData.time && savedData.blocks) {
+          const id = await createArticle({ authorId: profile.id, hash: '00000000000', content: savedData })
+          dispatch(saveArticle({ id, time: savedData.time, blocks: savedData.blocks }))
+          navigate('/dashboard')
+        }
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }, [])
 
   const shortWallet = shortenString(userFriendlyAddress)
