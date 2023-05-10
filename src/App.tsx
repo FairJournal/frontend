@@ -68,7 +68,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/write" element={<Write />} />
-              <Route path="/:wallet/:hash" element={<RenderArticle />} />
+              <Route path="/:authorId/:articleId" element={<RenderArticle />} />
             </Routes>
             <Footer />
           </Box>

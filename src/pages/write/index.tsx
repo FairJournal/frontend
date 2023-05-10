@@ -68,7 +68,12 @@ export const Write = () => {
       >
         <AppBar position="fixed">
           <Toolbar sx={{ display: 'flex', justifyContent: { md: 'space-between', xs: 'space-around' } }}>
-            <SmallAvatar shortWallet={shortWallet} to="/dashboard" profile={profile} />
+            {profile && (
+              <SmallAvatar
+                to="/dashboard"
+                profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
+              />
+            )}
             <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={handleSave}>
               Publish
             </Button>

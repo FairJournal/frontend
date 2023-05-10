@@ -78,3 +78,16 @@ export const getArticlesByUserId = async (id: number) => {
 
   return result
 }
+
+export const getArticleById = async (id: string) => {
+  try {
+    const response = await fetch(`${process.env.REACT_APP_URL_API}/articles/${id}`)
+    const data = await response.json()
+
+    return data
+  } catch (err) {
+    console.error(err)
+
+    return null
+  }
+}

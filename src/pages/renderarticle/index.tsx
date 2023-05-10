@@ -1,23 +1,49 @@
 /* eslint-disable no-console */
+import React, { useEffect, useState } from 'react'
 import { Container } from '@mui/material'
 import Output from 'editorjs-react-renderer'
-import React from 'react'
 import { useParams } from 'react-router-dom'
-import { Header } from '../../components/header'
-import { useAppSelector } from '../../store/hooks'
-import { selectMain } from '../../store/slices/mainSlice'
+import { getArticleById } from '../../api/users'
+import { SmallAvatar } from '../../components/smallAvatar'
+import { shortenString } from '../../utils'
+
+interface Article {
+  author_id: number
+  avatar: string
+  content: string
+  hash: string
+  id: number
+  name: string
+  wallet: string
+}
 
 export const RenderArticle = () => {
-  const { profile, articles } = useAppSelector(selectMain)
+  const { articleId, authorId } = useParams()
+  const [article, setArticle] = useState<Article | null>(null)
 
-  const { wallet, hash } = useParams()
-  const data = articles[0]
+  useEffect(() => {
+    const fetchArticle = async () => {
+      const data = await getArticleById(articleId as string)
+      console.log(data)
+      setArticle(data)
+    }
+    fetchArticle()
+  }, [articleId])
+
+  if (!article) {
+    return <div>Loading...</div>
+  }
+
+  const shortWallet = shortenString(article.wallet)
 
   return (
     <>
-      <Header />
-      <Container maxWidth="lg">
-        <Output data={data} />
+      <Container maxWidth="lg" sx={{ pt: 4 }}>
+        <SmallAvatar
+          to={`/${authorId}`}
+          profile={{ name: article.name, avatar: article.avatar, wallet: shortWallet }}
+        />
+        {article && <Output data={JSON.parse(article.content as string)} />}
       </Container>
     </>
   )

@@ -209,7 +209,10 @@ export const Dashboard = (props: Props) => {
                 >
                   <MenuIcon />
                 </IconButton>
-                <SmallAvatar shortWallet={shortWallet} to="/profile" profile={profile} />
+                <SmallAvatar
+                  to="/profile"
+                  profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
+                />
                 <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
                   <AddIcon />
                   Write

@@ -7,41 +7,8 @@ import { selectMain } from '../../store/slices/mainSlice'
 import { shortenString } from '../../utils'
 import { useTonAddress } from '@tonconnect/ui-react'
 
-const articles = [
-  {
-    id: '1',
-    img: '/images/M4.png',
-    title: 'How it works',
-    description: 'Injected by the documentation to work in an iframe t need it on your project...',
-  },
-  {
-    id: '2',
-    img: '/images/M5.png',
-    title: 'How it works',
-    description: 'Injected by the documentation to work in an iframe t need it on your project...',
-  },
-  {
-    id: '3',
-    img: '/images/M3.png',
-    title: 'How it works',
-    description: 'Injected by the documentation to work in an iframe t need it on your project...',
-  },
-  {
-    id: '4',
-    img: '/images/M2.png',
-    title: 'How it works',
-    description: 'Injected by the documentation to work in an iframe t need it on your project...',
-  },
-  {
-    id: '5',
-    img: '/images/M1.png',
-    title: 'How it works',
-    description: 'Injected by the documentation to work in an iframe t need it on your project...',
-  },
-]
-
 export const Profile = () => {
-  const { profile } = useAppSelector(selectMain)
+  const { profile, articles } = useAppSelector(selectMain)
   const userFriendlyAddress = useTonAddress()
   const shortWallet = shortenString(userFriendlyAddress)
 
@@ -65,7 +32,7 @@ export const Profile = () => {
         <Grid container spacing={2} sx={{ pt: 2, pb: 4 }}>
           {articles.map(el => (
             <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-              <ArticlCard img={el.img} title={el.title} text={el.description} isEdit={false} />
+              <ArticlCard blocks={el.blocks} time={el.time} isEdit={false} />
             </Grid>
           ))}
         </Grid>
