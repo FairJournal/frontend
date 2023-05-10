@@ -54,7 +54,7 @@ export const Profile = () => {
           {articles &&
             articles.map(el => (
               <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                <ArticlCard blocks={el.blocks} time={el.time} isEdit={false} />
+                <ArticlCard blocks={el.blocks} time={el.time} id={el.id} isEdit={false} />
               </Grid>
             ))}
         </Grid>

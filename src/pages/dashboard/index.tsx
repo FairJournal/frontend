@@ -263,7 +263,7 @@ export const Dashboard = (props: Props) => {
                     <Grid container spacing={2} sx={{ pt: 2, mb: 8, textAlign: 'center' }}>
                       {articles.map(el => (
                         <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                          <ArticlCard blocks={el.blocks} time={el.time} isEdit={true} />
+                          <ArticlCard blocks={el.blocks} time={el.time} id={el.id} isEdit={true} />
                         </Grid>
                       ))}
                     </Grid>

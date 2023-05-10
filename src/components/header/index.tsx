@@ -40,7 +40,7 @@ export const Header = () => {
         dispatch(login(user))
       })()
     }
-  }, [])
+  }, [walletTon])
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)

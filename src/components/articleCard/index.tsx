@@ -13,23 +13,36 @@ import {
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { formatDate } from '../../utils'
 import { OutputBlockData } from '@editorjs/editorjs'
+import { deleteArticle } from '../../api/article'
+import { deleteArticleById } from '../../store/slices/mainSlice'
+import { useDispatch } from 'react-redux'
 
 export const ArticlCard = ({
+  id,
   blocks,
   time,
   isEdit,
 }: {
+  id: number
   time: number
   blocks: OutputBlockData<string, any>[]
   isEdit: boolean
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+
+  const dispatch = useDispatch()
   const handleClose = () => {
     setAnchorEl(null)
   }
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
+  }
+
+  const handleDelete = async (id: number) => {
+    const res = await deleteArticle(id)
+    dispatch(deleteArticleById(res))
+    handleClose()
   }
 
   const timeArticle = formatDate(time)
@@ -62,7 +75,7 @@ export const ArticlCard = ({
                 onClose={handleClose}
               >
                 <MenuItem onClick={handleClose}>Edit</MenuItem>
-                <MenuItem onClick={handleClose}>Remove</MenuItem>
+                <MenuItem onClick={async () => handleDelete(id)}>Remove</MenuItem>
               </Menu>
             </>
           ) : (

@@ -1,3 +1,5 @@
+import { Article } from '../types'
+
 export const shortenString = (str: string | null): string => {
   if (!str) return ''
 
@@ -27,4 +29,17 @@ export const formatDate = (timestamp: number): string => {
   const dateString = date.toLocaleDateString('en-US', options)
 
   return `${dateString}`
+}
+
+export const removeArticleById = (articles: Article[], id: number): Article[] => {
+  const index = articles.findIndex(article => article.id === id)
+
+  if (index === -1) {
+    return articles
+  } else {
+    const newArticles = [...articles]
+    newArticles.splice(index, 1)
+
+    return newArticles
+  }
 }
