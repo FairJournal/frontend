@@ -40,7 +40,7 @@ export const RenderArticle = () => {
     <>
       <Container maxWidth="lg" sx={{ pt: 4 }}>
         <SmallAvatar
-          to={`/${authorId}`}
+          to={`profile/${authorId}`}
           profile={{ name: article.name, avatar: article.avatar, wallet: shortWallet }}
         />
         {article && <Output data={JSON.parse(article.content as string)} />}

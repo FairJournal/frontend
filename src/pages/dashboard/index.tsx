@@ -210,7 +210,7 @@ export const Dashboard = (props: Props) => {
                   <MenuIcon />
                 </IconButton>
                 <SmallAvatar
-                  to="/profile"
+                  to={`/profile/${profile.id}`}
                   profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
                 />
                 <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>

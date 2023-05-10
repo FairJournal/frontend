@@ -19,6 +19,19 @@ export const loginUser = async (wallet: string) => {
   return user
 }
 
+export const getUserById = async (id: string) => {
+  try {
+    const response = await fetch(`${process.env.REACT_APP_URL_API}/users/${id}`)
+    const data = await response.json()
+
+    return data
+  } catch (err) {
+    console.error(err)
+
+    return null
+  }
+}
+
 export const updateUser = async (id: number, payload: UpdateUserPayload) => {
   // const formData = new FormData()
   // formData.append('wallet', String(payload.wallet))

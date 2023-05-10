@@ -66,7 +66,7 @@ function App() {
               <Route path="/blog" element={<Blog />} />
               <Route path="/community" element={<Community />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/:id" element={<Profile />} />
               <Route path="/write" element={<Write />} />
               <Route path="/:authorId/:articleId" element={<RenderArticle />} />
             </Routes>

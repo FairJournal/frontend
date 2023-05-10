@@ -1,16 +1,37 @@
-import React from 'react'
+/* eslint-disable no-console */
+import React, { useEffect, useState } from 'react'
 import { Header } from '../../components/header'
 import { Avatar, Box, Chip, Container, Typography, Divider, Grid, Toolbar } from '@mui/material'
 import { ArticlCard } from '../../components/articleCard'
-import { useAppSelector } from '../../store/hooks'
-import { selectMain } from '../../store/slices/mainSlice'
 import { shortenString } from '../../utils'
-import { useTonAddress } from '@tonconnect/ui-react'
+import { getArticlesByUserId, getUserById } from '../../api/users'
+import { useParams } from 'react-router-dom'
+import { Article, User } from '../../types'
 
 export const Profile = () => {
-  const { profile, articles } = useAppSelector(selectMain)
-  const userFriendlyAddress = useTonAddress()
-  const shortWallet = shortenString(userFriendlyAddress)
+  const { id } = useParams()
+  const [profile, setProfile] = useState<User | null>(null)
+  const [articles, setArticles] = useState<Article[] | null>(null)
+
+  useEffect(() => {
+    const fetchArticle = async () => {
+      const data = await getArticlesByUserId(Number(id))
+      console.log(data, '11111111111111111111')
+      setArticles(data)
+    }
+    fetchArticle()
+  }, [id])
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const data = await getUserById(id as string)
+      console.log(data)
+      setProfile(data)
+    }
+    fetchUser()
+  }, [id])
+
+  const shortWallet = profile ? shortenString(profile.wallet) : ''
 
   return (
     <>
@@ -30,11 +51,12 @@ export const Profile = () => {
         </Typography>
         <Divider sx={{ mt: 2 }} />
         <Grid container spacing={2} sx={{ pt: 2, pb: 4 }}>
-          {articles.map(el => (
-            <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-              <ArticlCard blocks={el.blocks} time={el.time} isEdit={false} />
-            </Grid>
-          ))}
+          {articles &&
+            articles.map(el => (
+              <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+                <ArticlCard blocks={el.blocks} time={el.time} isEdit={false} />
+              </Grid>
+            ))}
         </Grid>
       </Container>
       <Toolbar />
