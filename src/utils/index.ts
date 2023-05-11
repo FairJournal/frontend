@@ -43,3 +43,17 @@ export const removeArticleById = (articles: Article[], id: number): Article[] =>
     return newArticles
   }
 }
+
+export const findArticleById = (articles: Article[], id: number): Article | undefined => {
+  const article = articles.find(article => article.id === id)
+
+  return article ? article : undefined
+}
+
+export const updateArticleById = (article: Article, articles: Article[]) => {
+  const res = articles
+  const articleIndex = articles.findIndex(el => el.id === article.id)
+  res[articleIndex] = article
+
+  return res
+}

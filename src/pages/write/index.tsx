@@ -1,17 +1,18 @@
 /* eslint-disable no-console */
-import React, { useRef, useCallback } from 'react'
+import React, { useRef, useCallback, useEffect, useState } from 'react'
 import { createReactEditorJS } from 'react-editor-js'
 import { EDITOR_JS_TOOLS } from './tools'
 import { Container, Toolbar, AppBar, Button } from '@mui/material'
 import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
-import { shortenString } from '../../utils'
+import { findArticleById, shortenString } from '../../utils'
 import { useAppSelector } from '../../store/hooks'
-import { saveArticle, selectMain } from '../../store/slices/mainSlice'
+import { saveArticle, selectMain, updateArticleBy } from '../../store/slices/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useTonAddress } from '@tonconnect/ui-react'
 import { createArticle } from '../../api/users'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { updateArticle } from '../../api/article'
 
 const ReactEditorJS = createReactEditorJS()
 
@@ -27,10 +28,22 @@ interface EditorCore {
 
 export const Write = () => {
   const editorCore = useRef<EditorCore | null>(null)
-  const { profile } = useAppSelector(selectMain)
+  const [editArticle, setEditArticle] = useState<OutputData | null | undefined>(null)
+  const { edit } = useParams()
+  const { profile, articles } = useAppSelector(selectMain)
   const dispatch = useDispatch()
   const userFriendlyAddress = useTonAddress()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (edit !== 'new' && typeof Number(edit) === 'number') {
+      const res = findArticleById(articles, Number(edit))
+      setEditArticle(res)
+      console.log(res)
+    } else {
+      setEditArticle(undefined)
+    }
+  }, [edit])
 
   const handleInitialize = useCallback((instance: EditorCore) => {
     editorCore.current = instance
@@ -38,15 +51,22 @@ export const Write = () => {
 
   const handleSave = useCallback(async () => {
     try {
-      console.log('1')
-
       if (profile) {
         const savedData = await editorCore.current?.save()
         console.log(savedData)
 
         if (savedData !== undefined && savedData.time && savedData.blocks) {
-          const id = await createArticle({ authorId: profile.id, hash: '00000000000', content: savedData })
-          dispatch(saveArticle({ id, time: savedData.time, blocks: savedData.blocks }))
+          if (edit === 'new') {
+            const id = await createArticle({ authorId: profile.id, hash: '00000000000', content: savedData })
+            dispatch(saveArticle({ id, time: savedData.time, blocks: savedData.blocks }))
+          } else {
+            const id = await updateArticle(Number(edit), profile.id, '00000000000', savedData)
+
+            // eslint-disable-next-line max-depth
+            if (id) {
+              dispatch(updateArticleBy({ id, time: savedData.time, blocks: savedData.blocks }))
+            }
+          }
           navigate('/dashboard')
         }
       }
@@ -80,23 +100,9 @@ export const Write = () => {
           </Toolbar>
         </AppBar>
         <Toolbar />
-        <ReactEditorJS
-          onInitialize={handleInitialize}
-          tools={EDITOR_JS_TOOLS}
-          defaultValue={{
-            time: 1635603431943,
-            blocks: [
-              {
-                id: 'sheNwCUP5A',
-                type: 'header',
-                data: {
-                  text: 'Title',
-                  level: 1,
-                },
-              },
-            ],
-          }}
-        />
+        {editArticle !== null && (
+          <ReactEditorJS onInitialize={handleInitialize} tools={EDITOR_JS_TOOLS} defaultValue={editArticle} />
+        )}
       </Container>
     </>
   )

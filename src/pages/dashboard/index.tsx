@@ -116,7 +116,7 @@ export const Dashboard = (props: Props) => {
   }
 
   const goWrite = () => {
-    navigate('/write')
+    navigate('/write/new')
   }
 
   const drawer = (

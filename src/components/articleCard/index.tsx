@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState } from 'react'
 import {
   Card,
   CardContent,
@@ -16,6 +16,7 @@ import { OutputBlockData } from '@editorjs/editorjs'
 import { deleteArticle } from '../../api/article'
 import { deleteArticleById } from '../../store/slices/mainSlice'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 export const ArticlCard = ({
   id,
@@ -28,7 +29,8 @@ export const ArticlCard = ({
   blocks: OutputBlockData<string, any>[]
   isEdit: boolean
 }) => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const navigate = useNavigate()
 
   const dispatch = useDispatch()
   const handleClose = () => {
@@ -42,6 +44,11 @@ export const ArticlCard = ({
   const handleDelete = async (id: number) => {
     const res = await deleteArticle(id)
     dispatch(deleteArticleById(res))
+    handleClose()
+  }
+
+  const handleEdit = (id: number) => {
+    navigate(`/write/${id}`)
     handleClose()
   }
 
@@ -74,7 +81,7 @@ export const ArticlCard = ({
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Edit</MenuItem>
+                <MenuItem onClick={() => handleEdit(id)}>Edit</MenuItem>
                 <MenuItem onClick={async () => handleDelete(id)}>Remove</MenuItem>
               </Menu>
             </>
