@@ -23,9 +23,12 @@ export const RenderArticle = () => {
 
   useEffect(() => {
     const fetchArticle = async () => {
-      const data = await getArticleById(articleId as string)
-      console.log(data)
-      setArticle(data)
+      try {
+        const data = await getArticleById(articleId as string)
+        setArticle(data)
+      } catch (e) {
+        console.log(e)
+      }
     }
     fetchArticle()
   }, [articleId])
@@ -41,7 +44,7 @@ export const RenderArticle = () => {
       <Container maxWidth="lg" sx={{ pt: 4 }}>
         <SmallAvatar
           to={`profile/${authorId}`}
-          profile={{ name: article.name, avatar: article.avatar, wallet: shortWallet }}
+          profile={{ name: article.name, avatar: article?.avatar, wallet: shortWallet }}
         />
         {article && <Output data={JSON.parse(article.content as string)} />}
       </Container>

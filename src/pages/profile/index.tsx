@@ -16,7 +16,6 @@ export const Profile = () => {
   useEffect(() => {
     const fetchArticle = async () => {
       const data = await getArticlesByUserId(Number(id))
-      console.log(data, '11111111111111111111')
       setArticles(data)
     }
     fetchArticle()
@@ -24,9 +23,12 @@ export const Profile = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const data = await getUserById(id as string)
-      console.log(data)
-      setProfile(data)
+      try {
+        const data = await getUserById(id as string)
+        setProfile(data)
+      } catch (e) {
+        console.log(e)
+      }
     }
     fetchUser()
   }, [id])
