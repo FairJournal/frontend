@@ -11,7 +11,7 @@ export interface User {
 
 export interface UpdateUserPayload {
   wallet: string
-  avatar: string
+  avatar: File | undefined
   name: string
   description: string
 }

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { UpdateUserPayload, User } from '../types'
 
-export const loginUser = async (wallet: string) => {
+export const loginUser = async (wallet: string): Promise<User> => {
   const response = await fetch(`${process.env.REACT_APP_URL_API}/auth`, {
     method: 'POST',
     headers: {
@@ -14,36 +14,28 @@ export const loginUser = async (wallet: string) => {
     throw new Error('Unable to login')
   }
 
-  const user: User = await response.json()
-
-  return user
+  return response.json()
 }
 
 export const getUserById = async (id: string) => {
-  try {
-    const response = await fetch(`${process.env.REACT_APP_URL_API}/users/${id}`)
-    const data = await response.json()
-
-    return data
-  } catch (err) {
-    console.error(err)
-
-    return null
-  }
+  return (await fetch(`${process.env.REACT_APP_URL_API}/users/${id}`)).json()
 }
 
-export const updateUser = async (id: number, payload: UpdateUserPayload) => {
-  // const formData = new FormData()
-  // formData.append('wallet', String(payload.wallet))
-  // formData.append('avatar', payload.avatar)
-  // formData.append('name', payload.name)
-  // formData.append('description', payload.description)
+export const updateUser = async (id: number, payload: UpdateUserPayload): Promise<void> => {
+  const { name, description, avatar, wallet } = payload
+  const formData = new FormData()
+  formData.append('name', name)
+  formData.append('description', description)
+
+  if (avatar) {
+    formData.append('avatar', avatar)
+  }
+
+  formData.append('wallet', wallet)
+
   const response = await fetch(`${process.env.REACT_APP_URL_API}/users/${id}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
+    body: formData,
   })
 
   if (!response.ok) {
@@ -85,22 +77,12 @@ export const getArticlesByUserId = async (id: number) => {
     throw new Error(`Failed to get articles for user with id ${id}: ${error}`)
   }
   const articles = await response.json()
-  const result = articles.map((item: { id: number; hash: string; content: string }) => {
+
+  return articles.map((item: { id: number; hash: string; content: string }) => {
     return { id: item.id, time: JSON.parse(item.content).time, blocks: JSON.parse(item.content).blocks }
   })
-
-  return result
 }
 
 export const getArticleById = async (id: string) => {
-  try {
-    const response = await fetch(`${process.env.REACT_APP_URL_API}/articles/${id}`)
-    const data = await response.json()
-
-    return data
-  } catch (err) {
-    console.error(err)
-
-    return null
-  }
+  return (await fetch(`${process.env.REACT_APP_URL_API}/articles/${id}`)).json()
 }

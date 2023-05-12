@@ -3,12 +3,12 @@ import Avatar from '@mui/material/Avatar'
 import { Box, Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
 
-interface smallAvatarProps {
+interface SmallAvatarProps {
   to: string
   profile: { name: string; avatar: string; wallet: string }
 }
 
-export const SmallAvatar: React.FC<smallAvatarProps> = ({ to, profile }) => {
+export const SmallAvatar: React.FC<SmallAvatarProps> = ({ to, profile }) => {
   return (
     <Box sx={{ display: 'flex', mt: 0, mb: 0 }}>
       <Link to={to} style={{ textDecoration: 'none', color: '#000000', display: 'flex', alignItems: 'center' }}>

@@ -11,25 +11,25 @@ import { updateUser } from '../../api/users'
 export const Settings = () => {
   const { profile, wallet } = useAppSelector(selectMain)
   const dispatch = useAppDispatch()
-  const [avatar, setAvatar] = useState(profile ? profile.avatar : '')
+  const [avatar, setAvatar] = useState<File | undefined>()
   const [name, setName] = useState(profile ? profile.name : '')
   const [description, setDescription] = useState(profile ? profile.description : '')
   const userFriendlyAddress = useTonAddress()
-
-  const handleAvatarChange = (newAvatar: string) => {
-    setAvatar(newAvatar)
-  }
+  const avatarObjectURL = avatar ? URL.createObjectURL(avatar) : ''
 
   const saveSettings = async () => {
-    if (profile) {
-      const res = updateUser(profile.id, {
-        name,
-        description,
-        avatar,
-        wallet,
-      })
-      dispatch(changeProfile({ ...profile, name, description, avatar }))
-      console.log(res)
+    try {
+      if (profile) {
+        await updateUser(profile.id, {
+          name,
+          description,
+          avatar,
+          wallet,
+        })
+        dispatch(changeProfile({ ...profile, name, description, avatar: avatarObjectURL }))
+      }
+    } catch (e) {
+      console.log(e)
     }
   }
 
@@ -39,7 +39,7 @@ export const Settings = () => {
     <Paper sx={{ with: '600px', backgroundColor: 'primary.main', pt: 2 }} elevation={3}>
       <Container maxWidth="lg">
         <Grid container spacing={2} sx={{ display: 'flex', mt: 4, mb: 2 }}>
-          <AvatarPicker avatarUrl={avatar} onAvatarChange={handleAvatarChange} />
+          <AvatarPicker avatarUrl={avatar} onAvatarChange={setAvatar} />
           <Grid item md={5} xs={10}>
             <TextField
               id="standard-basic"

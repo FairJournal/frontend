@@ -39,7 +39,6 @@ export const Write = () => {
     if (edit !== 'new' && typeof Number(edit) === 'number') {
       const res = findArticleById(articles, Number(edit))
       setEditArticle(res)
-      console.log(res)
     } else {
       setEditArticle(undefined)
     }
