@@ -2,7 +2,7 @@
 import { OutputData } from '@editorjs/editorjs'
 
 export const deleteArticle = async (id: number): Promise<number> => {
-  const response = await fetch(`${process.env.REACT_APP_URL_API}/articles/${id}`, {
+  const response = await fetch(`${process.env.REACT_APP_URL_API}api/articles/${id}`, {
     method: 'DELETE',
   })
 
@@ -20,15 +20,13 @@ export const updateArticle = async (
   content: OutputData,
 ): Promise<number | null> => {
   try {
-    console.log(articleId, authorId, hash, content)
-    const response = await fetch(`${process.env.REACT_APP_URL_API}/articles/${articleId}`, {
+    const response = await fetch(`${process.env.REACT_APP_URL_API}api/articles/${articleId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ authorId, hash, content }),
     })
-    console.log(response)
 
     if (response.ok) {
       return articleId

@@ -15,18 +15,18 @@ export const Settings = () => {
   const [name, setName] = useState(profile ? profile.name : '')
   const [description, setDescription] = useState(profile ? profile.description : '')
   const userFriendlyAddress = useTonAddress()
-  const avatarObjectURL = avatar ? URL.createObjectURL(avatar) : ''
 
   const saveSettings = async () => {
     try {
       if (profile) {
-        await updateUser(profile.id, {
+        const res = await updateUser(profile.id, {
           name,
           description,
           avatar,
           wallet,
         })
-        dispatch(changeProfile({ ...profile, name, description, avatar: avatarObjectURL }))
+        console.log(res)
+        dispatch(changeProfile({ ...profile, name, description, avatar: res.avatar }))
       }
     } catch (e) {
       console.log(e)

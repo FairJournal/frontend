@@ -2,7 +2,7 @@
 import { UpdateUserPayload, User } from '../types'
 
 export const loginUser = async (wallet: string): Promise<User> => {
-  const response = await fetch(`${process.env.REACT_APP_URL_API}/auth`, {
+  const response = await fetch(`${process.env.REACT_APP_URL_API}api/auth`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -18,10 +18,10 @@ export const loginUser = async (wallet: string): Promise<User> => {
 }
 
 export const getUserById = async (id: string) => {
-  return (await fetch(`${process.env.REACT_APP_URL_API}/users/${id}`)).json()
+  return (await fetch(`${process.env.REACT_APP_URL_API}api/users/${id}`)).json()
 }
 
-export const updateUser = async (id: number, payload: UpdateUserPayload): Promise<void> => {
+export const updateUser = async (id: number, payload: UpdateUserPayload): Promise<User> => {
   const { name, description, avatar, wallet } = payload
   const formData = new FormData()
   formData.append('name', name)
@@ -33,7 +33,7 @@ export const updateUser = async (id: number, payload: UpdateUserPayload): Promis
 
   formData.append('wallet', wallet)
 
-  const response = await fetch(`${process.env.REACT_APP_URL_API}/users/${id}`, {
+  const response = await fetch(`${process.env.REACT_APP_URL_API}api/users/${id}`, {
     method: 'POST',
     body: formData,
   })
@@ -42,6 +42,10 @@ export const updateUser = async (id: number, payload: UpdateUserPayload): Promis
     const error = await response.text()
     throw new Error(`Failed to update user: ${error}`)
   }
+
+  const user = await response.json()
+
+  return user
 }
 
 interface ArticlePayload {
@@ -51,7 +55,7 @@ interface ArticlePayload {
 }
 
 export const createArticle = async (payload: ArticlePayload): Promise<number> => {
-  const response = await fetch(`${process.env.REACT_APP_URL_API}/articles`, {
+  const response = await fetch(`${process.env.REACT_APP_URL_API}api/articles`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -70,7 +74,7 @@ export const createArticle = async (payload: ArticlePayload): Promise<number> =>
 }
 
 export const getArticlesByUserId = async (id: number) => {
-  const response = await fetch(`${process.env.REACT_APP_URL_API}/users/${id}/articles`)
+  const response = await fetch(`${process.env.REACT_APP_URL_API}api/users/${id}/articles`)
 
   if (!response.ok) {
     const error = await response.text()
@@ -84,5 +88,5 @@ export const getArticlesByUserId = async (id: number) => {
 }
 
 export const getArticleById = async (id: string) => {
-  return (await fetch(`${process.env.REACT_APP_URL_API}/articles/${id}`)).json()
+  return (await fetch(`${process.env.REACT_APP_URL_API}api/articles/${id}`)).json()
 }
