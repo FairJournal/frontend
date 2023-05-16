@@ -25,7 +25,6 @@ export const Settings = () => {
           avatar,
           wallet,
         })
-        console.log(res)
         dispatch(changeProfile({ ...profile, name, description, avatar: res.avatar }))
       }
     } catch (e) {

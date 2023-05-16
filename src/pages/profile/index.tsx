@@ -16,8 +16,7 @@ export const Profile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const data = await getUserById(id as string)
-        setProfile(data)
+        setProfile(await getUserById(id as string))
       } catch (e) {
         console.log(e)
       }
@@ -31,8 +30,7 @@ export const Profile = () => {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const data = await getArticlesByUserId(Number(id))
-        setArticles(data)
+        setArticles(await getArticlesByUserId(Number(id)))
       } catch (e) {
         console.log(e)
       }
