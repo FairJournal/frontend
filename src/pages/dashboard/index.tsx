@@ -48,39 +48,6 @@ const dataList = [
   { title: 'Settings', id: '2', icon: <InboxIcon /> },
 ]
 
-const articles = [
-  {
-    id: '1',
-    img: '/images/M4.png',
-    title: 'How it works',
-    description: 'Injected by the documentation to work in an iframe t need it on your project...',
-  },
-  {
-    id: '2',
-    img: '/images/M5.png',
-    title: 'How it works',
-    description: 'Injected by the documentation to work in an iframe t need it on your project...',
-  },
-  {
-    id: '3',
-    img: '/images/M3.png',
-    title: 'How it works',
-    description: 'Injected by the documentation to work in an iframe t need it on your project...',
-  },
-  {
-    id: '4',
-    img: '/images/M2.png',
-    title: 'How it works',
-    description: 'Injected by the documentation to work in an iframe t need it on your project...',
-  },
-  {
-    id: '5',
-    img: '/images/M1.png',
-    title: 'How it works',
-    description: 'Injected by the documentation to work in an iframe t need it on your project...',
-  },
-]
-
 export const Dashboard = (props: Props) => {
   const { profile, articles } = useAppSelector(selectMain)
   const { window } = props

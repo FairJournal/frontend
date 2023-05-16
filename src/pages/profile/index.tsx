@@ -14,23 +14,31 @@ export const Profile = () => {
   const [articles, setArticles] = useState<Article[] | null>(null)
 
   useEffect(() => {
-    const fetchArticle = async () => {
-      const data = await getArticlesByUserId(Number(id))
-      setArticles(data)
-    }
-    fetchArticle()
-  }, [id])
-
-  useEffect(() => {
     const fetchUser = async () => {
       try {
-        const data = await getUserById(id as string)
-        setProfile(data)
+        setProfile(await getUserById(id as string))
       } catch (e) {
         console.log(e)
       }
     }
-    fetchUser()
+
+    if (id) {
+      fetchUser()
+    }
+  }, [id])
+
+  useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        setArticles(await getArticlesByUserId(Number(id)))
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    if (id) {
+      fetchArticle()
+    }
   }, [id])
 
   const shortWallet = profile ? shortenString(profile.wallet) : ''
@@ -40,7 +48,11 @@ export const Profile = () => {
       <Header />
       <Container maxWidth="lg">
         <Box sx={{ display: 'flex', mt: 4, mb: 2 }}>
-          <Avatar alt="Avatar" src={profile?.avatar} sx={{ width: 150, height: 150, mr: 2 }} />
+          <Avatar
+            alt="Avatar"
+            src={`${process.env.REACT_APP_URL_API}${profile?.avatar}`}
+            sx={{ width: 150, height: 150, mr: 2 }}
+          />
           <Box>
             <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
               {profile?.name}
