@@ -22,7 +22,26 @@ export const EDITOR_JS_TOOLS = {
   warning: Warning,
   code: Code,
   linkTool: LinkTool,
-  image: Image,
+  image: {
+    class: Image,
+    config: {
+      // endpoints: {
+      //   byFile: `${process.env.REACT_APP_URL_API}/image/upload`,
+      // },
+      uploader: {
+        async uploadByFile(file: File) {
+          const formData = new FormData()
+          formData.append('image', file)
+          // todo change to the actual id
+          formData.append('authorId', '1')
+
+          return await (
+            await fetch(`${process.env.REACT_APP_URL_API}/image/upload`, { method: 'POST', body: formData })
+          ).json()
+        },
+      },
+    },
+  },
   raw: Raw,
   header: Header,
   quote: Quote,

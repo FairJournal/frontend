@@ -50,24 +50,26 @@ export const Write = () => {
 
   const handleSave = useCallback(async () => {
     try {
-      if (profile) {
-        const savedData = await editorCore.current?.save()
-        console.log(savedData)
+      if (!profile) {
+        return
+      }
 
-        if (savedData !== undefined && savedData.time && savedData.blocks) {
-          if (edit === 'new') {
-            const id = await createArticle({ authorId: profile.id, hash: '00000000000', content: savedData })
-            dispatch(saveArticle({ id, time: savedData.time, blocks: savedData.blocks }))
-          } else {
-            const id = await updateArticle(Number(edit), profile.id, '00000000000', savedData)
+      const savedData = await editorCore.current?.save()
+      console.log(savedData)
 
-            // eslint-disable-next-line max-depth
-            if (id) {
-              dispatch(updateArticleBy({ id, time: savedData.time, blocks: savedData.blocks }))
-            }
+      if (savedData !== undefined && savedData.time && savedData.blocks) {
+        if (edit === 'new') {
+          const id = await createArticle({ authorId: profile.id, hash: '00000000000', content: savedData })
+          dispatch(saveArticle({ id, time: savedData.time, blocks: savedData.blocks }))
+        } else {
+          const id = await updateArticle(Number(edit), profile.id, '00000000000', savedData)
+
+          // eslint-disable-next-line max-depth
+          if (id) {
+            dispatch(updateArticleBy({ id, time: savedData.time, blocks: savedData.blocks }))
           }
-          navigate('/dashboard')
         }
+        navigate('/dashboard')
       }
     } catch (e) {
       console.log(e)
