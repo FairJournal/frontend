@@ -14,39 +14,37 @@ import Delimiter from '@editorjs/delimiter'
 import InlineCode from '@editorjs/inline-code'
 import SimpleImage from '@editorjs/simple-image'
 
-export const EDITOR_JS_TOOLS = {
-  embed: Embed,
-  table: Table,
-  marker: Marker,
-  list: List,
-  warning: Warning,
-  code: Code,
-  linkTool: LinkTool,
-  image: {
-    class: Image,
-    config: {
-      // endpoints: {
-      //   byFile: `${process.env.REACT_APP_URL_API}/image/upload`,
-      // },
-      uploader: {
-        async uploadByFile(file: File) {
-          const formData = new FormData()
-          formData.append('image', file)
-          // todo change to the actual id
-          formData.append('authorId', '1')
+export const getEditorJsTools = (authorId: number) => {
+  return {
+    embed: Embed,
+    table: Table,
+    marker: Marker,
+    list: List,
+    warning: Warning,
+    code: Code,
+    linkTool: LinkTool,
+    image: {
+      class: Image,
+      config: {
+        uploader: {
+          async uploadByFile(file: File) {
+            const formData = new FormData()
+            formData.append('image', file)
+            formData.append('authorId', authorId.toString())
 
-          return await (
-            await fetch(`${process.env.REACT_APP_URL_API}/image/upload`, { method: 'POST', body: formData })
-          ).json()
+            return await (
+              await fetch(`${process.env.REACT_APP_URL_API}image/upload`, { method: 'POST', body: formData })
+            ).json()
+          },
         },
       },
     },
-  },
-  raw: Raw,
-  header: Header,
-  quote: Quote,
-  checklist: CheckList,
-  delimiter: Delimiter,
-  inlineCode: InlineCode,
-  simpleImage: SimpleImage,
+    raw: Raw,
+    header: Header,
+    quote: Quote,
+    checklist: CheckList,
+    delimiter: Delimiter,
+    inlineCode: InlineCode,
+    simpleImage: SimpleImage,
+  }
 }

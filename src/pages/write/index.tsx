@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import React, { useRef, useCallback, useEffect, useState } from 'react'
 import { createReactEditorJS } from 'react-editor-js'
-import { EDITOR_JS_TOOLS } from './tools'
+import { getEditorJsTools } from './tools'
 import { Container, Toolbar, AppBar, Button } from '@mui/material'
 import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
@@ -34,6 +34,12 @@ export const Write = () => {
   const dispatch = useDispatch()
   const userFriendlyAddress = useTonAddress()
   const navigate = useNavigate()
+
+  let EDITOR_JS_TOOLS
+
+  if (profile) {
+    EDITOR_JS_TOOLS = getEditorJsTools(profile.id)
+  }
 
   useEffect(() => {
     if (edit !== 'new' && typeof Number(edit) === 'number') {
