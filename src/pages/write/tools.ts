@@ -33,7 +33,7 @@ export const getEditorJsTools = (authorId: number) => {
             formData.append('authorId', authorId.toString())
 
             return await (
-              await fetch(`${process.env.REACT_APP_URL_API}image/upload`, { method: 'POST', body: formData })
+              await fetch(`${process.env.REACT_APP_URL_API}api/image/upload`, { method: 'POST', body: formData })
             ).json()
           },
         },
