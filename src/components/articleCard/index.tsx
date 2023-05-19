@@ -23,11 +23,13 @@ export const ArticlCard = ({
   blocks,
   time,
   isEdit,
+  idAuthor,
 }: {
   id: number
   time: number
   blocks: OutputBlockData<string, any>[]
   isEdit: boolean
+  idAuthor: number
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const navigate = useNavigate()
@@ -91,7 +93,7 @@ export const ArticlCard = ({
         }
         subheader={timeArticle}
       />
-      <CardActionArea>
+      <CardActionArea onClick={() => window.open(`/${idAuthor}/${id}`, '_blank')}>
         <CardMedia component="img" height="200" image={image} alt={title} />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
