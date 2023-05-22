@@ -21,13 +21,13 @@ export const Footer = () => {
               <Link href="#" color="inherit" underline="none">
                 2023{' '}
               </Link>
-              <Link href="#" color="inherit" underline="none">
+              <Link href="https://twitter.com/fair_journal" color="inherit" underline="none" target="_blank">
                 | Twitter{' '}
               </Link>
-              <Link href="#" color="inherit" underline="none">
+              <Link href="https://t.me/fair_journal_en" color="inherit" underline="none" target="_blank">
                 | Telegram{' '}
               </Link>
-              <Link href="#" color="inherit" underline="none">
+              <Link href="https://github.com/FairJournal" color="inherit" underline="none" target="_blank">
                 | GitHub
               </Link>
             </Typography>

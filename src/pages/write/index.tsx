@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import React, { useRef, useCallback, useEffect, useState } from 'react'
 import { createReactEditorJS } from 'react-editor-js'
-import { EDITOR_JS_TOOLS } from './tools'
+import { getEditorJsTools } from './tools'
 import { Container, Toolbar, AppBar, Button } from '@mui/material'
 import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
@@ -35,6 +35,12 @@ export const Write = () => {
   const userFriendlyAddress = useTonAddress()
   const navigate = useNavigate()
 
+  let EDITOR_JS_TOOLS
+
+  if (profile) {
+    EDITOR_JS_TOOLS = getEditorJsTools(profile.id)
+  }
+
   useEffect(() => {
     if (edit !== 'new' && typeof Number(edit) === 'number') {
       const res = findArticleById(articles, Number(edit))
@@ -50,24 +56,26 @@ export const Write = () => {
 
   const handleSave = useCallback(async () => {
     try {
-      if (profile) {
-        const savedData = await editorCore.current?.save()
-        console.log(savedData)
+      if (!profile) {
+        return
+      }
 
-        if (savedData !== undefined && savedData.time && savedData.blocks) {
-          if (edit === 'new') {
-            const id = await createArticle({ authorId: profile.id, hash: '00000000000', content: savedData })
-            dispatch(saveArticle({ id, time: savedData.time, blocks: savedData.blocks }))
-          } else {
-            const id = await updateArticle(Number(edit), profile.id, '00000000000', savedData)
+      const savedData = await editorCore.current?.save()
+      console.log(savedData)
 
-            // eslint-disable-next-line max-depth
-            if (id) {
-              dispatch(updateArticleBy({ id, time: savedData.time, blocks: savedData.blocks }))
-            }
+      if (savedData !== undefined && savedData.time && savedData.blocks) {
+        if (edit === 'new') {
+          const id = await createArticle({ authorId: profile.id, hash: '00000000000', content: savedData })
+          dispatch(saveArticle({ id, time: savedData.time, blocks: savedData.blocks }))
+        } else {
+          const id = await updateArticle(Number(edit), profile.id, '00000000000', savedData)
+
+          // eslint-disable-next-line max-depth
+          if (id) {
+            dispatch(updateArticleBy({ id, time: savedData.time, blocks: savedData.blocks }))
           }
-          navigate('/dashboard')
         }
+        navigate('/dashboard')
       }
     } catch (e) {
       console.log(e)

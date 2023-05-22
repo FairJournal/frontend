@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useState } from 'react'
 import {
   Card,
@@ -23,11 +24,13 @@ export const ArticlCard = ({
   blocks,
   time,
   isEdit,
+  idAuthor,
 }: {
   id: number
   time: number
   blocks: OutputBlockData<string, any>[]
   isEdit: boolean
+  idAuthor: number
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const navigate = useNavigate()
@@ -55,7 +58,7 @@ export const ArticlCard = ({
   const timeArticle = formatDate(time)
   const title = blocks.find(el => el.type === 'header')?.data.text ?? 'New article!'
   const text = blocks.find(el => el.type === 'paragraph')?.data.text ?? ''
-  const image = '/images/M1.png'
+  const image = blocks.find(el => el.type === 'image')?.data.file.url ?? '/images/F2.png'
 
   return (
     <Card sx={{ maxWidth: 300, minWidth: 250, backgroundColor: 'primary.light' }}>
@@ -91,7 +94,7 @@ export const ArticlCard = ({
         }
         subheader={timeArticle}
       />
-      <CardActionArea>
+      <CardActionArea onClick={() => window.open(`/${idAuthor}/${id}`, '_blank')}>
         <CardMedia component="img" height="200" image={image} alt={title} />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
