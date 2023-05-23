@@ -14,6 +14,20 @@ import { createArticle } from '../../api/users'
 import { useNavigate, useParams } from 'react-router-dom'
 import { updateArticle } from '../../api/article'
 
+const defaultValue = {
+  time: 1556098174501,
+  blocks: [
+    {
+      type: 'header',
+      data: {
+        text: 'Your Header Text',
+        level: 1,
+      },
+    },
+  ],
+  version: '2.12.4',
+}
+
 const ReactEditorJS = createReactEditorJS()
 
 interface EditorCore {
@@ -28,7 +42,7 @@ interface EditorCore {
 
 export const Write = () => {
   const editorCore = useRef<EditorCore | null>(null)
-  const [editArticle, setEditArticle] = useState<OutputData | null | undefined>(null)
+  const [editArticle, setEditArticle] = useState<OutputData | null | undefined>(defaultValue)
   const { edit } = useParams()
   const { profile, articles } = useAppSelector(selectMain)
   const dispatch = useDispatch()
