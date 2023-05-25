@@ -1,0 +1,50 @@
+Privacy Policy
+
+This Privacy Policy describes how FairJournal ("we," "us," or "our") collects, uses, and discloses personal information when you use our website and services. We are committed to protecting the privacy of our users and ensuring the security of their personal information. By accessing or using FairJournal, you acknowledge and accept the practices described in this Privacy Policy.
+
+Information We Collect:
+1.1 Personal Information:
+When you register an account on FairJournal, we may collect personal information such as your name, email address, and TON wallet address. This information is required for user authentication, communication, and to enable certain features of our platform.
+
+1.2 Usage Information:
+We may collect information about your interactions with FairJournal, including the articles you read, the actions you take, and the features you use. This data helps us improve our services, enhance the user experience, and tailor our content to your preferences.
+
+1.3 Cookies and Similar Technologies:
+FairJournal may use cookies and similar technologies to collect information about your device and browsing activities. These technologies help us provide a personalized and seamless experience, analyze trends, and gather statistical data about our website's usage.
+
+How We Use Your Information:
+2.1 Provide and Improve Services:
+We use the information we collect to provide and improve FairJournal's services, including personalized content, communication, and user support. This includes optimizing our platform, analyzing user behavior, and identifying trends to enhance the user experience.
+
+2.2 Communication:
+We may use your email address to send you important notifications, updates, and information about FairJournal. You have the option to unsubscribe from these communications at any time.
+
+2.3 Research and Analytics:
+We may use aggregated and anonymized data for research and analytical purposes to better understand user preferences, improve our services, and develop new features.
+
+Information Sharing and Disclosure:
+3.1 Authorized Service Providers:
+We may share your personal information with trusted third-party service providers who assist us in operating FairJournal. These service providers are bound by confidentiality agreements and are authorized to use your information solely for the purpose of providing their services to us.
+
+3.2 Legal Requirements:
+We may disclose your personal information if required to do so by law or if we believe that such disclosure is necessary to protect our rights, comply with legal obligations, or enforce our Terms of Service.
+
+Data Security:
+We are committed to protecting the security of your personal information and have implemented appropriate measures to safeguard it. However, no method of transmission over the internet or electronic storage is completely secure. Therefore, while we strive to protect your personal information, we cannot guarantee its absolute security.
+
+Your Choices:
+5.1 Account Information:
+You can access, update, or delete your personal information by logging into your FairJournal account settings. Please note that deleting certain information may limit your access to certain features or services.
+
+5.2 Cookies:
+Most web browsers are set to accept cookies by default. You can adjust your browser settings to disable or reject cookies. However, please note that disabling cookies may affect your ability to use certain features of FairJournal.
+
+Changes to this Privacy Policy:
+We reserve the right to update or modify this Privacy Policy at any time. We will notify you of any significant changes by posting the updated Privacy Policy on FairJournal. Your continued use of our services after any modifications to this Privacy Policy will signify your acceptance of the updated terms.
+
+Contact Us:
+If you have any questions, concerns, or feedback regarding this Privacy Policy or our data practices, please contact us at fairjournal@gmail.com.
+
+By using FairJournal, you consent to the collection, use, and disclosure of your personal information as described in this Privacy Policy.
+
+End of Privacy Policy.
