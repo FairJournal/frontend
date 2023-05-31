@@ -57,7 +57,7 @@ export const ArticlCard = ({
 
   const timeArticle = formatDate(time)
   const title = blocks.find(el => el.type === 'header')?.data.text ?? 'New article!'
-  const text = blocks.find(el => el.type === 'paragraph')?.data.text ?? ''
+  const text = blocks.find(el => el.type === 'paragraph')?.data.text.slice(0, 100) ?? ''
   const image = blocks.find(el => el.type === 'image')?.data.file.url ?? '/images/F2.png'
 
   return (
