@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -13,17 +12,11 @@ import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-// eslint-disable-next-line unused-imports/no-unused-imports
-import { logout, selectMain, login } from '../../store/slices/mainSlice'
+import { selectMain, login } from '../../store/slices/mainSlice'
 import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
 import { loginUser } from '../../api/users'
 
-const pages = [
-  { page: 'About Us', route: 'aboutus' },
-  // { page: 'How it works', route: 'howitworks' },
-  // { page: 'Blog', route: 'blog' },
-  // { page: 'Community', route: 'community' },
-]
+const pages = [{ page: 'About Us', route: 'aboutus' }]
 
 export const Header = () => {
   const { wallet } = useAppSelector(selectMain)
@@ -47,6 +40,10 @@ export const Header = () => {
   }
 
   const connectWallet = async () => {
+    if (tonConnectUI.connected) {
+      await tonConnectUI.disconnect()
+    }
+
     const result = await tonConnectUI.connectWallet()
     const user = await loginUser(result.account.address)
     dispatch(login(user))
