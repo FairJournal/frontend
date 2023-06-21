@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, Container, Fade, Grid, Typography } from '@mui/material'
+import { Alert, Box, Button, Container, Fade, Grid, Typography } from '@mui/material'
 import { CardMediaMain } from '../../components/card'
 import { Header } from '../../components/header'
 import { useNavigate } from 'react-router-dom'
@@ -48,6 +48,10 @@ export const Main = () => {
 
   return (
     <>
+      <Alert severity="error">
+        This is a development version of the website. Please note that all articles and data will be removed upon the
+        release of the main version. Thank you for your understanding.
+      </Alert>
       <Header />
       <Container maxWidth="lg">
         <Grid container spacing={2}>

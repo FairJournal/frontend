@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
 import MailIcon from '@mui/icons-material/Mail'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -32,14 +32,11 @@ import { SmallAvatar } from '../../components/smallAvatar'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { Header } from '../../components/header'
 import { getArticlesByUserId, loginUser } from '../../api/users'
+import UpdateRoundedIcon from '@mui/icons-material/UpdateRounded'
 
 const drawerWidth = 240
 
 interface Props {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
   window?: () => Window
 }
 
@@ -49,22 +46,32 @@ const dataList = [
 ]
 
 export const Dashboard = (props: Props) => {
-  const { profile, articles } = useAppSelector(selectMain)
   const { window } = props
-  const [mobileOpen, setMobileOpen] = React.useState(false)
-  const [tab, setTab] = React.useState('1')
+  const { profile, articles } = useAppSelector(selectMain)
+  const [mobileOpen, setMobileOpen] = useState<boolean>(false)
+  const [tab, setTab] = useState<string>('1')
+  const [status, setStatus] = useState<'pending' | 'error' | 'ok'>('ok')
+
   const [tonConnectUI] = useTonConnectUI()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const userFriendlyAddress = useTonAddress()
 
-  useEffect(() => {
-    ;(async () => {
-      if (profile) {
+  const getArticle = async () => {
+    if (profile) {
+      try {
+        setStatus('pending')
         const articles = await getArticlesByUserId(profile.id)
         dispatch(getAllArticles(articles))
+        setStatus('ok')
+      } catch {
+        setStatus('error')
       }
-    })()
+    }
+  }
+
+  useEffect(() => {
+    getArticle()
   }, [profile])
 
   const handleDrawerToggle = () => {
@@ -226,24 +233,73 @@ export const Dashboard = (props: Props) => {
               <Toolbar />
               {tab === '1' && (
                 <>
-                  {articles.length > 0 ? (
-                    <Grid container spacing={2} sx={{ pt: 2, mb: 8, textAlign: 'center' }}>
-                      {articles.map(el => (
-                        <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                          <ArticlCard
-                            blocks={el.blocks}
-                            time={el.time}
-                            id={el.id}
-                            isEdit={true}
-                            idAuthor={profile.id}
-                          />
+                  {status === 'pending' && (
+                    <ArticlCard blocks={[]} time={1} id={1} isEdit={false} idAuthor={1} isloading={true} />
+                  )}
+                  {status === 'error' && (
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                        minHeight: '80vh',
+                      }}
+                    >
+                      <Typography variant="h6">Something went wrong, try again.</Typography>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        onClick={getArticle}
+                        sx={{ color: '#ffffff', mt: 2, mb: 2 }}
+                      >
+                        <UpdateRoundedIcon />
+                        Update
+                      </Button>
+                    </Box>
+                  )}
+                  {status === 'ok' && (
+                    <>
+                      {articles.length > 0 ? (
+                        <Grid container spacing={2} sx={{ pt: 2, mb: 8, textAlign: 'center' }}>
+                          {articles.map(el => (
+                            <Grid
+                              key={el.id}
+                              item
+                              lg={4}
+                              md={6}
+                              xs={12}
+                              sx={{ display: 'flex', justifyContent: 'center' }}
+                            >
+                              <ArticlCard
+                                blocks={el.blocks}
+                                time={el.time}
+                                id={el.id}
+                                isEdit={true}
+                                idAuthor={profile.id}
+                                isloading={false}
+                              />
+                            </Grid>
+                          ))}
                         </Grid>
-                      ))}
-                    </Grid>
-                  ) : (
-                    <Typography align="center" variant="h5" sx={{ mb: 2, mt: 2 }}>
-                      You don't have any articles yet, let's create!
-                    </Typography>
+                      ) : (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                            minHeight: '80vh',
+                          }}
+                        >
+                          <Typography variant="h6">You don't have any articles yet, let's create!</Typography>
+                          <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
+                            <AddIcon />
+                            Write
+                          </Button>
+                        </Box>
+                      )}
+                    </>
                   )}
                 </>
               )}

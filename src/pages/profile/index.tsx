@@ -59,7 +59,10 @@ export const Profile = () => {
                 <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
                   {profile?.name}
                 </Typography>
-                <Chip label={shortWallet} />
+                <Chip
+                  label={shortWallet}
+                  onClick={() => window.open(`https://tonviewer.com/${profile.wallet}`, '_blank')}
+                />
               </Box>
             </Box>
             <Typography variant="subtitle1" gutterBottom>
@@ -70,7 +73,14 @@ export const Profile = () => {
               {articles &&
                 articles.map(el => (
                   <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <ArticlCard blocks={el.blocks} time={el.time} id={el.id} isEdit={false} idAuthor={profile.id} />
+                    <ArticlCard
+                      blocks={el.blocks}
+                      time={el.time}
+                      id={el.id}
+                      isEdit={false}
+                      idAuthor={profile.id}
+                      isloading={false}
+                    />
                   </Grid>
                 ))}
             </Grid>
