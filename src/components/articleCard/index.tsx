@@ -13,7 +13,7 @@ import {
   Skeleton,
 } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { formatDate } from '../../utils'
+import { formatDate, stripHtmlTags } from '../../utils'
 import { OutputBlockData } from '@editorjs/editorjs'
 import { deleteArticle } from '../../api/article'
 import { deleteArticleById } from '../../store/slices/mainSlice'
@@ -60,7 +60,7 @@ export const ArticlCard = ({
 
   const timeArticle = formatDate(time)
   const title = blocks.find(el => el.type === 'header')?.data.text ?? 'New article!'
-  const text = blocks.find(el => el.type === 'paragraph')?.data.text.slice(0, 100) ?? ''
+  const text = stripHtmlTags(blocks.find(el => el.type === 'paragraph')?.data.text).slice(0, 100) + '...' ?? ''
   const image = blocks.find(el => el.type === 'image')?.data.file.url ?? '/images/F2.png'
 
   return (

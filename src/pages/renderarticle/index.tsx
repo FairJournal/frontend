@@ -17,6 +17,13 @@ interface Article {
   name: string
   wallet: string
 }
+interface CodeBlockData {
+  code: string
+}
+
+const CustomCode = ({ data }: { data: CodeBlockData }) => {
+  return <div className="custom-code">{data.code}</div>
+}
 
 export const RenderArticle = () => {
   const { articleId, authorId } = useParams()
@@ -59,13 +66,15 @@ export const RenderArticle = () => {
   return (
     <>
       {article && (
-        <Container maxWidth="lg" sx={{ pt: 4 }}>
-          <SmallAvatar
-            to={`/profile/${authorId}`}
-            profile={{ name: article.name, avatar: article?.avatar, wallet: shortenString(article.wallet) }}
-          />
-          {article && <Output data={JSON.parse(article.content as string)} />}
-        </Container>
+        <Box sx={{ backgroundColor: '#fff', minHeight: '90vh', minWidth: '90vw', pb: 10 }}>
+          <Container maxWidth="md" sx={{ pt: 4 }}>
+            <SmallAvatar
+              to={`/profile/${authorId}`}
+              profile={{ name: article.name, avatar: article?.avatar, wallet: shortenString(article.wallet) }}
+            />
+            {article && <Output data={JSON.parse(article.content as string)} renderers={{ code: CustomCode }} />}
+          </Container>
+        </Box>
       )}
     </>
   )

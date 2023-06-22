@@ -2,7 +2,7 @@
 import React, { useRef, useCallback, useEffect, useState } from 'react'
 import { createReactEditorJS } from 'react-editor-js'
 import { getEditorJsTools } from './tools'
-import { Container, Toolbar, AppBar, Button } from '@mui/material'
+import { Container, Toolbar, AppBar, Button, Box } from '@mui/material'
 import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { findArticleById, shortenString } from '../../utils'
@@ -42,7 +42,7 @@ interface EditorCore {
 
 export const Write = () => {
   const editorCore = useRef<EditorCore | null>(null)
-  const [editArticle, setEditArticle] = useState<OutputData | null | undefined>(defaultValue)
+  const [editArticle, setEditArticle] = useState<OutputData | null | undefined>(null)
   const { edit } = useParams()
   const { profile, articles } = useAppSelector(selectMain)
   const dispatch = useDispatch()
@@ -58,9 +58,10 @@ export const Write = () => {
   useEffect(() => {
     if (edit !== 'new' && typeof Number(edit) === 'number') {
       const res = findArticleById(articles, Number(edit))
+      console.log(res)
       setEditArticle(res)
     } else {
-      setEditArticle(undefined)
+      setEditArticle(defaultValue)
     }
   }, [edit])
 
@@ -100,31 +101,32 @@ export const Write = () => {
 
   return (
     <>
-      <Container
-        maxWidth="lg"
-        sx={{
-          backgroundColor: '#fff',
-          minHeight: '100vh',
-        }}
-      >
-        <AppBar position="fixed">
-          <Toolbar sx={{ display: 'flex', justifyContent: { md: 'space-between', xs: 'space-around' } }}>
-            {profile && (
-              <SmallAvatar
-                to="/dashboard"
-                profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
-              />
-            )}
-            <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={handleSave}>
-              Publish
-            </Button>
-          </Toolbar>
-        </AppBar>
-        <Toolbar />
-        {editArticle !== null && (
-          <ReactEditorJS onInitialize={handleInitialize} tools={EDITOR_JS_TOOLS} defaultValue={editArticle} />
-        )}
-      </Container>
+      <Box sx={{ backgroundColor: '#fff', minHeight: '100vh', minWidth: '90vw' }}>
+        <Container maxWidth="md">
+          <AppBar position="fixed">
+            <Toolbar sx={{ display: 'flex', justifyContent: { md: 'space-between', xs: 'space-around' } }}>
+              {profile && (
+                <SmallAvatar
+                  to="/dashboard"
+                  profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
+                />
+              )}
+              <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={handleSave}>
+                Publish
+              </Button>
+            </Toolbar>
+          </AppBar>
+          <Toolbar />
+          {editArticle !== null && (
+            <ReactEditorJS
+              autofocus={true}
+              onInitialize={handleInitialize}
+              tools={EDITOR_JS_TOOLS}
+              defaultValue={editArticle}
+            />
+          )}
+        </Container>
+      </Box>
     </>
   )
 }

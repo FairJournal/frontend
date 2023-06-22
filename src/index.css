@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 20px;
 }
 
 code {
@@ -12,6 +13,52 @@ code {
     monospace;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 500 !important; 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500 !important;
+}
+
+.custom-code {
+  color: #41314e;
+  line-height: 1.6em;
+  background: #f8f7fa;
+  border: 1px solid #f1f1f4;
+  box-shadow: none;
+  white-space: pre;
+  word-wrap: normal;
+  overflow-x: auto;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+p {
+  color: #191f2f;
+  line-height: 1.6em
+}
+
+.ce-paragraph {
+  color: #191f2f
+}
+
+a:-webkit-any-link {
+  color: #08c;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.ce-code__textarea {
+  font-size: 20px !important;
+}
+
+ol {
+  list-style: decimal;
+  margin: 0;
+  padding-left: 40px;
+  outline: none;
+  padding: 0.4em 0;
+  line-height: 1.6em
 }
