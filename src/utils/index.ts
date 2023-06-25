@@ -57,3 +57,11 @@ export const updateArticleById = (article: Article, articles: Article[]) => {
 
   return res
 }
+
+export const stripHtmlTags = (html: string): string => {
+  if (!html) return ''
+  const tempElement = document.createElement('div')
+  tempElement.innerHTML = html
+
+  return tempElement.textContent || tempElement.innerText || ''
+}

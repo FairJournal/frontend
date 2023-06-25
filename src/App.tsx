@@ -12,6 +12,7 @@ import { Profile } from './pages/profile'
 import { Write } from './pages/write'
 import { RenderArticle } from './pages/renderarticle'
 import { TonConnectUIProvider } from '@tonconnect/ui-react'
+import { NotFound } from './pages/notfound'
 
 function App() {
   const theme = createTheme({
@@ -69,6 +70,7 @@ function App() {
               <Route path="/profile/:id" element={<Profile />} />
               <Route path="/write/:edit" element={<Write />} />
               <Route path="/:authorId/:articleId" element={<RenderArticle />} />
+              <Route path="/*" element={<NotFound />} />
             </Routes>
             <Footer />
           </Box>
