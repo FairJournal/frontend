@@ -51,7 +51,7 @@ function App() {
 
   return (
     <div>
-      <TonConnectUIProvider manifestUrl="https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json">
+      <TonConnectUIProvider manifestUrl="https://fairjournal.net/tonconnect-manifest.json">
         <ThemeProvider theme={theme}>
           <Box
             sx={{

@@ -24,14 +24,14 @@ import {
 } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { getAllArticles, login, logout, selectMain } from '../../store/slices/mainSlice'
+import { getAllArticles, logout, selectMain } from '../../store/slices/mainSlice'
 import { Settings } from '../../components/settings'
 import { ArticlCard } from '../../components/articleCard'
 import { shortenString } from '../../utils'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { Header } from '../../components/header'
-import { getArticlesByUserId, loginUser } from '../../api/users'
+import { getArticlesByUserId } from '../../api/users'
 import UpdateRoundedIcon from '@mui/icons-material/UpdateRounded'
 
 const drawerWidth = 240
@@ -129,9 +129,11 @@ export const Dashboard = (props: Props) => {
   const shortWallet = shortenString(userFriendlyAddress)
 
   const connectWallet = async () => {
-    const result = await tonConnectUI.connectWallet()
-    const user = await loginUser(result.account.address)
-    dispatch(login(user))
+    // const result = await tonConnectUI.connectWallet()
+    // const user = await loginUser(result.account.address)
+    // dispatch(login(user))
+    // eslint-disable-next-line no-alert
+    alert('Implement new login method')
   }
 
   return (
