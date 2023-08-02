@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react'
 import { Header } from '../../components/header'
 import { Avatar, Box, Chip, Container, Typography, Divider, Grid, Toolbar, Skeleton } from '@mui/material'
@@ -8,6 +7,7 @@ import { getArticlesByUserId, getUserById } from '../../api/users'
 import { useParams } from 'react-router-dom'
 import { Article, User } from '../../types'
 import { NotFoundComponent } from '../../components/notfound'
+import { Footer } from '../../components/footer'
 
 export const Profile = () => {
   const { id } = useParams()
@@ -36,6 +36,7 @@ export const Profile = () => {
       try {
         setArticles(await getArticlesByUserId(Number(id)))
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.log(e)
       }
     }
@@ -50,11 +51,11 @@ export const Profile = () => {
   return (
     <>
       <Header />
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ mt: 7, pb: { lg: 20, md: 18, xs: 6 } }}>
         {status === 'notfound' && <NotFoundComponent />}
         {status === 'pending' && (
           <>
-            <Box sx={{ display: 'flex', mt: 4, mb: 2 }}>
+            <Box sx={{ display: 'flex', mt: 10, mb: 2 }}>
               <Skeleton animation="wave" variant="circular" width={150} height={150} sx={{ mr: 2 }} />
               <Box>
                 <Skeleton animation="wave" height={50} width={200} sx={{ mt: 4 }} />
@@ -66,7 +67,7 @@ export const Profile = () => {
         )}
         {profile && status === 'ok' && (
           <>
-            <Box sx={{ display: 'flex', mt: 4, mb: 2 }}>
+            <Box sx={{ display: 'flex', mt: 10, mb: 2 }}>
               <Avatar
                 alt="Avatar"
                 src={`${process.env.REACT_APP_URL_API}${profile.avatar}`}
@@ -105,6 +106,7 @@ export const Profile = () => {
         )}
       </Container>
       <Toolbar />
+      <Footer />
     </>
   )
 }

@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
 import React, { useEffect, useState } from 'react'
-import InboxIcon from '@mui/icons-material/MoveToInbox'
-import MailIcon from '@mui/icons-material/Mail'
 import MenuIcon from '@mui/icons-material/Menu'
 import AddIcon from '@mui/icons-material/Add'
 import {
@@ -33,6 +31,9 @@ import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { Header } from '../../components/header'
 import { getArticlesByUserId, loginUser } from '../../api/users'
 import UpdateRoundedIcon from '@mui/icons-material/UpdateRounded'
+import ArticleIcon from '@mui/icons-material/Article'
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
+import LogoutIcon from '@mui/icons-material/Logout'
 
 const drawerWidth = 240
 
@@ -41,8 +42,8 @@ interface Props {
 }
 
 const dataList = [
-  { title: 'Articles', id: '1', icon: <InboxIcon /> },
-  { title: 'Settings', id: '2', icon: <InboxIcon /> },
+  { title: 'Articles', id: '1', icon: <ArticleIcon /> },
+  { title: 'Settings', id: '2', icon: <ManageAccountsIcon /> },
 ]
 
 export const Dashboard = (props: Props) => {
@@ -106,7 +107,7 @@ export const Dashboard = (props: Props) => {
           <ListItem key={el.id} disablePadding>
             <ListItemButton onClick={() => changeTab(el.id)}>
               <ListItemIcon>{el.icon}</ListItemIcon>
-              <ListItemText primary={el.title} />
+              <ListItemText primary={el.title} sx={{ fontSize: '1.2rem' }} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -116,7 +117,7 @@ export const Dashboard = (props: Props) => {
         <ListItem disablePadding>
           <ListItemButton onClick={logOut}>
             <ListItemIcon>
-              <MailIcon />
+              <LogoutIcon />
             </ListItemIcon>
             <ListItemText primary="Logout" />
           </ListItemButton>
@@ -171,11 +172,18 @@ export const Dashboard = (props: Props) => {
               sx={{
                 width: { sm: `calc(100% - ${drawerWidth}px)` },
                 ml: { sm: `${drawerWidth}px` },
+                backgroundColor: '#fff',
               }}
             >
-              <Toolbar sx={{ display: 'flex', justifyContent: { md: 'space-between', xs: 'space-around' } }}>
+              <Toolbar
+                sx={{
+                  display: 'flex',
+                  backgroundColor: '#fff',
+                  justifyContent: { md: 'space-between', xs: 'space-around' },
+                }}
+              >
                 <IconButton
-                  color="inherit"
+                  color="primary"
                   aria-label="open drawer"
                   edge="start"
                   onClick={handleDrawerToggle}
@@ -188,7 +196,7 @@ export const Dashboard = (props: Props) => {
                   profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
                 />
                 <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
-                  <AddIcon />
+                  <AddIcon fontSize="small" />
                   Write
                 </Button>
               </Toolbar>
@@ -201,7 +209,7 @@ export const Dashboard = (props: Props) => {
             <Drawer
               container={container}
               PaperProps={{
-                sx: { backgroundColor: 'primary.light' },
+                sx: { backgroundColor: 'secondary' },
               }}
               variant="temporary"
               open={mobileOpen}
@@ -219,7 +227,7 @@ export const Dashboard = (props: Props) => {
             <Drawer
               variant="permanent"
               PaperProps={{
-                sx: { backgroundColor: 'primary.light' },
+                sx: { backgroundColor: 'secondary' },
               }}
               sx={{
                 display: { xs: 'none', sm: 'block' },
@@ -294,7 +302,7 @@ export const Dashboard = (props: Props) => {
                         >
                           <Typography variant="h6">You don't have any articles yet, let's create!</Typography>
                           <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
-                            <AddIcon />
+                            <AddIcon fontSize="small" />
                             Write
                           </Button>
                         </Box>

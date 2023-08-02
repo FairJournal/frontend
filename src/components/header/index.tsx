@@ -55,11 +55,11 @@ export const Header = () => {
   }
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed" color="secondary" sx={{ mb: 6, opacity: [0.9, 0.8, 0.8] }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Link to="/">
-            <Avatar sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} alt="FJ" src="/images/F1.png" />
+            <Avatar sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} alt="FJ" src="/images/logo1.png" />
           </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -100,7 +100,7 @@ export const Header = () => {
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <Link to="/">
-              <Avatar alt="FJ" src="/images/F1.png" />
+              <Avatar alt="FJ" src="/images/logo1.png" />
             </Link>
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end', mr: 2 }}>
@@ -115,12 +115,12 @@ export const Header = () => {
             ))}
           </Box>
           {wallet ? (
-            <Button variant="outlined" color="inherit" onClick={() => navigate('/dashboard')}>
+            <Button variant="contained" color="primary" onClick={() => navigate('/dashboard')}>
               Dashboard
             </Button>
           ) : (
             <>
-              <Button variant="outlined" color="inherit" onClick={connectWallet}>
+              <Button variant="contained" color="primary" onClick={connectWallet}>
                 Connect wallet
               </Button>
             </>

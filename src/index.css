@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'GFS Didot', serif, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Inter',-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -11,15 +11,6 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: 500 !important;
 }
 
 .custom-code {
@@ -33,32 +24,51 @@ h6 {
   overflow-x: auto;
   padding: 10px;
   border-radius: 10px;
+  font-family: Menlo, Monaco, Consolas, Courier New, monospace !important;
+}
+.ce-code__textarea {
+  color: #41314e !important;
+  line-height: 1.6em !important;
+  background: #f8f7fa !important;
+  border: 1px solid #f1f1f4 !important;
+  box-shadow: none !important;
+  white-space: pre !important;
+  word-wrap: normal !important;
+  overflow-x: auto !important;
+  padding: 10px !important;
+  border-radius: 10px !important;
+  font-size: 20px !important;
 }
 
-p {
-  color: #191f2f;
-  line-height: 1.6em
-}
-
-.ce-paragraph {
-  color: #191f2f
-}
 
 a:-webkit-any-link {
-  color: #08c;
+  color: #5479F7;
   cursor: pointer;
   text-decoration: none;
 }
 
-.ce-code__textarea {
-  font-size: 20px !important;
+@keyframes rotateXAnimation {
+  0% {
+    transform: rotateX(0deg);
+  }
+  50% {
+    transform: rotateX(15deg); /* Rotate to 30 degrees at 50% of the animation */
+  }
+  100% {
+    transform: rotateX(0deg); /* Return to the initial position at the end of the animation */
+  }
 }
 
-ol {
-  list-style: decimal;
-  margin: 0;
-  padding-left: 40px;
-  outline: none;
-  padding: 0.4em 0;
-  line-height: 1.6em
+.rotateX {
+  animation: rotateXAnimation 7s infinite; /* Use the ease-in-out timing function */
+  transition-timing-function: ease-in-out; /* Add a transition timing function for smooth transition */
+  transition-property: transform; /* Apply the transition to the transform property only */
+}
+
+.card-container:hover .rotate-on-hover {
+  cursor: pointer;
+  transform: rotate(360deg); /* Add the rotation animation on hover */
+}
+.card-container {
+  height: 100%;
 }

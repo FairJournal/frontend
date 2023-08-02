@@ -2,7 +2,7 @@
 import React, { useRef, useCallback, useEffect, useState } from 'react'
 import { createReactEditorJS } from 'react-editor-js'
 import { getEditorJsTools } from './tools'
-import { Container, Toolbar, AppBar, Button, Box } from '@mui/material'
+import { Container, Toolbar, AppBar, Button, Box, ThemeProvider } from '@mui/material'
 import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { findArticleById, shortenString } from '../../utils'
@@ -13,6 +13,7 @@ import { useTonAddress } from '@tonconnect/ui-react'
 import { createArticle } from '../../api/users'
 import { useNavigate, useParams } from 'react-router-dom'
 import { updateArticle } from '../../api/article'
+import { theme } from '../../App'
 
 const defaultValue = {
   time: 1556098174501,
@@ -58,7 +59,6 @@ export const Write = () => {
   useEffect(() => {
     if (edit !== 'new' && typeof Number(edit) === 'number') {
       const res = findArticleById(articles, Number(edit))
-      console.log(res)
       setEditArticle(res)
     } else {
       setEditArticle(defaultValue)
@@ -76,7 +76,6 @@ export const Write = () => {
       }
 
       const savedData = await editorCore.current?.save()
-      console.log(savedData)
 
       if (savedData !== undefined && savedData.time && savedData.blocks) {
         if (edit === 'new') {
@@ -103,8 +102,14 @@ export const Write = () => {
     <>
       <Box sx={{ backgroundColor: '#fff', minHeight: '100vh', minWidth: '90vw' }}>
         <Container maxWidth="md">
-          <AppBar position="fixed">
-            <Toolbar sx={{ display: 'flex', justifyContent: { md: 'space-between', xs: 'space-around' } }}>
+          <AppBar position="fixed" sx={{ backgroundColor: '#fff' }}>
+            <Toolbar
+              sx={{
+                display: 'flex',
+                backgroundColor: 'fff',
+                justifyContent: { md: 'space-between', xs: 'space-around' },
+              }}
+            >
               {profile && (
                 <SmallAvatar
                   to="/dashboard"
@@ -118,12 +123,14 @@ export const Write = () => {
           </AppBar>
           <Toolbar />
           {editArticle !== null && (
-            <ReactEditorJS
-              autofocus={true}
-              onInitialize={handleInitialize}
-              tools={EDITOR_JS_TOOLS}
-              defaultValue={editArticle}
-            />
+            <ThemeProvider theme={theme}>
+              <ReactEditorJS
+                autofocus={true}
+                onInitialize={handleInitialize}
+                tools={EDITOR_JS_TOOLS}
+                defaultValue={editArticle}
+              />
+            </ThemeProvider>
           )}
         </Container>
       </Box>

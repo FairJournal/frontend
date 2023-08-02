@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { UpdateUserPayload, User } from '../types'
 
 export const loginUser = async (wallet: string): Promise<User> => {

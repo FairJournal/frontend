@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react'
 import Avatar from '@mui/material/Avatar'
 import { Box, Typography } from '@mui/material'
@@ -12,7 +11,7 @@ interface SmallAvatarProps {
 export const SmallAvatar: React.FC<SmallAvatarProps> = ({ to, profile }) => {
   return (
     <Box sx={{ display: 'flex', mt: 0, mb: 0 }}>
-      <Link to={to} style={{ textDecoration: 'none', color: '#000000', display: 'flex', alignItems: 'center' }}>
+      <Link to={to} style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center' }}>
         <Avatar
           alt="Avatar"
           src={`${process.env.REACT_APP_URL_API}${profile.avatar}`}

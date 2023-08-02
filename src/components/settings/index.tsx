@@ -35,7 +35,7 @@ export const Settings = () => {
   const shortWallet = shortenString(userFriendlyAddress)
 
   return (
-    <Paper sx={{ with: '600px', backgroundColor: 'primary.main', pt: 2 }} elevation={3}>
+    <Paper sx={{ with: '600px', backgroundColor: 'secondary', pt: 2 }} elevation={3}>
       <Container maxWidth="lg">
         <Grid container spacing={2} sx={{ display: 'flex', mt: 4, mb: 2 }}>
           <AvatarPicker avatarUrl={avatar} onAvatarChange={setAvatar} />
@@ -69,7 +69,12 @@ export const Settings = () => {
         </Box>
         <Divider sx={{ mt: 2 }} />
         <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-          <Button onClick={saveSettings} variant="contained" color="success" sx={{ color: '#ffffff', mt: 2, mb: 2 }}>
+          <Button
+            onClick={saveSettings}
+            variant="contained"
+            color="success"
+            sx={{ color: '#ffffff', mt: 2, mb: 2, p: 2 }}
+          >
             Save Settings
           </Button>
         </Box>
