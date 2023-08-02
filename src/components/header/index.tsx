@@ -14,7 +14,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { selectMain, login } from '../../store/slices/mainSlice'
 import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
-import { loginUser } from '../../api/users'
+import { createAddDirectoryAction, createAddUserAction, Update } from '@fairjournal/file-system'
+import { DEFAULT_DIRECTORY, getUserInfo, PROJECT_NAME, updateApply } from '../../utils/fs'
+import { getPublicKey, personalSignString } from '../../utils/ton'
 
 const pages = [{ page: 'About Us', route: 'aboutus' }]
 
@@ -27,12 +29,13 @@ export const Header = () => {
   const walletTon = useTonWallet()
 
   useEffect(() => {
-    if (walletTon) {
-      ;(async () => {
-        const user = await loginUser(walletTon.account.address)
-        dispatch(login(user))
-      })()
-    }
+    // if (walletTon) {
+    //   ;(async () => {
+    //     const user = await loginUser(walletTon.account.address)
+    //     dispatch(login(user))
+    //   })()
+    // }
+    // todo use new login method
   }, [walletTon])
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -40,13 +43,44 @@ export const Header = () => {
   }
 
   const connectWallet = async () => {
-    if (tonConnectUI.connected) {
-      await tonConnectUI.disconnect()
-    }
+    try {
+      if (tonConnectUI.connected) {
+        await tonConnectUI.disconnect()
+      }
 
-    const result = await tonConnectUI.connectWallet()
-    const user = await loginUser(result.account.address)
-    dispatch(login(user))
+      const result = await tonConnectUI.connectWallet()
+      const publicKey = await getPublicKey()
+      const userInfo = await getUserInfo(publicKey)
+
+      if (!userInfo.isUserExists) {
+        const update = new Update(PROJECT_NAME, publicKey, 1)
+        update.addAction(createAddUserAction(publicKey))
+        update.addAction(createAddDirectoryAction(`/${DEFAULT_DIRECTORY}`))
+        const signData = update.getSignData()
+        const signature = await personalSignString(signData)
+        update.setSignature(signature)
+        const signedData = update.getUpdateDataSigned()
+        await updateApply(signedData)
+      }
+
+      // todo don't use this login http method
+      // const user = await loginUser(result.account.address)
+      dispatch(
+        login({
+          id: 0,
+          wallet: publicKey,
+          avatar: '',
+          name: 'No User Name',
+          description: 'No User Description',
+          articles: [0],
+        }),
+      )
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e)
+
+      return
+    }
   }
 
   const handleCloseNavMenu = (route: string) => {
