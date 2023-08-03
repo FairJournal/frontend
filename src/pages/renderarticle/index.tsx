@@ -1,11 +1,10 @@
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react'
 import { Box, Container, Grid, Skeleton, Typography } from '@mui/material'
 import Output from 'editorjs-react-renderer'
 import { useParams } from 'react-router-dom'
 import { getArticleById } from '../../api/users'
 import { SmallAvatar } from '../../components/smallAvatar'
-import { shortenString } from '../../utils'
+import { formatDate, shortenString } from '../../utils'
 import { NotFoundComponent } from '../../components/notfound'
 import { ShareButtons } from '../../components/shareButtons'
 
@@ -69,6 +68,9 @@ export const RenderArticle = () => {
       {article && (
         <Box sx={{ backgroundColor: '#fff', minHeight: '90vh', minWidth: '90vw', pb: 10 }}>
           <Container maxWidth="md" sx={{ pt: 4 }}>
+            <Typography variant="caption" display="block" gutterBottom>
+              {formatDate(JSON.parse(article.content as string).time)}
+            </Typography>
             <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
               <Grid item xs={6}>
                 <SmallAvatar

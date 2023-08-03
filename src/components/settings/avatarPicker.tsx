@@ -29,7 +29,7 @@ export const AvatarPicker: React.FC<AvatarPickerProps> = ({ avatarUrl, onAvatarC
       <IconButton color="primary" component="label">
         <Avatar
           src={avatar ?? `${process.env.REACT_APP_URL_API}${profile?.avatar}`}
-          sx={{ width: 150, height: 150, mr: 2, backgroundColor: '#F2F3F4' }}
+          sx={{ width: 150, height: 150, mr: 2, backgroundColor: '#fff' }}
         >
           <UploadOutlinedIcon sx={{ width: 56, height: 56, color: '#616161' }} />
         </Avatar>

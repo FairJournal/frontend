@@ -1,5 +1,8 @@
 import React from 'react'
-import { Box, Container, Grid, Link, Typography } from '@mui/material'
+import { Box, Container, Divider, IconButton, Stack } from '@mui/material'
+import TwitterIcon from '@mui/icons-material/Twitter'
+import TelegramIcon from '@mui/icons-material/Telegram'
+import GitHubIcon from '@mui/icons-material/GitHub'
 
 export const Footer = () => {
   return (
@@ -7,7 +10,6 @@ export const Footer = () => {
       sx={{
         width: '100%',
         height: 'auto',
-        backgroundColor: '#F0E9E4',
         paddingTop: '1rem',
         paddingBottom: '1rem',
         position: 'absolute',
@@ -15,24 +17,20 @@ export const Footer = () => {
       }}
     >
       <Container maxWidth="lg">
-        <Grid container direction="column" alignItems="center">
-          <Grid item xs={12}>
-            <Typography color="textSecondary" variant="subtitle1">
-              <Link href="#" color="inherit" underline="none">
-                2023{' '}
-              </Link>
-              <Link href="https://twitter.com/fair_journal" color="inherit" underline="none" target="_blank">
-                | Twitter{' '}
-              </Link>
-              <Link href="https://t.me/fair_journal_en" color="inherit" underline="none" target="_blank">
-                | Telegram{' '}
-              </Link>
-              <Link href="https://github.com/FairJournal" color="inherit" underline="none" target="_blank">
-                | GitHub
-              </Link>
-            </Typography>
-          </Grid>
-        </Grid>
+        <Box textAlign="center">
+          <Divider />
+          <Stack direction="row" spacing={1} sx={{ p: 2, justifyContent: 'center' }}>
+            <IconButton aria-label="twitter" onClick={() => window.open('https://twitter.com/fair_journal', '_blank')}>
+              <TwitterIcon />
+            </IconButton>
+            <IconButton aria-label="telegram" onClick={() => window.open('https://t.me/fair_journal_en', '_blank')}>
+              <TelegramIcon />
+            </IconButton>
+            <IconButton aria-label="github" onClick={() => window.open('https://github.com/FairJournal', '_blank')}>
+              <GitHubIcon />
+            </IconButton>
+          </Stack>
+        </Box>
       </Container>
     </Box>
   )

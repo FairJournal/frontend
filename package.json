@@ -11,7 +11,7 @@
     "@fairjournal/file-system": "^1.10.0",
     "@mui/icons-material": "^5.11.11",
     "@mui/lab": "^5.0.0-alpha.124",
-    "@mui/material": "^5.11.14",
+    "@mui/material": "^5.14.1",
     "@reduxjs/toolkit": "^1.9.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",

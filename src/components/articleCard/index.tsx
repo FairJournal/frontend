@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useState } from 'react'
 import {
   Card,
@@ -60,11 +59,11 @@ export const ArticlCard = ({
 
   const timeArticle = formatDate(time)
   const title = blocks.find(el => el.type === 'header')?.data.text ?? 'New article!'
-  const text = stripHtmlTags(blocks.find(el => el.type === 'paragraph')?.data.text).slice(0, 100) + '...' ?? ''
+  const text = stripHtmlTags(blocks.find(el => el.type === 'paragraph')?.data.text).slice(0, 60) + '...' ?? ''
   const image = blocks.find(el => el.type === 'image')?.data.file.url ?? '/images/F2.png'
 
   return (
-    <Card sx={{ maxWidth: 300, minWidth: 250, backgroundColor: 'primary.light' }}>
+    <Card sx={{ width: 300, backgroundColor: 'secondary' }}>
       <CardHeader
         action={
           // eslint-disable-next-line no-nested-ternary
@@ -104,24 +103,24 @@ export const ArticlCard = ({
         ) : (
           <CardMedia component="img" height="200" image={image} alt={title} />
         )}
-        <CardContent>
-          {isloading ? (
-            <>
-              <Skeleton animation="wave" height={15} style={{ marginBottom: 6 }} />
-              <Skeleton animation="wave" height={10} width="80%" />
-            </>
-          ) : (
-            <>
-              <Typography gutterBottom variant="h5" component="div">
-                {title}
-              </Typography>
-              <Typography variant="body2" color="text.primory">
-                {text}
-              </Typography>
-            </>
-          )}
-        </CardContent>
       </CardActionArea>
+      <CardContent>
+        {isloading ? (
+          <>
+            <Skeleton animation="wave" height={15} style={{ marginBottom: 6 }} />
+            <Skeleton animation="wave" height={10} width="80%" />
+          </>
+        ) : (
+          <>
+            <Typography gutterBottom variant="h5" component="div">
+              {title}
+            </Typography>
+            <Typography variant="body2" color="text.primory">
+              {text}
+            </Typography>
+          </>
+        )}
+      </CardContent>
     </Card>
   )
 }
