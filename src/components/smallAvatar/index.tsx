@@ -18,7 +18,7 @@ export const SmallAvatar: React.FC<SmallAvatarProps> = ({ to, profile }) => {
           sx={{ width: 56, height: 56, mr: 1 }}
         />
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography variant="subtitle2" sx={{ mb: 0, mt: 1 }}>
+          <Typography variant="subtitle2" sx={{ mb: 0, mt: 1, whiteSpace: 'nowrap' }}>
             {profile.name}
           </Typography>
           <Typography variant="caption" gutterBottom>

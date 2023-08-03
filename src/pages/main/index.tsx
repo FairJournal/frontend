@@ -1,5 +1,20 @@
 import React from 'react'
-import { Box, Button, Container, Fade, Grid, Paper, Step, StepLabel, Stepper, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Fade,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Step,
+  StepLabel,
+  Stepper,
+  Typography,
+} from '@mui/material'
 import { CardMediaMain } from '../../components/card'
 import { Header } from '../../components/header'
 import { useNavigate } from 'react-router-dom'
@@ -40,8 +55,8 @@ export const Main = () => {
         release of the main version. Thank you for your understanding.
       </Alert> */}
       <Header />
-      <Container maxWidth="lg" sx={{ mt: 7, pb: { lg: 20, md: 18, xs: 6 } }}>
-        <Grid container spacing={2}>
+      <Container maxWidth="lg" sx={{ mt: 10, pb: { lg: 20, md: 25, xs: 10 } }}>
+        <Grid container>
           <Grid
             item
             xs={12}
@@ -204,14 +219,17 @@ export const Main = () => {
             we aim to provide you with the best blogging experience possible. Join us on this journey of innovation and
             progress.
           </Typography>
-          <Box sx={{ width: '100%', mt: 5 }}>
+          <Box sx={{ width: '100%', mt: 5, display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
             <Stepper
               color="success"
               activeStep={1}
               alternativeLabel
               sx={{
                 '@media (max-width: 600px)': {
-                  transform: 'scale(0.5)',
+                  display: 'none',
+                },
+                '@media (max-width: 900px)': {
+                  transform: 'scale(0.85)',
                   transformOrigin: 'top left',
                 },
               }}
@@ -222,6 +240,23 @@ export const Main = () => {
                 </Step>
               ))}
             </Stepper>
+            <List
+              sx={{
+                display: 'none',
+                '@media (max-width: 600px)': {
+                  display: 'block',
+                },
+              }}
+            >
+              {steps.map(label => (
+                <>
+                  <Divider />
+                  <ListItem alignItems="flex-start">
+                    <ListItemText primaryTypographyProps={{ variant: 'h6' }} primary={label} />
+                  </ListItem>
+                </>
+              ))}
+            </List>
           </Box>
         </Box>
       </Container>

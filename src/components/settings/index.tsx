@@ -68,13 +68,8 @@ export const Settings = () => {
           />
         </Box>
         <Divider sx={{ mt: 2 }} />
-        <Box sx={{ display: 'flex', justifyContent: 'end' }}>
-          <Button
-            onClick={saveSettings}
-            variant="contained"
-            color="success"
-            sx={{ color: '#ffffff', mt: 2, mb: 2, p: 2 }}
-          >
+        <Box sx={{ display: 'flex', justifyContent: 'end', p: 2 }}>
+          <Button onClick={saveSettings} variant="contained" color="success">
             Save Settings
           </Button>
         </Box>

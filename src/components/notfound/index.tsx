@@ -13,6 +13,7 @@ export const NotFoundComponent = () => {
         alignItems: 'center',
         flexDirection: 'column',
         minHeight: '80vh',
+        textAlign: 'center',
       }}
     >
       <Typography variant="h1">404</Typography>

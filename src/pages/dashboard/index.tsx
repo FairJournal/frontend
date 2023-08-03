@@ -198,7 +198,7 @@ export const Dashboard = (props: Props) => {
                   profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
                 />
                 <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
-                  <AddIcon fontSize="small" />
+                  <AddIcon sx={{ fontSize: 19 }} />
                   Write
                 </Button>
               </Toolbar>
@@ -254,6 +254,7 @@ export const Dashboard = (props: Props) => {
                         alignItems: 'center',
                         flexDirection: 'column',
                         minHeight: '80vh',
+                        textAlign: 'center',
                       }}
                     >
                       <Typography variant="h6">Something went wrong, try again.</Typography>
@@ -263,7 +264,7 @@ export const Dashboard = (props: Props) => {
                         onClick={getArticle}
                         sx={{ color: '#ffffff', mt: 2, mb: 2 }}
                       >
-                        <UpdateRoundedIcon />
+                        <UpdateRoundedIcon sx={{ fontSize: 19 }} />
                         Update
                       </Button>
                     </Box>
@@ -304,7 +305,7 @@ export const Dashboard = (props: Props) => {
                         >
                           <Typography variant="h6">You don't have any articles yet, let's create!</Typography>
                           <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
-                            <AddIcon fontSize="small" />
+                            <AddIcon sx={{ fontSize: 19 }} />
                             Write
                           </Button>
                         </Box>

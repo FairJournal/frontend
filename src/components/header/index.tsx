@@ -39,6 +39,7 @@ export const Header = () => {
   }, [walletTon])
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    // eslint-disable-next-line no-console
     setAnchorElNav(event.currentTarget)
   }
 
@@ -84,8 +85,14 @@ export const Header = () => {
   }
 
   const handleCloseNavMenu = (route: string) => {
-    setAnchorElNav(null)
-    navigate(`/${route}`)
+    const page = pages.find(page => page.route === route)
+
+    if (page) {
+      setAnchorElNav(null)
+      navigate(`/${route}`)
+    } else {
+      setAnchorElNav(null)
+    }
   }
 
   return (
