@@ -7,13 +7,12 @@ import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { findArticleById, shortenString } from '../../utils'
 import { useAppSelector } from '../../store/hooks'
-import { saveArticle, selectMain, updateArticleBy } from '../../store/slices/mainSlice'
+import { selectMain } from '../../store/slices/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useTonAddress } from '@tonconnect/ui-react'
-import { createArticle } from '../../api/users'
 import { useNavigate, useParams } from 'react-router-dom'
-import { updateArticle } from '../../api/article'
 import { theme } from '../../App'
+import { addArticleToFs } from '../../utils/fs'
 
 const defaultValue = {
   time: 1556098174501,
@@ -45,7 +44,7 @@ export const Write = () => {
   const editorCore = useRef<EditorCore | null>(null)
   const [editArticle, setEditArticle] = useState<OutputData | null | undefined>(null)
   const { edit } = useParams()
-  const { profile, articles } = useAppSelector(selectMain)
+  const { profile, articles, wallet } = useAppSelector(selectMain)
   const dispatch = useDispatch()
   const userFriendlyAddress = useTonAddress()
   const navigate = useNavigate()
@@ -70,30 +69,33 @@ export const Write = () => {
   }, [])
 
   const handleSave = useCallback(async () => {
-    try {
-      if (!profile) {
-        return
-      }
+    const savedData = (await editorCore.current?.save()) as OutputData
+    const res = await addArticleToFs({ data: savedData, address: wallet })
+    console.log(res)
+    // try {
+    //   if (!profile) {
+    //     return
+    //   }
 
-      const savedData = await editorCore.current?.save()
+    //   const savedData = await editorCore.current?.save()
 
-      if (savedData !== undefined && savedData.time && savedData.blocks) {
-        if (edit === 'new') {
-          const id = await createArticle({ authorId: profile.id, hash: '00000000000', content: savedData })
-          dispatch(saveArticle({ id, time: savedData.time, blocks: savedData.blocks }))
-        } else {
-          const id = await updateArticle(Number(edit), profile.id, '00000000000', savedData)
+    //   if (savedData !== undefined && savedData.time && savedData.blocks) {
+    //     if (edit === 'new') {
+    //       const id = await createArticle({ authorId: profile.id, hash: '00000000000', content: savedData })
+    //       dispatch(saveArticle({ id, time: savedData.time, blocks: savedData.blocks }))
+    //     } else {
+    //       const id = await updateArticle(Number(edit), profile.id, '00000000000', savedData)
 
-          // eslint-disable-next-line max-depth
-          if (id) {
-            dispatch(updateArticleBy({ id, time: savedData.time, blocks: savedData.blocks }))
-          }
-        }
-        navigate('/dashboard')
-      }
-    } catch (e) {
-      console.log(e)
-    }
+    //       // eslint-disable-next-line max-depth
+    //       if (id) {
+    //         dispatch(updateArticleBy({ id, time: savedData.time, blocks: savedData.blocks }))
+    //       }
+    //     }
+    //     navigate('/dashboard')
+    //   }
+    // } catch (e) {
+    //   console.log(e)
+    // }
   }, [])
 
   const shortWallet = shortenString(userFriendlyAddress)

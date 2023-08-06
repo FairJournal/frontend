@@ -24,6 +24,7 @@ export const getEditorJsTools = (authorId: number) => {
         uploader: {
           async uploadByFile(file: File) {
             const res = await uploadFile(file)
+            console.log(res)
 
             return {
               success: 1,

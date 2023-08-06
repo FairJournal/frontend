@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
-import { Update, UpdateDataSigned } from '@fairjournal/file-system'
+import { OutputData } from '@editorjs/editorjs'
+import { Update, UpdateDataSigned, createAddDirectoryAction, createAddFileAction } from '@fairjournal/file-system'
+import { personalSignString } from './ton'
 
 export const PROJECT_NAME = 'fairjournal'
 
@@ -23,6 +25,7 @@ export interface StatusResponseUpload {
    * Status
    */
   status: string
+  data: { mime_type: string; reference: string; sha256: string; size: number }
 }
 
 /**
@@ -35,6 +38,23 @@ interface UserInfo {
 }
 
 let update: Update | undefined
+
+export interface GetUpdateIdResponse {
+  /**
+   * Status of the request
+   */
+  status: string
+
+  /**
+   * Address of the user
+   */
+  address: string
+
+  /**
+   * Update id
+   */
+  updateId: number
+}
 
 /**
  * Gets file system instance
@@ -66,7 +86,13 @@ function getFsApiUrl(url: string, params?: { [key: string]: string }): string {
   return `${process.env.REACT_APP_URL_API}/fs/${url}${queryParams}`
 }
 
-export async function uploadFile(blob: File): Promise<any> {
+/**
+ * Upload image
+ *
+ * @param blob Image
+ */
+
+export async function uploadFile(blob: File): Promise<StatusResponseUpload> {
   const formData = new FormData()
   formData.append('blob', blob)
 
@@ -81,12 +107,35 @@ export async function uploadFile(blob: File): Promise<any> {
     }
 
     const data = await response.json()
+    console.log(data)
 
     return data
   } catch (error) {
-    console.error('Error uploading file:', error)
+    throw new Error()
+  }
+}
 
-    return null
+export async function uploadJsonFile(objectData: string): Promise<StatusResponseUpload> {
+  const jsonString = JSON.stringify(objectData)
+  const blob = new Blob([jsonString])
+  const formData = new FormData()
+  formData.append('blob', blob)
+
+  try {
+    const response = await fetch(`${process.env.REACT_APP_URL_API}/fs/blob/upload`, {
+      method: 'POST',
+      body: formData,
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to upload file')
+    }
+
+    const data = (await response.json()) as StatusResponseUpload
+
+    return data
+  } catch (error) {
+    throw new Error()
   }
 }
 
@@ -120,4 +169,42 @@ export async function updateApply(update: UpdateDataSigned): Promise<StatusRespo
       body: JSON.stringify({ update }),
     })
   ).json()) as StatusResponse
+}
+
+/**
+ * Add new article
+ *
+ * @param update Update
+ */
+export async function addArticleToFs({
+  data,
+  address,
+}: {
+  data: OutputData
+  address: string
+}): Promise<StatusResponse> {
+  const article = { slug: Date.now(), data }
+  const articleData = JSON.stringify(article)
+  const res = await uploadJsonFile(articleData)
+  const hash = res.data.reference
+  console.log('hash', hash)
+  const response = await fetch(getFsApiUrl('user/get-update-id', { address }))
+  const updatesInfo = await response.json()
+  console.log('userUpdatre', updatesInfo)
+  update = new Update(PROJECT_NAME, address, updatesInfo.updateId + 1)
+  update.addAction(createAddDirectoryAction(`/articles/${article.slug}`))
+  update.addAction(
+    createAddFileAction({
+      path: `/articles/${article.slug}/index-json`,
+      mimeType: 'application/json',
+      size: articleData.length,
+      hash,
+    }),
+  )
+  const signData = update.getSignData()
+  const signature = await personalSignString(signData)
+  update.setSignature(signature)
+  const signedData = update.getUpdateDataSigned()
+
+  return await updateApply(signedData)
 }
