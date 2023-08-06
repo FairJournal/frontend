@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useEffect } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -52,8 +53,11 @@ export const Header = () => {
       const result = await tonConnectUI.connectWallet()
       const publicKey = await getPublicKey()
       const userInfo = await getUserInfo(publicKey)
+      console.log(userInfo)
+      console.log(publicKey)
 
       if (!userInfo.isUserExists) {
+        console.log('ccccccccccccccccccccccccccc')
         const update = new Update(PROJECT_NAME, publicKey, 1)
         update.addAction(createAddUserAction(publicKey))
         update.addAction(createAddDirectoryAction(`/${DEFAULT_DIRECTORY}`))
@@ -62,6 +66,10 @@ export const Header = () => {
         update.setSignature(signature)
         const signedData = update.getUpdateDataSigned()
         await updateApply(signedData)
+        console.log(update)
+        console.log(signData)
+        console.log(signature)
+        console.log(signedData)
       }
 
       // todo don't use this login http method

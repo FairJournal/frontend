@@ -249,12 +249,12 @@ export const Main = () => {
               }}
             >
               {steps.map(label => (
-                <>
+                <div key={label}>
                   <Divider />
                   <ListItem alignItems="flex-start">
                     <ListItemText primaryTypographyProps={{ variant: 'h6' }} primary={label} />
                   </ListItem>
-                </>
+                </div>
               ))}
             </List>
           </Box>

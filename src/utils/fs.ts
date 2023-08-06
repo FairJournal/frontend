@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Update, UpdateDataSigned } from '@fairjournal/file-system'
 
 export const PROJECT_NAME = 'fairjournal'
@@ -11,6 +12,13 @@ export const DEFAULT_DIRECTORY = 'articles'
  * Status response from FS API
  */
 export interface StatusResponse {
+  /**
+   * Status
+   */
+  status: string
+}
+
+export interface StatusResponseUpload {
   /**
    * Status
    */
@@ -56,6 +64,30 @@ function getFsApiUrl(url: string, params?: { [key: string]: string }): string {
   const queryParams = params ? `?${new URLSearchParams(params).toString()}` : ''
 
   return `${process.env.REACT_APP_URL_API}/fs/${url}${queryParams}`
+}
+
+export async function uploadFile(blob: File): Promise<any> {
+  const formData = new FormData()
+  formData.append('blob', blob)
+
+  try {
+    const response = await fetch(`${process.env.REACT_APP_URL_API}fs/blob/upload`, {
+      method: 'POST',
+      body: formData,
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to upload file')
+    }
+
+    const data = await response.json()
+
+    return data
+  } catch (error) {
+    console.error('Error uploading file:', error)
+
+    return null
+  }
 }
 
 /**
