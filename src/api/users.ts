@@ -1,11 +1,13 @@
+/* eslint-disable no-console */
 import { UpdateUserPayload, User } from '../types'
 import { getFsApiUrl } from '../utils'
+import { ProfileInfo } from '../utils/fs'
 
 interface ResponsePath {
   status: string
   userAddress: string
   path: string
-  data: string
+  data: { hash: string; mimeType: string; updateId: number; size: number }
 }
 
 interface UserInfo {
@@ -14,6 +16,7 @@ interface UserInfo {
   isUserExists: boolean
 }
 
+// Get info about file/directory
 export const getPathInfo = async ({
   userAddress,
   path,
@@ -39,6 +42,14 @@ export const getUserInfo = async (address: string): Promise<UserInfo> => {
   if (!response.ok) {
     throw new Error(`HTTP error! Status: ${response.status}`)
   }
+
+  return response.json()
+}
+
+export const getProfileInfo = async (userAddress: string): Promise<ProfileInfo> => {
+  const dataProfile = (await getPathInfo({ userAddress, path: '/profile-json' })) as ResponsePath
+  const hash = dataProfile.data.hash.toUpperCase()
+  const response = await fetch(`https://api.fairjournal.net/ton/${hash}/blob`)
 
   return response.json()
 }

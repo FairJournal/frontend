@@ -57,7 +57,7 @@ export interface GetUpdateIdResponse {
   updateId: number
 }
 
-export interface UserInfo {
+export interface ProfileInfo {
   avatar: string
   name: string
   description: string
@@ -196,7 +196,13 @@ export async function removeArticleToFs({ address, slug }: { address: string; sl
  * @param address Address
  * @param data User Info
  */
-export async function addProfileInfo({ address, data }: { address: string; data: UserInfo }): Promise<StatusResponse> {
+export async function addProfileInfo({
+  address,
+  data,
+}: {
+  address: string
+  data: ProfileInfo
+}): Promise<StatusResponse> {
   const userData = JSON.stringify(data)
   const res = await uploadJsonFile(userData)
   const hash = res.data.reference

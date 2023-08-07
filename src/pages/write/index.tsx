@@ -13,7 +13,7 @@ import { useTonAddress } from '@tonconnect/ui-react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { theme } from '../../App'
 import { addProfileInfo } from '../../utils/fs'
-import { getPathInfo } from '../../api/users'
+import { getPathInfo, getProfileInfo } from '../../api/users'
 
 const defaultValue = {
   time: 1556098174501,
@@ -72,8 +72,8 @@ export const Write = () => {
   const handleSave = useCallback(async () => {
     const savedData = (await editorCore.current?.save()) as OutputData
 
-    // const responss = await getPathInfo({ userAddress: wallet, path: '/profile-json' })
-    // console.log(responss)
+    const responss = await getPathInfo({ userAddress: wallet, path: '/profile-json' })
+    console.log(responss)
     // console.log(savedData)
     // const res = await addArticleToFs({ data: savedData, address: wallet })
     // console.log(res)
@@ -84,13 +84,16 @@ export const Write = () => {
 
     // const respon = await getUserArticles(wallet)
     // console.log(respon)
+
+    const respon = await getProfileInfo(wallet)
+    console.log(respon)
     // const respon = await removeArticleToFs({ address: wallet, slug: 'your-header-textsdcsdc' })
     // console.log(respon)
-    const respon = await addProfileInfo({
-      address: wallet,
-      data: { avatar: '', name: 'No User Namewefwefwefwef', description: 'No Uwefwefwefwefwefwser Description' },
-    })
-    console.log(respon)
+    // const respon = await addProfileInfo({
+    //   address: wallet,
+    //   data: { avatar: '', name: 'No User Namewefwefwefwef', description: 'No Uwefwefwefwefwefwser Description' },
+    // })
+    // console.log(respon)
 
     // const respons = await geArticleBySlug({ userAddress: wallet, slug: 'hello' })
     // console.log(respons)
