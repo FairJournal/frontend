@@ -1,5 +1,49 @@
 /* eslint-disable no-console */
 import { OutputData } from '@editorjs/editorjs'
+import { getFsApiUrl } from '../utils'
+
+interface UserArticles {
+  status: string
+  userAddress: string
+  articles: Article[]
+}
+
+interface Article {
+  slug: string
+  data: object
+}
+
+interface UserArticle {
+  status: string
+  userAddress: string
+  article: Article
+}
+
+export const getUserArticles = async (userAddress: string): Promise<UserArticles> => {
+  const response = await fetch(getFsApiUrl('blob/get-articles', { userAddress }))
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`)
+  }
+
+  return response.json()
+}
+
+export const geArticleBySlug = async ({
+  userAddress,
+  slug,
+}: {
+  userAddress: string
+  slug: string
+}): Promise<UserArticle> => {
+  const response = await fetch(getFsApiUrl('blob/get-article', { userAddress, slug }))
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`)
+  }
+
+  return response.json()
+}
 
 export const deleteArticle = async (id: number): Promise<number> => {
   const response = await fetch(`${process.env.REACT_APP_URL_API}api/articles/${id}`, {

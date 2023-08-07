@@ -16,8 +16,9 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { selectMain, login } from '../../store/slices/mainSlice'
 import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
 import { createAddDirectoryAction, createAddUserAction, Update } from '@fairjournal/file-system'
-import { DEFAULT_DIRECTORY, getUserInfo, PROJECT_NAME, updateApply } from '../../utils/fs'
+import { DEFAULT_DIRECTORY, DEFAULT_PROFILE, PROJECT_NAME, updateApply } from '../../utils/fs'
 import { getPublicKey, personalSignString } from '../../utils/ton'
+import { getUserInfo } from '../../api/users'
 
 const pages = [{ page: 'About Us', route: 'aboutus' }]
 
@@ -53,23 +54,17 @@ export const Header = () => {
       const result = await tonConnectUI.connectWallet()
       const publicKey = await getPublicKey()
       const userInfo = await getUserInfo(publicKey)
-      console.log(userInfo)
-      console.log(publicKey)
 
       if (!userInfo.isUserExists) {
-        console.log('ccccccccccccccccccccccccccc')
         const update = new Update(PROJECT_NAME, publicKey, 1)
         update.addAction(createAddUserAction(publicKey))
         update.addAction(createAddDirectoryAction(`/${DEFAULT_DIRECTORY}`))
+        update.addAction(createAddDirectoryAction(`/${DEFAULT_PROFILE}`))
         const signData = update.getSignData()
         const signature = await personalSignString(signData)
         update.setSignature(signature)
         const signedData = update.getUpdateDataSigned()
         await updateApply(signedData)
-        console.log(update)
-        console.log(signData)
-        console.log(signature)
-        console.log(signedData)
       }
 
       // todo don't use this login http method

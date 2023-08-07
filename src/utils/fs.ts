@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { OutputData } from '@editorjs/editorjs'
 import { Update, UpdateDataSigned, createAddDirectoryAction, createAddFileAction } from '@fairjournal/file-system'
+import { createSlug, findHeaderBlock, getFsApiUrl } from '.'
 import { personalSignString } from './ton'
 
 export const PROJECT_NAME = 'fairjournal'
@@ -9,6 +10,7 @@ export const PROJECT_NAME = 'fairjournal'
  * Default directory for articles
  */
 export const DEFAULT_DIRECTORY = 'articles'
+export const DEFAULT_PROFILE = 'profile-json'
 
 /**
  * Status response from FS API
@@ -26,15 +28,6 @@ export interface StatusResponseUpload {
    */
   status: string
   data: { mime_type: string; reference: string; sha256: string; size: number }
-}
-
-/**
- * User info from FS API - `/fs/user/info`
- */
-interface UserInfo {
-  status: string
-  address: string
-  isUserExists: boolean
 }
 
 let update: Update | undefined
@@ -75,21 +68,10 @@ export function clearUpdateInstance(): void {
 }
 
 /**
- * Gets fs api url
- *
- * @param url Url
- * @param params Query params
- */
-function getFsApiUrl(url: string, params?: { [key: string]: string }): string {
-  const queryParams = params ? `?${new URLSearchParams(params).toString()}` : ''
-
-  return `${process.env.REACT_APP_URL_API}/fs/${url}${queryParams}`
-}
-
-/**
- * Upload image
+ * Upload image and json
  *
  * @param blob Image
+ * @param objectData json
  */
 
 export async function uploadFile(blob: File): Promise<StatusResponseUpload> {
@@ -115,11 +97,10 @@ export async function uploadFile(blob: File): Promise<StatusResponseUpload> {
   }
 }
 
-export async function uploadJsonFile(objectData: string): Promise<StatusResponseUpload> {
-  const jsonString = JSON.stringify(objectData)
-  const blob = new Blob([jsonString])
+export async function uploadJsonFile(data: string): Promise<StatusResponseUpload> {
+  const file = new File([data], 'file.json', { type: 'application/json' })
   const formData = new FormData()
-  formData.append('blob', blob)
+  formData.append('blob', file)
 
   try {
     const response = await fetch(`${process.env.REACT_APP_URL_API}/fs/blob/upload`, {
@@ -137,21 +118,6 @@ export async function uploadJsonFile(objectData: string): Promise<StatusResponse
   } catch (error) {
     throw new Error()
   }
-}
-
-/**
- * Gets user info from FS API
- *
- * @param address User address
- */
-export async function getUserInfo(address: string): Promise<UserInfo> {
-  const response = await fetch(getFsApiUrl('user/info', { address }))
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! Status: ${response.status}`)
-  }
-
-  return (await response.json()) as UserInfo
 }
 
 /**
@@ -183,14 +149,14 @@ export async function addArticleToFs({
   data: OutputData
   address: string
 }): Promise<StatusResponse> {
-  const article = { slug: Date.now(), data }
+  const slug = createSlug(findHeaderBlock(data))
+  const article = { slug, data }
   const articleData = JSON.stringify(article)
   const res = await uploadJsonFile(articleData)
   const hash = res.data.reference
-  console.log('hash', hash)
   const response = await fetch(getFsApiUrl('user/get-update-id', { address }))
   const updatesInfo = await response.json()
-  console.log('userUpdatre', updatesInfo)
+  console.log('updatesInfo', updatesInfo)
   update = new Update(PROJECT_NAME, address, updatesInfo.updateId + 1)
   update.addAction(createAddDirectoryAction(`/articles/${article.slug}`))
   update.addAction(

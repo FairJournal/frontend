@@ -1,4 +1,44 @@
 import { UpdateUserPayload, User } from '../types'
+import { getFsApiUrl } from '../utils'
+
+interface ResponsePath {
+  status: string
+  userAddress: string
+  path: string
+  data: string
+}
+
+interface UserInfo {
+  status: string
+  address: string
+  isUserExists: boolean
+}
+
+export const getPathInfo = async ({
+  userAddress,
+  path,
+}: {
+  userAddress: string
+  path: string
+}): Promise<ResponsePath> => {
+  const response = await fetch(getFsApiUrl('blob/get-path-info', { userAddress, path }))
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`)
+  }
+
+  return response.json()
+}
+
+export const getUserInfo = async (address: string): Promise<UserInfo> => {
+  const response = await fetch(getFsApiUrl('user/info', { address }))
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`)
+  }
+
+  return response.json()
+}
 
 export const loginUser = async (wallet: string): Promise<User> => {
   const response = await fetch(`${process.env.REACT_APP_URL_API}api/auth`, {

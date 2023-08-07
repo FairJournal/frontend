@@ -1,3 +1,4 @@
+import { OutputBlockData, OutputData } from '@editorjs/editorjs'
 import { Article } from '../types'
 
 export const shortenString = (str: string | null): string => {
@@ -64,4 +65,24 @@ export const stripHtmlTags = (html: string): string => {
   tempElement.innerHTML = html
 
   return tempElement.textContent || tempElement.innerText || ''
+}
+
+export const createSlug = (title: string): string => {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
+export const findHeaderBlock = (data: OutputData): string => {
+  const arr = data.blocks
+  const headerBlock = arr.find((block: OutputBlockData) => block.type === 'header')
+
+  return headerBlock ? headerBlock.data.text : 'fair-journal'
+}
+
+export const getFsApiUrl = (url: string, params?: { [key: string]: string }): string => {
+  const queryParams = params ? `?${new URLSearchParams(params).toString()}` : ''
+
+  return `${process.env.REACT_APP_URL_API}/fs/${url}${queryParams}`
 }

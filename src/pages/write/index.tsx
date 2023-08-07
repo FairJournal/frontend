@@ -12,7 +12,8 @@ import { useDispatch } from 'react-redux'
 import { useTonAddress } from '@tonconnect/ui-react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { theme } from '../../App'
-import { addArticleToFs } from '../../utils/fs'
+import { addArticleToFs, uploadJsonFile } from '../../utils/fs'
+import { getPathInfo } from '../../api/users'
 
 const defaultValue = {
   time: 1556098174501,
@@ -70,8 +71,22 @@ export const Write = () => {
 
   const handleSave = useCallback(async () => {
     const savedData = (await editorCore.current?.save()) as OutputData
-    const res = await addArticleToFs({ data: savedData, address: wallet })
-    console.log(res)
+
+    const responss = await getPathInfo({ userAddress: wallet, path: '/profile-json' })
+    console.log(responss)
+    // console.log(savedData)
+    // const res = await addArticleToFs({ data: savedData, address: wallet })
+    // console.log(res)
+
+    // const res = await uploadJsonFile(savedData)
+    // console.log(res)
+    // console.log(wallet)
+
+    // const respon = await getUserArticles(wallet)
+    // console.log(respon)
+
+    // const respons = await geArticleBySlug({ userAddress: wallet, slug: 'hello' })
+    // console.log(respons)
     // try {
     //   if (!profile) {
     //     return
