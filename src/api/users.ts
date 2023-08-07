@@ -20,10 +20,13 @@ export const getPathInfo = async ({
 }: {
   userAddress: string
   path: string
-}): Promise<ResponsePath> => {
+}): Promise<ResponsePath | false> => {
   const response = await fetch(getFsApiUrl('blob/get-path-info', { userAddress, path }))
 
   if (!response.ok) {
+    if (response.status === 500) {
+      return false
+    }
     throw new Error(`HTTP error! Status: ${response.status}`)
   }
 

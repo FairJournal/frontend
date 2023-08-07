@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { selectMain, login } from '../../store/slices/mainSlice'
 import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
 import { createAddDirectoryAction, createAddUserAction, Update } from '@fairjournal/file-system'
-import { DEFAULT_DIRECTORY, DEFAULT_PROFILE, PROJECT_NAME, updateApply } from '../../utils/fs'
+import { DEFAULT_DIRECTORY, PROJECT_NAME, updateApply } from '../../utils/fs'
 import { getPublicKey, personalSignString } from '../../utils/ton'
 import { getUserInfo } from '../../api/users'
 
@@ -59,7 +59,6 @@ export const Header = () => {
         const update = new Update(PROJECT_NAME, publicKey, 1)
         update.addAction(createAddUserAction(publicKey))
         update.addAction(createAddDirectoryAction(`/${DEFAULT_DIRECTORY}`))
-        update.addAction(createAddDirectoryAction(`/${DEFAULT_PROFILE}`))
         const signData = update.getSignData()
         const signature = await personalSignString(signData)
         update.setSignature(signature)

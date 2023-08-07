@@ -6,8 +6,10 @@ import {
   createAddDirectoryAction,
   createAddFileAction,
   createRemoveDirectoryAction,
+  createRemoveFileAction,
 } from '@fairjournal/file-system'
 import { createSlug, findHeaderBlock, getFsApiUrl } from '.'
+import { getPathInfo } from '../api/users'
 import { personalSignString } from './ton'
 
 export const PROJECT_NAME = 'fairjournal'
@@ -55,6 +57,11 @@ export interface GetUpdateIdResponse {
   updateId: number
 }
 
+export interface UserInfo {
+  avatar: string
+  name: string
+  description: string
+}
 /**
  * Gets file system instance
  */
@@ -175,6 +182,40 @@ export async function removeArticleToFs({ address, slug }: { address: string; sl
   const removeInfo = await res.json()
   update = new Update(PROJECT_NAME, address, removeInfo.updateId + 1)
   update.addAction(createRemoveDirectoryAction(`/articles/${slug}`))
+  const signData = update.getSignData()
+  const signature = await personalSignString(signData)
+  update.setSignature(signature)
+  const signedData = update.getUpdateDataSigned()
+
+  return await updateApply(signedData)
+}
+
+/**
+ * UserInfo
+ *
+ * @param address Address
+ * @param data User Info
+ */
+export async function addProfileInfo({ address, data }: { address: string; data: UserInfo }): Promise<StatusResponse> {
+  const userData = JSON.stringify(data)
+  const res = await uploadJsonFile(userData)
+  const hash = res.data.reference
+  const response = await fetch(getFsApiUrl('user/get-update-id', { address }))
+  const updatesInfo = await response.json()
+  const isExistInfo = Boolean(await getPathInfo({ userAddress: address, path: '/profile-json' }))
+  update = new Update(PROJECT_NAME, address, updatesInfo.updateId + 1)
+
+  if (isExistInfo) {
+    update.addAction(createRemoveFileAction(`/profile-json`))
+  }
+  update.addAction(
+    createAddFileAction({
+      path: `/profile-json`,
+      mimeType: 'application/json',
+      size: userData.length,
+      hash,
+    }),
+  )
   const signData = update.getSignData()
   const signature = await personalSignString(signData)
   update.setSignature(signature)
