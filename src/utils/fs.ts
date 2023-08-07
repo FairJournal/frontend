@@ -1,6 +1,12 @@
 /* eslint-disable no-console */
 import { OutputData } from '@editorjs/editorjs'
-import { Update, UpdateDataSigned, createAddDirectoryAction, createAddFileAction } from '@fairjournal/file-system'
+import {
+  Update,
+  UpdateDataSigned,
+  createAddDirectoryAction,
+  createAddFileAction,
+  createRemoveDirectoryAction,
+} from '@fairjournal/file-system'
 import { createSlug, findHeaderBlock, getFsApiUrl } from '.'
 import { personalSignString } from './ton'
 
@@ -121,26 +127,10 @@ export async function uploadJsonFile(data: string): Promise<StatusResponseUpload
 }
 
 /**
- * Applies update to the user file system
- *
- * @param update Update
- */
-export async function updateApply(update: UpdateDataSigned): Promise<StatusResponse> {
-  return (await (
-    await fetch(getFsApiUrl('update/apply'), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ update }),
-    })
-  ).json()) as StatusResponse
-}
-
-/**
  * Add new article
  *
- * @param update Update
+ * @param data Article
+ * @param address Address
  */
 export async function addArticleToFs({
   data,
@@ -156,7 +146,6 @@ export async function addArticleToFs({
   const hash = res.data.reference
   const response = await fetch(getFsApiUrl('user/get-update-id', { address }))
   const updatesInfo = await response.json()
-  console.log('updatesInfo', updatesInfo)
   update = new Update(PROJECT_NAME, address, updatesInfo.updateId + 1)
   update.addAction(createAddDirectoryAction(`/articles/${article.slug}`))
   update.addAction(
@@ -173,4 +162,40 @@ export async function addArticleToFs({
   const signedData = update.getUpdateDataSigned()
 
   return await updateApply(signedData)
+}
+
+/**
+ * Remove article
+ *
+ * @param address Address
+ * @param slug Article
+ */
+export async function removeArticleToFs({ address, slug }: { address: string; slug: string }): Promise<StatusResponse> {
+  const res = await fetch(getFsApiUrl('user/get-update-id', { address }))
+  const removeInfo = await res.json()
+  update = new Update(PROJECT_NAME, address, removeInfo.updateId + 1)
+  update.addAction(createRemoveDirectoryAction(`/articles/${slug}`))
+  const signData = update.getSignData()
+  const signature = await personalSignString(signData)
+  update.setSignature(signature)
+  const signedData = update.getUpdateDataSigned()
+
+  return await updateApply(signedData)
+}
+
+/**
+ * Applies update to the user file system
+ *
+ * @param update Update
+ */
+export async function updateApply(update: UpdateDataSigned): Promise<StatusResponse> {
+  return (await (
+    await fetch(getFsApiUrl('update/apply'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ update }),
+    })
+  ).json()) as StatusResponse
 }
