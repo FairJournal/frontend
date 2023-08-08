@@ -13,35 +13,32 @@ import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { selectMain, login } from '../../store/slices/mainSlice'
-import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
-import { createAddDirectoryAction, createAddUserAction, Update } from '@fairjournal/file-system'
-import { DEFAULT_DIRECTORY, PROJECT_NAME, updateApply } from '../../utils/fs'
-import { getPublicKey, personalSignString } from '../../utils/ton'
-import { getUserInfo } from '../../api/users'
+import { selectMain, login, changeProfile } from '../../store/slices/mainSlice'
+import { useTonConnectUI } from '@tonconnect/ui-react'
+import { createUser } from '../../utils/fs'
+import { getPublicKey } from '../../utils/ton'
+import { getProfileInfo, getUserInfo } from '../../api/users'
 
 const pages = [{ page: 'About Us', route: 'aboutus' }]
 
 export const Header = () => {
-  const { wallet } = useAppSelector(selectMain)
+  const { publickey } = useAppSelector(selectMain)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
   const [tonConnectUI] = useTonConnectUI()
-  const walletTon = useTonWallet()
 
   useEffect(() => {
-    // if (walletTon) {
-    //   ;(async () => {
-    //     const user = await loginUser(walletTon.account.address)
-    //     dispatch(login(user))
-    //   })()
-    // }
-    // todo use new login method
-  }, [walletTon])
+    if (publickey) {
+      ;(async () => {
+        const profile = await getProfileInfo(publickey)
+        dispatch(changeProfile(profile))
+        console.log(profile)
+      })()
+    }
+  }, [publickey])
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    // eslint-disable-next-line no-console
     setAnchorElNav(event.currentTarget)
   }
 
@@ -51,30 +48,17 @@ export const Header = () => {
         await tonConnectUI.disconnect()
       }
       await tonConnectUI.connectWallet()
-      const publicKey = await getPublicKey()
+      const { publicKey, address } = await getPublicKey()
       const userInfo = await getUserInfo(publicKey)
 
       if (!userInfo.isUserExists) {
-        const update = new Update(PROJECT_NAME, publicKey, 1)
-        update.addAction(createAddUserAction(publicKey))
-        update.addAction(createAddDirectoryAction(`/${DEFAULT_DIRECTORY}`))
-        const signData = update.getSignData()
-        const signature = await personalSignString(signData)
-        update.setSignature(signature)
-        const signedData = update.getUpdateDataSigned()
-        await updateApply(signedData)
+        await createUser(publicKey)
       }
 
-      // todo don't use this login http method
-      // const user = await loginUser(result.account.address)
       dispatch(
         login({
-          id: 0,
-          wallet: publicKey,
-          avatar: '',
-          name: 'No User Name',
-          description: 'No User Description',
-          articles: [0],
+          wallet: address,
+          publickey: publicKey,
         }),
       )
     } catch (e) {
@@ -156,7 +140,7 @@ export const Header = () => {
               </Button>
             ))}
           </Box>
-          {wallet ? (
+          {publickey ? (
             <Button variant="contained" color="primary" onClick={() => navigate('/dashboard')}>
               Dashboard
             </Button>

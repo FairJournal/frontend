@@ -48,10 +48,19 @@ export const getUserInfo = async (address: string): Promise<UserInfo> => {
 
 export const getProfileInfo = async (userAddress: string): Promise<ProfileInfo> => {
   const dataProfile = (await getPathInfo({ userAddress, path: '/profile-json' })) as ResponsePath
-  const hash = dataProfile.data.hash.toUpperCase()
-  const response = await fetch(`https://api.fairjournal.net/ton/${hash}/blob`)
+  console.log('dataProfile', dataProfile)
+  let response = {
+    avatar: '',
+    name: 'UserName',
+    description: 'The best user',
+  }
 
-  return response.json()
+  if (dataProfile) {
+    const hash = dataProfile.data.hash.toUpperCase()
+    response = (await fetch(`https://api.fairjournal.net/ton/${hash}/blob`)).json() as unknown as ProfileInfo
+  }
+
+  return response
 }
 
 export const loginUser = async (wallet: string): Promise<User> => {

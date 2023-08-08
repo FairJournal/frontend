@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { WindowWithTon } from './interfaces/window'
 
 declare const window: WindowWithTon
@@ -41,7 +42,7 @@ export async function personalSignString(data: string): Promise<string> {
 /**
  * Get public key from Ton extension
  */
-export async function getPublicKey(): Promise<string> {
+export async function getPublicKey(): Promise<{ publicKey: string; address: string }> {
   const provider = getTonProvider()
 
   const response = await provider.send('ton_requestWallets', {})
@@ -51,10 +52,11 @@ export async function getPublicKey(): Promise<string> {
   }
 
   const publicKey = response[0].publicKey
+  const address = response[0].address
 
   if (!publicKey) {
     throw new Error('Failed to get public key from requested wallets')
   }
 
-  return publicKey
+  return { publicKey, address }
 }

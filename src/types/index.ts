@@ -1,16 +1,18 @@
 import { OutputBlockData } from '@editorjs/editorjs'
 
-export interface User {
-  id: number
-  wallet: string
+export interface Profile {
   avatar: string
   name: string
   description: string
-  articles: number[]
+}
+
+export interface User {
+  wallet: string
+  publickey: string
+  profile: Profile
 }
 
 export interface UpdateUserPayload {
-  wallet: string
   avatar: File | undefined
   name: string
   description: string

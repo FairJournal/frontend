@@ -7,6 +7,7 @@ import {
   createAddFileAction,
   createRemoveDirectoryAction,
   createRemoveFileAction,
+  createAddUserAction,
 } from '@fairjournal/file-system'
 import { createSlug, findHeaderBlock, getFsApiUrl } from '.'
 import { getPathInfo } from '../api/users'
@@ -81,10 +82,44 @@ export function clearUpdateInstance(): void {
 }
 
 /**
- * Upload image and json
+ * Create new user
+ *
+ * @param address public key
+ */
+
+export async function createUser(address: string): Promise<StatusResponse> {
+  const data = {
+    avatar: '',
+    name: 'UserName',
+    description: 'The best user',
+  }
+  const userData = JSON.stringify(data)
+  const res = await uploadJsonFile(userData)
+  const hash = res.data.reference
+
+  const update = new Update(PROJECT_NAME, address, 1)
+  update.addAction(createAddUserAction(address))
+  update.addAction(createAddDirectoryAction(`/${DEFAULT_DIRECTORY}`))
+  update.addAction(
+    createAddFileAction({
+      path: `/profile-json`,
+      mimeType: 'application/json',
+      size: userData.length,
+      hash,
+    }),
+  )
+  const signData = update.getSignData()
+  const signature = await personalSignString(signData)
+  update.setSignature(signature)
+  const signedData = update.getUpdateDataSigned()
+
+  return await updateApply(signedData)
+}
+
+/**
+ * Upload image
  *
  * @param blob Image
- * @param objectData json
  */
 
 export async function uploadFile(blob: File): Promise<StatusResponseUpload> {
@@ -109,6 +144,12 @@ export async function uploadFile(blob: File): Promise<StatusResponseUpload> {
     throw new Error()
   }
 }
+
+/**
+ * Upload json
+ *
+ * @param data Object
+ */
 
 export async function uploadJsonFile(data: string): Promise<StatusResponseUpload> {
   const file = new File([data], 'file.json', { type: 'application/json' })
