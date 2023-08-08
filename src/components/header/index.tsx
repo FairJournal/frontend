@@ -50,8 +50,7 @@ export const Header = () => {
       if (tonConnectUI.connected) {
         await tonConnectUI.disconnect()
       }
-
-      const result = await tonConnectUI.connectWallet()
+      await tonConnectUI.connectWallet()
       const publicKey = await getPublicKey()
       const userInfo = await getUserInfo(publicKey)
 

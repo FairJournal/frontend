@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { changeProfile, selectMain } from '../../store/slices/mainSlice'
 import { shortenString } from '../../utils'
 import { useTonAddress } from '@tonconnect/ui-react'
-import { updateUser } from '../../api/users'
+import { addProfileInfo, uploadFile } from '../../utils/fs'
 
 export const Settings = () => {
   const { profile, wallet } = useAppSelector(selectMain)
@@ -17,15 +17,26 @@ export const Settings = () => {
   const userFriendlyAddress = useTonAddress()
 
   const saveSettings = async () => {
+    console.log(avatar)
     try {
       if (profile) {
-        const res = await updateUser(profile.id, {
-          name,
-          description,
-          avatar,
-          wallet,
+        let hashAvatar = ''
+
+        if (avatar) {
+          hashAvatar = (await uploadFile(avatar)).data.reference
+        }
+        const res = await addProfileInfo({
+          address: wallet,
+          data: {
+            avatar: hashAvatar,
+            name,
+            description,
+          },
         })
-        dispatch(changeProfile({ ...profile, name, description, avatar: res.avatar }))
+
+        console.log(res)
+
+        dispatch(changeProfile({ ...profile, name, description, avatar: hashAvatar }))
       }
     } catch (e) {
       console.log(e)

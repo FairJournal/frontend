@@ -72,8 +72,8 @@ export const Write = () => {
   const handleSave = useCallback(async () => {
     const savedData = (await editorCore.current?.save()) as OutputData
 
-    const responss = await getPathInfo({ userAddress: wallet, path: '/profile-json' })
-    console.log(responss)
+    // const responss = await getPathInfo({ userAddress: wallet, path: '/profile-json' })
+    // console.log(responss)
     // console.log(savedData)
     // const res = await addArticleToFs({ data: savedData, address: wallet })
     // console.log(res)
@@ -91,7 +91,11 @@ export const Write = () => {
     // console.log(respon)
     // const respon = await addProfileInfo({
     //   address: wallet,
-    //   data: { avatar: '', name: 'No User Namewefwefwefwef', description: 'No Uwefwefwefwefwefwser Description' },
+    //   data: {
+    //     avatar: 'dfv',
+    //     name: 'No User Namewefwefwefwef',
+    //     description: 'No Uwefwefwdfvdvefwefwefwser Descridfvdfption',
+    //   },
     // })
     // console.log(respon)
 

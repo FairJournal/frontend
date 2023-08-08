@@ -14,7 +14,7 @@ export const SmallAvatar: React.FC<SmallAvatarProps> = ({ to, profile }) => {
       <Link to={to} style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center' }}>
         <Avatar
           alt="Avatar"
-          src={`${process.env.REACT_APP_URL_API}${profile.avatar}`}
+          src={`https://api.fairjournal.net/ton/${profile.avatar.toUpperCase()}/blob`}
           sx={{ width: 56, height: 56, mr: 1 }}
         />
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
