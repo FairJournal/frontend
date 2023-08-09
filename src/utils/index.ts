@@ -68,10 +68,20 @@ export const stripHtmlTags = (html: string): string => {
 }
 
 export const createSlug = (title: string): string => {
-  return title
+  const slug = title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
+
+  const randomChars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  let newSlug = slug
+  for (let i = 0; i < 4; i++) {
+    const randomIndex = Math.floor(Math.random() * randomChars.length)
+    const randomChar = randomChars[randomIndex]
+    newSlug += randomChar
+  }
+
+  return newSlug
 }
 
 export const findHeaderBlock = (data: OutputData): string => {
@@ -94,8 +104,13 @@ export const isValidAddress = (address: string): boolean => {
 }
 
 export const slugToHeader = (slug: string): string => {
-  const words = slug.split('-')
-  const capitalizedWords = words.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+  const words = slug.split('-').map(word => {
+    // Remove the added random characters
+    const cleanedWord = word.replace(/[a-z0-9]{4}$/i, '')
 
-  return capitalizedWords.join(' ')
+    // Capitalize the first letter
+    return cleanedWord.charAt(0).toUpperCase() + cleanedWord.slice(1)
+  })
+
+  return words.join(' ')
 }

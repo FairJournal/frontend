@@ -9,10 +9,15 @@ interface UserArticles {
   articles: ArticleInfo[]
 }
 
+interface Article {
+  slug: string
+  data: { slug: string; data: OutputData }
+}
+
 interface UserArticle {
   status: string
   userAddress: string
-  article: ArticleInfo
+  article: Article
 }
 
 export const getUserArticles = async (userAddress: string): Promise<UserArticles> => {

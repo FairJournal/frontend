@@ -2,21 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { Box, Container, Grid, Skeleton, Typography } from '@mui/material'
 import Output from 'editorjs-react-renderer'
 import { useParams } from 'react-router-dom'
-import { getArticleById } from '../../api/users'
-import { SmallAvatar } from '../../components/smallAvatar'
-import { formatDate, shortenString } from '../../utils'
+import { getProfileInfo, getUserInfo } from '../../api/users'
+import { formatDate, isValidAddress, shortenString } from '../../utils'
 import { NotFoundComponent } from '../../components/notfound'
 import { ShareButtons } from '../../components/shareButtons'
+import { geArticleBySlug } from '../../api/article'
+import { OutputData } from '@editorjs/editorjs'
+import { ProfileInfo } from '../../utils/fs'
+import { SmallAvatar } from '../../components/smallAvatar'
 
-interface Article {
-  author_id: number
-  avatar: string
-  content: string
-  hash: string
-  id: number
-  name: string
-  wallet: string
-}
 interface CodeBlockData {
   code: string
 }
@@ -26,23 +20,55 @@ const CustomCode = ({ data }: { data: CodeBlockData }) => {
 }
 
 export const RenderArticle = () => {
-  const { articleId, authorId } = useParams()
-  const [article, setArticle] = useState<Article | null>(null)
+  const { address, slug } = useParams()
+  const [article, setArticle] = useState<OutputData | null>(null)
+  const [profile, setProfile] = useState<ProfileInfo | null>(null)
   const [status, setStatus] = useState<string>('ok')
 
   useEffect(() => {
-    const fetchArticle = async () => {
+    const checkAddressAndFetchData = async () => {
+      setStatus('pending')
+
+      if (!address || !isValidAddress(address)) {
+        setStatus('notfound')
+
+        return
+      }
+
       try {
-        setStatus('pending')
-        const data = await getArticleById(articleId as string)
-        setArticle(data)
-        setStatus('ok')
-      } catch (e) {
+        const { isUserExists } = await getUserInfo(address)
+
+        if (isUserExists) {
+          try {
+            const info = await getProfileInfo(address)
+
+            if (slug) {
+              // eslint-disable-next-line max-depth
+              try {
+                const res = (await geArticleBySlug({ userAddress: address, slug })).article.data.data
+                setArticle(res)
+                setStatus('ok')
+              } catch {
+                setStatus('notfound')
+              }
+            } else {
+              setStatus('notfound')
+            }
+
+            setProfile(info)
+          } catch {
+            setStatus('notfound')
+          }
+        } else {
+          setStatus('notfound')
+        }
+      } catch {
         setStatus('notfound')
       }
     }
-    fetchArticle()
-  }, [articleId])
+
+    checkAddressAndFetchData()
+  }, [address, slug])
 
   if (status === 'pending' && !article) {
     return (
@@ -65,24 +91,26 @@ export const RenderArticle = () => {
 
   return (
     <>
-      {article && (
+      {article && address && (
         <Box sx={{ backgroundColor: '#fff', minHeight: '90vh', minWidth: '90vw', pb: 10 }}>
           <Container maxWidth="md" sx={{ pt: 4 }}>
             <Typography variant="caption" display="block" gutterBottom>
-              {formatDate(JSON.parse(article.content as string).time)}
+              {formatDate(article.time ?? 0)}
             </Typography>
             <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
               <Grid item xs={6}>
-                <SmallAvatar
-                  to={`/profile/${authorId}`}
-                  profile={{ name: article.name, avatar: article?.avatar, wallet: shortenString(article.wallet) }}
-                />
+                {profile && (
+                  <SmallAvatar
+                    to={`/profile/${address}`}
+                    profile={{ name: profile.name, avatar: profile.avatar, wallet: shortenString(address) }}
+                  />
+                )}
               </Grid>
               <Grid item xs={6}>
-                <ShareButtons link={`https://fairjournal.net/${authorId}/${articleId}`} />
+                <ShareButtons link={`https://fairjournal.net/${address}/${slug}`} />
               </Grid>
             </Grid>
-            {article && <Output data={JSON.parse(article.content as string)} renderers={{ code: CustomCode }} />}
+            <Output data={article} renderers={{ code: CustomCode }} />
           </Container>
         </Box>
       )}

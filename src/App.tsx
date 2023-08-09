@@ -104,7 +104,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile/:address" element={<Profile />} />
               <Route path="/write/:edit" element={<Write />} />
-              <Route path="/:authorId/:articleId" element={<RenderArticle />} />
+              <Route path="/:address/:slug" element={<RenderArticle />} />
               <Route path="/*" element={<NotFound />} />
             </Routes>
           </Box>
