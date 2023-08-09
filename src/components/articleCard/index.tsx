@@ -12,26 +12,27 @@ import {
   Skeleton,
 } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { formatDate, stripHtmlTags } from '../../utils'
-import { OutputBlockData } from '@editorjs/editorjs'
+import { formatDate, slugToHeader } from '../../utils'
 import { deleteArticle } from '../../api/article'
 import { deleteArticleById } from '../../store/slices/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 export const ArticlCard = ({
-  id,
-  blocks,
   time,
+  slug,
+  img,
+  shortText,
   isEdit,
-  idAuthor,
+  publickey,
   isloading,
 }: {
-  id: number
   time: number
-  blocks: OutputBlockData<string, any>[]
+  slug: string
+  img: string
+  shortText: string
   isEdit: boolean
-  idAuthor: number
+  publickey: string
   isloading: boolean
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -46,21 +47,20 @@ export const ArticlCard = ({
     setAnchorEl(event.currentTarget)
   }
 
-  const handleDelete = async (id: number) => {
-    const res = await deleteArticle(id)
+  const handleDelete = async (address: string) => {
+    const res = await deleteArticle(address)
     dispatch(deleteArticleById(res))
     handleClose()
   }
 
-  const handleEdit = (id: number) => {
-    navigate(`/write/${id}`)
+  const handleEdit = (address: string) => {
+    navigate(`/write/${address}`)
     handleClose()
   }
 
   const timeArticle = formatDate(time)
-  const title = blocks.find(el => el.type === 'header')?.data.text ?? 'New article!'
-  const text = stripHtmlTags(blocks.find(el => el.type === 'paragraph')?.data.text).slice(0, 60) + '...' ?? ''
-  const image = blocks.find(el => el.type === 'image')?.data.file.url ?? '/images/F2.png'
+  const title = slug ? slugToHeader(slug) : 'New Article'
+  const image = img ? img : '/images/F2.png'
 
   return (
     <Card sx={{ width: 300, backgroundColor: 'secondary' }}>
@@ -87,8 +87,8 @@ export const ArticlCard = ({
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={() => handleEdit(id)}>Edit</MenuItem>
-                <MenuItem onClick={async () => handleDelete(id)}>Remove</MenuItem>
+                <MenuItem onClick={() => handleEdit(publickey)}>Edit</MenuItem>
+                <MenuItem onClick={async () => handleDelete(publickey)}>Remove</MenuItem>
               </Menu>
             </>
           ) : (
@@ -97,7 +97,7 @@ export const ArticlCard = ({
         }
         subheader={isloading ? <Skeleton animation="wave" height={15} width="80%" /> : timeArticle}
       />
-      <CardActionArea onClick={() => window.open(`/${idAuthor}/${id}`, '_blank')}>
+      <CardActionArea onClick={() => window.open(`/${publickey}/${slug}`, '_blank')}>
         {isloading ? (
           <Skeleton sx={{ height: 200 }} animation="wave" variant="rectangular" />
         ) : (
@@ -116,7 +116,7 @@ export const ArticlCard = ({
               {title}
             </Typography>
             <Typography variant="body2" color="text.primory">
-              {text}
+              {shortText + '...'}
             </Typography>
           </>
         )}

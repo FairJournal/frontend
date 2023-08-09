@@ -1,14 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { Article, Profile } from '../../types'
+import { Article, ArticleInfo, Profile } from '../../types'
 import { removeArticleById, updateArticleById } from '../../utils'
 
 export interface MainState {
   wallet: string
   publickey: string
   profile: Profile | null
-  articles: Array<Article>
+  articles: ArticleInfo[]
 }
 
 const initialState: MainState = {
@@ -34,10 +34,10 @@ export const MainSlice = createSlice({
     changeProfile: (state, action: PayloadAction<Profile>) => {
       state.profile = action.payload
     },
-    saveArticle: (state, action: PayloadAction<Article>) => {
+    saveArticle: (state, action: PayloadAction<ArticleInfo>) => {
       state.articles.push(action.payload)
     },
-    getAllArticles: (state, action: PayloadAction<Article[]>) => {
+    getAllArticles: (state, action: PayloadAction<ArticleInfo[]>) => {
       state.articles = action.payload
     },
     deleteArticleById: (state, action: PayloadAction<number>) => {

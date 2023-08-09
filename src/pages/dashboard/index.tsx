@@ -29,11 +29,11 @@ import { shortenString } from '../../utils'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { Header } from '../../components/header'
-import { getArticlesByUserId } from '../../api/users'
 import UpdateRoundedIcon from '@mui/icons-material/UpdateRounded'
 import ArticleIcon from '@mui/icons-material/Article'
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
 import LogoutIcon from '@mui/icons-material/Logout'
+import { getUserArticles } from '../../api/article'
 
 const drawerWidth = 240
 
@@ -62,7 +62,7 @@ export const Dashboard = (props: Props) => {
     if (profile) {
       try {
         setStatus('pending')
-        const articles = await getArticlesByUserId(profile.id)
+        const articles = await (await getUserArticles(publickey)).articles
         dispatch(getAllArticles(articles))
         setStatus('ok')
       } catch {
@@ -275,7 +275,7 @@ export const Dashboard = (props: Props) => {
                         <Grid container spacing={2} sx={{ pt: 2, mb: 8, textAlign: 'center' }}>
                           {articles.map(el => (
                             <Grid
-                              key={el.id}
+                              key={el.slug}
                               item
                               lg={4}
                               md={6}
@@ -283,12 +283,12 @@ export const Dashboard = (props: Props) => {
                               sx={{ display: 'flex', justifyContent: 'center' }}
                             >
                               <ArticlCard
-                                blocks={el.blocks}
-                                time={el.time}
-                                id={el.id}
+                                {...el}
+                                time={1691590642808}
                                 isEdit={true}
-                                idAuthor={profile.id}
                                 isloading={false}
+                                img={''}
+                                publickey={publickey}
                               />
                             </Grid>
                           ))}

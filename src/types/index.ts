@@ -23,3 +23,8 @@ export interface Article {
   time: number
   blocks: OutputBlockData<string, any>[]
 }
+
+export interface ArticleInfo {
+  slug: string
+  shortText: string
+}

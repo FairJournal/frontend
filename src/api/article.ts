@@ -1,22 +1,18 @@
 /* eslint-disable no-console */
 import { OutputData } from '@editorjs/editorjs'
+import { ArticleInfo } from '../types'
 import { getFsApiUrl } from '../utils'
 
 interface UserArticles {
   status: string
   userAddress: string
-  articles: Article[]
-}
-
-interface Article {
-  slug: string
-  data: object
+  articles: ArticleInfo[]
 }
 
 interface UserArticle {
   status: string
   userAddress: string
-  article: Article
+  article: ArticleInfo
 }
 
 export const getUserArticles = async (userAddress: string): Promise<UserArticles> => {
