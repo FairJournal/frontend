@@ -102,7 +102,7 @@ function App() {
               <Route path="/blog" element={<Blog />} />
               <Route path="/community" element={<Community />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/profile/:id" element={<Profile />} />
+              <Route path="/profile/:address" element={<Profile />} />
               <Route path="/write/:edit" element={<Write />} />
               <Route path="/:authorId/:articleId" element={<RenderArticle />} />
               <Route path="/*" element={<NotFound />} />

@@ -45,7 +45,7 @@ export const Write = () => {
   const editorCore = useRef<EditorCore | null>(null)
   const [editArticle, setEditArticle] = useState<OutputData | null | undefined>(null)
   const { edit } = useParams()
-  const { profile, articles, wallet } = useAppSelector(selectMain)
+  const { profile, articles, wallet, publickey } = useAppSelector(selectMain)
   const dispatch = useDispatch()
   const userFriendlyAddress = useTonAddress()
   const navigate = useNavigate()
@@ -72,8 +72,8 @@ export const Write = () => {
   const handleSave = useCallback(async () => {
     const savedData = (await editorCore.current?.save()) as OutputData
 
-    // const responss = await getPathInfo({ userAddress: wallet, path: '/profile-json' })
-    // console.log(responss)
+    const responss = await getPathInfo({ userAddress: publickey, path: '/profile-json' })
+    console.log(responss)
     // console.log(savedData)
     // const res = await addArticleToFs({ data: savedData, address: wallet })
     // console.log(res)
@@ -85,8 +85,8 @@ export const Write = () => {
     // const respon = await getUserArticles(wallet)
     // console.log(respon)
 
-    const respon = await getProfileInfo(wallet)
-    console.log(respon)
+    // const respon = await getProfileInfo(wallet)
+    // console.log(respon)
     // const respon = await removeArticleToFs({ address: wallet, slug: 'your-header-textsdcsdc' })
     // console.log(respon)
     // const respon = await addProfileInfo({

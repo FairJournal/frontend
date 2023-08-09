@@ -1,52 +1,66 @@
 import React, { useEffect, useState } from 'react'
 import { Header } from '../../components/header'
 import { Avatar, Box, Chip, Container, Typography, Divider, Grid, Toolbar, Skeleton } from '@mui/material'
-import { ArticlCard } from '../../components/articleCard'
-import { shortenString } from '../../utils'
-import { getArticlesByUserId, getUserById } from '../../api/users'
+import { isValidAddress, shortenString } from '../../utils'
+import { getProfileInfo, getUserInfo } from '../../api/users'
 import { useParams } from 'react-router-dom'
-import { Article, User } from '../../types'
+import { Article } from '../../types'
 import { NotFoundComponent } from '../../components/notfound'
 import { Footer } from '../../components/footer'
+import { ProfileInfo } from '../../utils/fs'
 
 export const Profile = () => {
-  const { id } = useParams()
-  const [profile, setProfile] = useState<User | null>(null)
+  const { address } = useParams()
+  const [profile, setProfile] = useState<ProfileInfo | null>(null)
   const [articles, setArticles] = useState<Article[] | null>(null)
   const [status, setStatus] = useState<string>('ok')
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const checkAddressAndFetchData = async () => {
+      setStatus('pending')
+      console.log(address)
+
+      if (!address || !isValidAddress(address)) {
+        setStatus('notfound')
+
+        return
+      }
+
       try {
-        setStatus('pending')
-        setProfile(await getUserById(id as string))
-        setStatus('ok')
-      } catch (e) {
+        const { isUserExists } = await getUserInfo(address)
+        console.log(isUserExists)
+
+        if (isUserExists) {
+          const res = await getProfileInfo(address)
+          setProfile(res)
+          setStatus('ok')
+        } else {
+          setStatus('notfound')
+        }
+      } catch (error) {
         setStatus('notfound')
       }
     }
 
-    if (id) {
-      fetchUser()
-    }
-  }, [id])
+    checkAddressAndFetchData()
+  }, [address])
 
-  useEffect(() => {
-    const fetchArticle = async () => {
-      try {
-        setArticles(await getArticlesByUserId(Number(id)))
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log(e)
-      }
-    }
+  // useEffect(() => {
+  //   const fetchArticle = async () => {
+  //     try {
+  //       setArticles(await getArticlesByUserId(Number(id)))
+  //     } catch (e) {
+  //       // eslint-disable-next-line no-console
+  //       console.log(e)
+  //     }
+  //   }
 
-    if (id && status !== 'notfound') {
-      fetchArticle()
-    }
-  }, [id])
+  //   if (id && status !== 'notfound') {
+  //     fetchArticle()
+  //   }
+  // }, [id])
 
-  const shortWallet = profile ? shortenString(profile.wallet) : ''
+  const shortWallet = address ? shortenString(address) : ''
 
   return (
     <>
@@ -70,17 +84,14 @@ export const Profile = () => {
             <Box sx={{ display: 'flex', mt: 10, mb: 2 }}>
               <Avatar
                 alt="Avatar"
-                src={`${process.env.REACT_APP_URL_API}${profile.avatar}`}
+                src={`https://api.fairjournal.net/ton/${profile.avatar.toUpperCase()}/blob`}
                 sx={{ width: 150, height: 150, mr: 2 }}
               />
               <Box>
                 <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
                   {profile?.name}
                 </Typography>
-                <Chip
-                  label={shortWallet}
-                  onClick={() => window.open(`https://tonviewer.com/${profile.wallet}`, '_blank')}
-                />
+                <Chip label={shortWallet} onClick={() => window.open(`https://tonviewer.com/${address}`, '_blank')} />
               </Box>
             </Box>
             <Typography variant="subtitle1" gutterBottom>
@@ -88,19 +99,19 @@ export const Profile = () => {
             </Typography>
             <Divider sx={{ mt: 2 }} />
             <Grid container spacing={2} sx={{ pt: 2, pb: 4 }}>
-              {articles &&
+              {/* {articles &&
                 articles.map(el => (
-                  <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <ArticlCard
-                      blocks={el.blocks}
-                      time={el.time}
-                      id={el.id}
-                      isEdit={false}
-                      idAuthor={profile.id}
-                      isloading={false}
-                    />
-                  </Grid>
-                ))}
+                  // <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+                  //   <ArticlCard
+                  //     blocks={el.blocks}
+                  //     time={el.time}
+                  //     id={el.id}
+                  //     isEdit={false}
+                  //     idAuthor={profile.id}
+                  //     isloading={false}
+                  //   />
+                  // </Grid>
+                ))} */}
             </Grid>
           </>
         )}

@@ -86,3 +86,9 @@ export const getFsApiUrl = (url: string, params?: { [key: string]: string }): st
 
   return `${process.env.REACT_APP_URL_API}/fs/${url}${queryParams}`
 }
+
+export const isValidAddress = (address: string): boolean => {
+  const addressRegex = /^[0-9a-fA-F]{64}$/
+
+  return addressRegex.test(address)
+}

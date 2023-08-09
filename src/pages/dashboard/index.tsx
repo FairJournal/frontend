@@ -48,7 +48,7 @@ const dataList = [
 
 export const Dashboard = (props: Props) => {
   const { window } = props
-  const { profile, articles } = useAppSelector(selectMain)
+  const { profile, articles, publickey } = useAppSelector(selectMain)
   const [mobileOpen, setMobileOpen] = useState<boolean>(false)
   const [tab, setTab] = useState<string>('1')
   const [status, setStatus] = useState<'pending' | 'error' | 'ok'>('ok')
@@ -194,7 +194,7 @@ export const Dashboard = (props: Props) => {
                   <MenuIcon />
                 </IconButton>
                 <SmallAvatar
-                  to={`/profile/${profile.id}`}
+                  to={`/profile/${publickey}`}
                   profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
                 />
                 <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
