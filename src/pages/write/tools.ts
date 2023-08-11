@@ -9,7 +9,7 @@ import InlineCode from '@editorjs/inline-code'
 import Paragraph from '@editorjs/paragraph'
 import { uploadFile } from '../../utils/fs'
 
-export const getEditorJsTools = (authorId: number) => {
+export const getEditorJsTools = () => {
   return {
     embed: Embed,
     header: Header,

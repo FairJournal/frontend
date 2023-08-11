@@ -1,5 +1,5 @@
 import { OutputBlockData, OutputData } from '@editorjs/editorjs'
-import { Article } from '../types'
+import { ArticleInfo } from '../types'
 
 export const shortenString = (str: string | null): string => {
   if (!str) return ''
@@ -32,8 +32,8 @@ export const formatDate = (timestamp: number): string => {
   return `${dateString}`
 }
 
-export const removeArticleById = (articles: Article[], id: number): Article[] => {
-  const index = articles.findIndex(article => article.id === id)
+export const removeArticleBySlug = (articles: ArticleInfo[], slug: string): ArticleInfo[] => {
+  const index = articles.findIndex(article => article.slug === slug)
 
   if (index === -1) {
     return articles
@@ -43,20 +43,6 @@ export const removeArticleById = (articles: Article[], id: number): Article[] =>
 
     return newArticles
   }
-}
-
-export const findArticleById = (articles: Article[], id: number): Article | undefined => {
-  const article = articles.find(article => article.id === id)
-
-  return article ? article : undefined
-}
-
-export const updateArticleById = (article: Article, articles: Article[]) => {
-  const res = articles
-  const articleIndex = articles.findIndex(el => el.id === article.id)
-  res[articleIndex] = article
-
-  return res
 }
 
 export const stripHtmlTags = (html: string): string => {
@@ -88,7 +74,14 @@ export const findHeaderBlock = (data: OutputData): string => {
   const arr = data.blocks
   const headerBlock = arr.find((block: OutputBlockData) => block.type === 'header')
 
-  return headerBlock ? headerBlock.data.text : 'fair-journal'
+  return headerBlock ? headerBlock.data.text : 'New Article'
+}
+
+export const findImageBlock = (data: OutputData): string => {
+  const arr = data.blocks
+  const headerBlock = arr.find((block: OutputBlockData) => block.type === 'image')
+
+  return headerBlock ? headerBlock.data.file.url : ''
 }
 
 export const getFsApiUrl = (url: string, params?: { [key: string]: string }): string => {
@@ -113,4 +106,14 @@ export const slugToHeader = (slug: string): string => {
   })
 
   return words.join(' ')
+}
+
+export const extractArticleText = (data: OutputData): string => {
+  const paragraphs = data.blocks
+    .filter(block => block.type === 'paragraph')
+    .map(block => block.data.text.replace(/<\/?[^>]+(>|$)/g, ''))
+    .join(' ')
+  const concatenatedText = paragraphs.slice(0, 88)
+
+  return paragraphs ? concatenatedText : 'This article about'
 }

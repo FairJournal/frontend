@@ -17,6 +17,7 @@ import { deleteArticle } from '../../api/article'
 import { deleteArticleById } from '../../store/slices/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { removeArticleToFs } from '../../utils/fs'
 
 export const ArticlCard = ({
   time,
@@ -48,13 +49,13 @@ export const ArticlCard = ({
   }
 
   const handleDelete = async (address: string) => {
-    const res = await deleteArticle(address)
-    dispatch(deleteArticleById(res))
+    await removeArticleToFs({ address, slug })
+    //dispatch(deleteArticle(slug))
     handleClose()
   }
 
   const handleEdit = (address: string) => {
-    navigate(`/write/${address}`)
+    navigate(`/write/${address}/${slug}`)
     handleClose()
   }
 

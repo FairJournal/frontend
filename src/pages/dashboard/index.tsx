@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react'
 import MenuIcon from '@mui/icons-material/Menu'
 import AddIcon from '@mui/icons-material/Add'
@@ -22,7 +21,7 @@ import {
 } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { getAllArticles, logout, selectMain } from '../../store/slices/mainSlice'
+import { getAllArticles, login, logout, selectMain } from '../../store/slices/mainSlice'
 import { Settings } from '../../components/settings'
 import { ArticlCard } from '../../components/articleCard'
 import { shortenString } from '../../utils'
@@ -34,6 +33,9 @@ import ArticleIcon from '@mui/icons-material/Article'
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { getUserArticles } from '../../api/article'
+import { getUserInfo } from '../../api/users'
+import { getPublicKey } from '../../utils/ton'
+import { createUser } from '../../utils/fs'
 
 const drawerWidth = 240
 
@@ -52,7 +54,6 @@ export const Dashboard = (props: Props) => {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false)
   const [tab, setTab] = useState<string>('1')
   const [status, setStatus] = useState<'pending' | 'error' | 'ok'>('ok')
-
   const [tonConnectUI] = useTonConnectUI()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -91,7 +92,7 @@ export const Dashboard = (props: Props) => {
   }
 
   const goWrite = () => {
-    navigate('/write/new')
+    navigate('/write')
   }
 
   const drawer = (
@@ -130,11 +131,29 @@ export const Dashboard = (props: Props) => {
   const shortWallet = shortenString(userFriendlyAddress)
 
   const connectWallet = async () => {
-    // const result = await tonConnectUI.connectWallet()
-    // const user = await loginUser(result.account.address)
-    // dispatch(login(user))
-    // eslint-disable-next-line no-alert
-    alert('Implement new login method')
+    try {
+      if (tonConnectUI.connected) {
+        await tonConnectUI.disconnect()
+      }
+      await tonConnectUI.connectWallet()
+      const { publicKey, address } = await getPublicKey()
+      const userInfo = await getUserInfo(publicKey)
+
+      if (!userInfo.isUserExists) {
+        await createUser(publicKey)
+      }
+
+      dispatch(
+        login({
+          wallet: address,
+          publickey: publicKey,
+        }),
+      )
+    } catch (e) {
+      console.error(e)
+
+      return
+    }
   }
 
   return (
@@ -244,7 +263,15 @@ export const Dashboard = (props: Props) => {
               {tab === '1' && (
                 <>
                   {status === 'pending' && (
-                    <ArticlCard blocks={[]} time={1} id={1} isEdit={false} idAuthor={1} isloading={true} />
+                    <ArticlCard
+                      time={1}
+                      slug={''}
+                      isEdit={false}
+                      publickey={''}
+                      isloading={true}
+                      img={''}
+                      shortText={''}
+                    />
                   )}
                   {status === 'error' && (
                     <Box

@@ -1,3 +1,4 @@
+/* eslint-disable max-depth */
 /* eslint-disable no-console */
 import React, { useRef, useCallback, useEffect, useState } from 'react'
 import { createReactEditorJS } from 'react-editor-js'
@@ -5,16 +6,16 @@ import { getEditorJsTools } from './tools'
 import { Container, Toolbar, AppBar, Button, Box, ThemeProvider } from '@mui/material'
 import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
-import { findArticleById, shortenString } from '../../utils'
+import { isValidAddress, shortenString } from '../../utils'
 import { useAppSelector } from '../../store/hooks'
 import { selectMain } from '../../store/slices/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useTonAddress } from '@tonconnect/ui-react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { theme } from '../../App'
-import { addArticleToFs, addProfileInfo } from '../../utils/fs'
-import { getPathInfo, getProfileInfo } from '../../api/users'
-import { geArticleBySlug, getUserArticles } from '../../api/article'
+import { getUserInfo } from '../../api/users'
+import { geArticleBySlug } from '../../api/article'
+import { addArticleToFs, updateArticleToFs } from '../../utils/fs'
 
 const defaultValue = {
   time: 1556098174501,
@@ -45,87 +46,84 @@ interface EditorCore {
 export const Write = () => {
   const editorCore = useRef<EditorCore | null>(null)
   const [editArticle, setEditArticle] = useState<OutputData | null | undefined>(null)
-  const { edit } = useParams()
   const { profile, articles, wallet, publickey } = useAppSelector(selectMain)
   const dispatch = useDispatch()
   const userFriendlyAddress = useTonAddress()
   const navigate = useNavigate()
 
-  let EDITOR_JS_TOOLS
+  const { address, slug } = useParams()
+  const [article, setArticle] = useState<OutputData | null>(null)
+  const [status, setStatus] = useState<string>('ok')
 
-  if (profile) {
-    EDITOR_JS_TOOLS = getEditorJsTools(profile.id)
-  }
+  const EDITOR_JS_TOOLS = getEditorJsTools()
 
   useEffect(() => {
-    if (edit !== 'new' && typeof Number(edit) === 'number') {
-      const res = findArticleById(articles, Number(edit))
-      setEditArticle(res)
-    } else {
-      setEditArticle(defaultValue)
+    const checkAddressAndFetchData = async () => {
+      setStatus('pending')
+
+      if (address) {
+        if (!address || !isValidAddress(address)) {
+          setStatus('notfound')
+
+          return
+        }
+        try {
+          const { isUserExists } = await getUserInfo(address)
+
+          if (isUserExists) {
+            try {
+              if (slug) {
+                // eslint-disable-next-line max-depth
+                try {
+                  const res = (await geArticleBySlug({ userAddress: address, slug })).article.data.data
+                  setArticle(res)
+                  setStatus('ok')
+                } catch {
+                  setStatus('notfound')
+                }
+              } else {
+                setStatus('notfound')
+              }
+            } catch {
+              setStatus('notfound')
+            }
+          } else {
+            setStatus('notfound')
+          }
+        } catch {
+          setStatus('notfound')
+        }
+      } else {
+        setArticle(defaultValue)
+        setStatus('ok')
+      }
     }
-  }, [edit])
+
+    checkAddressAndFetchData()
+  }, [address, slug])
 
   const handleInitialize = useCallback((instance: EditorCore) => {
     editorCore.current = instance
   }, [])
 
   const handleSave = useCallback(async () => {
-    const savedData = (await editorCore.current?.save()) as OutputData
+    try {
+      if (!profile) {
+        return
+      }
+      const savedData = await editorCore.current?.save()
 
-    // const responss = await getPathInfo({ userAddress: publickey, path: '/profile-json' })
-    // console.log(responss)
-    // console.log(savedData)
-    // const res = await addArticleToFs({ data: savedData, address: publickey })
-    // console.log(res)
-
-    // const res = await uploadJsonFile(savedData)
-    // console.log(res)
-    // console.log(wallet)
-
-    // const respon = await getUserArticles(publickey)
-    // console.log(respon)
-
-    // const respon = await getProfileInfo(wallet)
-    // console.log(respon)
-    // const respon = await removeArticleToFs({ address: wallet, slug: 'your-header-textsdcsdc' })
-    // console.log(respon)
-    // const respon = await addProfileInfo({
-    //   address: wallet,
-    //   data: {
-    //     avatar: 'dfv',
-    //     name: 'No User Namewefwefwefwef',
-    //     description: 'No Uwefwefwdfvdvefwefwefwser Descridfvdfption',
-    //   },
-    // })
-    // console.log(respon)
-
-    const respons = await geArticleBySlug({ userAddress: publickey, slug: 'o-o-o' })
-    console.log(respons)
-    // try {
-    //   if (!profile) {
-    //     return
-    //   }
-
-    //   const savedData = await editorCore.current?.save()
-
-    //   if (savedData !== undefined && savedData.time && savedData.blocks) {
-    //     if (edit === 'new') {
-    //       const id = await createArticle({ authorId: profile.id, hash: '00000000000', content: savedData })
-    //       dispatch(saveArticle({ id, time: savedData.time, blocks: savedData.blocks }))
-    //     } else {
-    //       const id = await updateArticle(Number(edit), profile.id, '00000000000', savedData)
-
-    //       // eslint-disable-next-line max-depth
-    //       if (id) {
-    //         dispatch(updateArticleBy({ id, time: savedData.time, blocks: savedData.blocks }))
-    //       }
-    //     }
-    //     navigate('/dashboard')
-    //   }
-    // } catch (e) {
-    //   console.log(e)
-    // }
+      if (savedData !== undefined && savedData.time && savedData.blocks) {
+        if (!slug) {
+          await addArticleToFs({ data: savedData, address: publickey })
+        } else {
+          await updateArticleToFs({ data: savedData, address: publickey, slug })
+        }
+        navigate('/dashboard')
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }, [])
 
   const shortWallet = shortenString(userFriendlyAddress)
@@ -154,13 +152,13 @@ export const Write = () => {
             </Toolbar>
           </AppBar>
           <Toolbar />
-          {editArticle !== null && (
+          {article !== null && (
             <ThemeProvider theme={theme}>
               <ReactEditorJS
                 autofocus={true}
                 onInitialize={handleInitialize}
                 tools={EDITOR_JS_TOOLS}
-                defaultValue={editArticle}
+                defaultValue={article}
               />
             </ThemeProvider>
           )}

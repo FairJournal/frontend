@@ -9,7 +9,7 @@ import {
   createRemoveFileAction,
   createAddUserAction,
 } from '@fairjournal/file-system'
-import { createSlug, findHeaderBlock, getFsApiUrl } from '.'
+import { createSlug, extractArticleText, findHeaderBlock, findImageBlock, getFsApiUrl } from '.'
 import { getPathInfo } from '../api/users'
 import { personalSignString } from './ton'
 
@@ -187,8 +187,18 @@ export async function addArticleToFs({
   data: OutputData
   address: string
 }): Promise<StatusResponse> {
-  const slug = createSlug(findHeaderBlock(data))
-  const article = { slug, data }
+  const title = findHeaderBlock(data)
+  const slug = createSlug(title)
+  const img = findImageBlock(data)
+  const shortText = extractArticleText(data)
+  const preview = {
+    slug,
+    img,
+    title,
+    shortText,
+    time: data.time,
+  }
+  const article = { slug, preview, data }
   const articleData = JSON.stringify(article)
   const res = await uploadJsonFile(articleData)
   const hash = res.data.reference
@@ -223,6 +233,55 @@ export async function removeArticleToFs({ address, slug }: { address: string; sl
   const removeInfo = await res.json()
   update = new Update(PROJECT_NAME, address, removeInfo.updateId + 1)
   update.addAction(createRemoveDirectoryAction(`/articles/${slug}`))
+  const signData = update.getSignData()
+  const signature = await personalSignString(signData)
+  update.setSignature(signature)
+  const signedData = update.getUpdateDataSigned()
+
+  return await updateApply(signedData)
+}
+
+/**
+ * Remove article
+ * @param data Article
+ * @param address Address
+ * @param slug Article
+ */
+export async function updateArticleToFs({
+  address,
+  data,
+  slug,
+}: {
+  address: string
+  data: OutputData
+  slug: string
+}): Promise<StatusResponse> {
+  const title = findHeaderBlock(data)
+  const img = findImageBlock(data)
+  const shortText = extractArticleText(data)
+  const preview = {
+    slug,
+    img,
+    title,
+    shortText,
+    time: data.time,
+  }
+  const article = { slug, preview, data }
+  const articleData = JSON.stringify(article)
+  const resData = await uploadJsonFile(articleData)
+  const hash = resData.data.reference
+  const res = await fetch(getFsApiUrl('user/get-update-id', { address }))
+  const removeInfo = await res.json()
+  update = new Update(PROJECT_NAME, address, removeInfo.updateId + 1)
+  update.addAction(createRemoveFileAction(`/articles/${slug}/index-json`))
+  update.addAction(
+    createAddFileAction({
+      path: `/articles/${slug}/index-json`,
+      mimeType: 'application/json',
+      size: articleData.length,
+      hash,
+    }),
+  )
   const signData = update.getSignData()
   const signature = await personalSignString(signData)
   update.setSignature(signature)

@@ -16,7 +16,7 @@ export const Settings = () => {
   const saveSettings = async () => {
     try {
       if (profile) {
-        let hashAvatar = ''
+        let hashAvatar = profile.avatar
 
         if (avatar) {
           hashAvatar = (await uploadFile(avatar)).data.reference

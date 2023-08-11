@@ -103,7 +103,7 @@ function App() {
               <Route path="/community" element={<Community />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile/:address" element={<Profile />} />
-              <Route path="/write/:edit" element={<Write />} />
+              <Route path="/write/:address?/:slug?" element={<Write />} />
               <Route path="/:address/:slug" element={<RenderArticle />} />
               <Route path="/*" element={<NotFound />} />
             </Routes>
