@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { WindowWithTon } from './interfaces/window'
 
 declare const window: WindowWithTon

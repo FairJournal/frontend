@@ -13,8 +13,7 @@ import {
 } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { formatDate, slugToHeader } from '../../utils'
-import { deleteArticle } from '../../api/article'
-import { deleteArticleById } from '../../store/slices/mainSlice'
+import { deleteArticleBySlug } from '../../store/slices/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { removeArticleToFs } from '../../utils/fs'
@@ -50,7 +49,7 @@ export const ArticlCard = ({
 
   const handleDelete = async (address: string) => {
     await removeArticleToFs({ address, slug })
-    //dispatch(deleteArticle(slug))
+    dispatch(deleteArticleBySlug(slug))
     handleClose()
   }
 

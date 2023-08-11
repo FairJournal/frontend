@@ -11,6 +11,7 @@ import {
 } from '@fairjournal/file-system'
 import { createSlug, extractArticleText, findHeaderBlock, findImageBlock, getFsApiUrl } from '.'
 import { getPathInfo } from '../api/users'
+import { ProfileInfo } from '../types'
 import { personalSignString } from './ton'
 
 export const PROJECT_NAME = 'fairjournal'
@@ -56,12 +57,6 @@ export interface GetUpdateIdResponse {
    * Update id
    */
   updateId: number
-}
-
-export interface ProfileInfo {
-  avatar: string
-  name: string
-  description: string
 }
 /**
  * Gets file system instance

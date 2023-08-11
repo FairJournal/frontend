@@ -13,17 +13,6 @@ export const shortenString = (str: string | null): string => {
   return `${firstFive}...${lastFive}`
 }
 
-export const base64ToBlob = (base64String: string, type = 'image/png') => {
-  const byteString = atob(base64String.split(',')[1])
-  const ab = new ArrayBuffer(byteString.length)
-  const ia = new Uint8Array(ab)
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i)
-  }
-
-  return new Blob([ab], { type })
-}
-
 export const formatDate = (timestamp: number): string => {
   const date = new Date(timestamp)
   const options = { year: 'numeric', month: 'long', day: 'numeric' } as Intl.DateTimeFormatOptions
@@ -43,14 +32,6 @@ export const removeArticleBySlug = (articles: ArticleInfo[], slug: string): Arti
 
     return newArticles
   }
-}
-
-export const stripHtmlTags = (html: string): string => {
-  if (!html) return ''
-  const tempElement = document.createElement('div')
-  tempElement.innerHTML = html
-
-  return tempElement.textContent || tempElement.innerText || ''
 }
 
 export const createSlug = (title: string): string => {

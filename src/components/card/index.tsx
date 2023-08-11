@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 import { Box, CardActionArea, Fade, Paper, Typography } from '@mui/material'
 
 export const CardMediaMain = ({ src, title, text, url }: { src: string; title: string; text: string; url: string }) => {

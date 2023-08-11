@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -62,7 +61,6 @@ export const Header = () => {
         }),
       )
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error(e)
 
       return

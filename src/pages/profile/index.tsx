@@ -4,21 +4,21 @@ import { Avatar, Box, Chip, Container, Typography, Divider, Grid, Toolbar, Skele
 import { isValidAddress, shortenString } from '../../utils'
 import { getProfileInfo, getUserInfo } from '../../api/users'
 import { useParams } from 'react-router-dom'
-import { Article } from '../../types'
+import { ArticleInfo, ProfileInfo } from '../../types'
 import { NotFoundComponent } from '../../components/notfound'
 import { Footer } from '../../components/footer'
-import { ProfileInfo } from '../../utils/fs'
+import { getUserArticles } from '../../api/article'
+import { ArticlCard } from '../../components/articleCard'
 
 export const Profile = () => {
   const { address } = useParams()
   const [profile, setProfile] = useState<ProfileInfo | null>(null)
-  const [articles, setArticles] = useState<Article[] | null>(null)
+  const [articles, setArticles] = useState<ArticleInfo[] | null>(null)
   const [status, setStatus] = useState<string>('ok')
 
   useEffect(() => {
     const checkAddressAndFetchData = async () => {
       setStatus('pending')
-      console.log(address)
 
       if (!address || !isValidAddress(address)) {
         setStatus('notfound')
@@ -28,7 +28,6 @@ export const Profile = () => {
 
       try {
         const { isUserExists } = await getUserInfo(address)
-        console.log(isUserExists)
 
         if (isUserExists) {
           const res = await getProfileInfo(address)
@@ -45,20 +44,19 @@ export const Profile = () => {
     checkAddressAndFetchData()
   }, [address])
 
-  // useEffect(() => {
-  //   const fetchArticle = async () => {
-  //     try {
-  //       setArticles(await getArticlesByUserId(Number(id)))
-  //     } catch (e) {
-  //       // eslint-disable-next-line no-console
-  //       console.log(e)
-  //     }
-  //   }
-
-  //   if (id && status !== 'notfound') {
-  //     fetchArticle()
-  //   }
-  // }, [id])
+  useEffect(() => {
+    const getArticle = async () => {
+      if (profile && address) {
+        try {
+          const articles = await (await getUserArticles(address)).articles
+          setArticles(articles)
+        } catch (e) {
+          console.log(e)
+        }
+      }
+    }
+    getArticle()
+  }, [profile])
 
   const shortWallet = address ? shortenString(address) : ''
 
@@ -99,19 +97,20 @@ export const Profile = () => {
             </Typography>
             <Divider sx={{ mt: 2 }} />
             <Grid container spacing={2} sx={{ pt: 2, pb: 4 }}>
-              {/* {articles &&
+              {articles &&
+                address &&
                 articles.map(el => (
-                  // <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                  //   <ArticlCard
-                  //     blocks={el.blocks}
-                  //     time={el.time}
-                  //     id={el.id}
-                  //     isEdit={false}
-                  //     idAuthor={profile.id}
-                  //     isloading={false}
-                  //   />
-                  // </Grid>
-                ))} */}
+                  <Grid key={el.slug} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <ArticlCard
+                      {...el}
+                      time={1691590642808}
+                      isEdit={false}
+                      isloading={false}
+                      img={''}
+                      publickey={address}
+                    />
+                  </Grid>
+                ))}
             </Grid>
           </>
         )}

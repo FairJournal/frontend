@@ -1,5 +1,4 @@
 /* eslint-disable max-depth */
-/* eslint-disable no-console */
 import React, { useRef, useCallback, useEffect, useState } from 'react'
 import { createReactEditorJS } from 'react-editor-js'
 import { getEditorJsTools } from './tools'
@@ -9,13 +8,13 @@ import { SmallAvatar } from '../../components/smallAvatar'
 import { isValidAddress, shortenString } from '../../utils'
 import { useAppSelector } from '../../store/hooks'
 import { selectMain } from '../../store/slices/mainSlice'
-import { useDispatch } from 'react-redux'
 import { useTonAddress } from '@tonconnect/ui-react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { theme } from '../../App'
 import { getUserInfo } from '../../api/users'
 import { geArticleBySlug } from '../../api/article'
 import { addArticleToFs, updateArticleToFs } from '../../utils/fs'
+import { NotFoundComponent } from '../../components/notfound'
 
 const defaultValue = {
   time: 1556098174501,
@@ -45,9 +44,7 @@ interface EditorCore {
 
 export const Write = () => {
   const editorCore = useRef<EditorCore | null>(null)
-  const [editArticle, setEditArticle] = useState<OutputData | null | undefined>(null)
-  const { profile, articles, wallet, publickey } = useAppSelector(selectMain)
-  const dispatch = useDispatch()
+  const { profile, publickey } = useAppSelector(selectMain)
   const userFriendlyAddress = useTonAddress()
   const navigate = useNavigate()
 
@@ -73,7 +70,6 @@ export const Write = () => {
           if (isUserExists) {
             try {
               if (slug) {
-                // eslint-disable-next-line max-depth
                 try {
                   const res = (await geArticleBySlug({ userAddress: address, slug })).article.data.data
                   setArticle(res)
@@ -127,6 +123,10 @@ export const Write = () => {
   }, [])
 
   const shortWallet = shortenString(userFriendlyAddress)
+
+  if (status === 'notfound') {
+    return <NotFoundComponent />
+  }
 
   return (
     <>

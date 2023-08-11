@@ -8,8 +8,8 @@ import { NotFoundComponent } from '../../components/notfound'
 import { ShareButtons } from '../../components/shareButtons'
 import { geArticleBySlug } from '../../api/article'
 import { OutputData } from '@editorjs/editorjs'
-import { ProfileInfo } from '../../utils/fs'
 import { SmallAvatar } from '../../components/smallAvatar'
+import { ProfileInfo } from '../../types'
 
 interface CodeBlockData {
   code: string
