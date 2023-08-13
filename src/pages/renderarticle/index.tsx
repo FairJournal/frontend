@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Container, Grid, Skeleton, Typography } from '@mui/material'
+import { Box, Container, Grid, LinearProgress, Typography } from '@mui/material'
 import Output from 'editorjs-react-renderer'
 import { useParams } from 'react-router-dom'
 import { getProfileInfo, getUserInfo } from '../../api/users'
@@ -76,14 +76,9 @@ export const RenderArticle = () => {
   if (status === 'pending' && !article) {
     return (
       <>
-        <Box sx={{ display: 'flex', mb: 2 }}>
-          <Skeleton animation="wave" variant="circular" width={150} height={150} sx={{ mr: 2 }} />
-          <Box>
-            <Skeleton animation="wave" height={50} width={200} sx={{ mt: 4 }} />
-            <Skeleton animation="wave" height={50} width={100} />
-          </Box>
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress />
         </Box>
-        <Typography variant="subtitle1" gutterBottom></Typography>
       </>
     )
   }
@@ -97,9 +92,6 @@ export const RenderArticle = () => {
       {article && address && (
         <Box sx={{ backgroundColor: '#fff', minHeight: '90vh', minWidth: '90vw', pb: 10 }}>
           <Container maxWidth="md" sx={{ pt: 4 }}>
-            <Typography variant="caption" display="block" gutterBottom>
-              {formatDate(article.time ?? 0)}
-            </Typography>
             <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
               <Grid item xs={6}>
                 {profile && (
@@ -113,6 +105,9 @@ export const RenderArticle = () => {
                 <ShareButtons link={`https://fairjournal.net/${address}/${slug}`} />
               </Grid>
             </Grid>
+            <Typography variant="caption" display="block" gutterBottom sx={{ color: '#728a96' }}>
+              {formatDate(article.time ?? 0)}
+            </Typography>
             <Output data={article} renderers={{ code: CustomCode }} />
           </Container>
         </Box>

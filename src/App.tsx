@@ -64,7 +64,7 @@ export const theme = createTheme({
       fontSize: '20px',
     },
     body2: {
-      fontSize: '20px',
+      fontSize: '16px',
     },
   },
   palette: {

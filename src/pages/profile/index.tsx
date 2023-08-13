@@ -76,8 +76,15 @@ export const Profile = () => {
               </Box>
             </Box>
             <Typography variant="subtitle1" gutterBottom></Typography>
+            <Divider sx={{ mt: 2 }} />
+            <Grid container spacing={2} sx={{ pt: 2, pb: 4 }}>
+              <Grid item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+                <ArticlCard time={1} slug={''} isEdit={false} publickey={''} isloading={true} img={''} shortText={''} />
+              </Grid>
+            </Grid>
           </>
         )}
+
         {profile && status === 'ok' && (
           <>
             <Box sx={{ display: 'flex', mt: 10, mb: 2 }}>
@@ -90,7 +97,10 @@ export const Profile = () => {
                 <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
                   {profile?.name}
                 </Typography>
-                <Chip label={shortWallet} onClick={() => window.open(`https://tonviewer.com/${address}`, '_blank')} />
+                <Chip
+                  label={shortWallet}
+                  onClick={() => window.open(`https://tonviewer.com/${userFriendlyAddress}`, '_blank')}
+                />
               </Box>
             </Box>
             <Typography variant="subtitle1" gutterBottom>

@@ -29,19 +29,19 @@ export const ShareButtons: React.FC<{ link: string }> = ({ link }) => {
       href: `https://www.linkedin.com/shareArticle/?mini=true&url=${link}`,
       background: '#0a66c2',
       color: 'white',
-      icon: <LinkedInIcon sx={{ fontSize: 20 }} />,
+      icon: <LinkedInIcon sx={{ fontSize: 13, p: 0 }} />,
     },
     {
       href: `https://twitter.com/intent/tweet?url=${link}`,
       background: '#00aced',
       color: 'white',
-      icon: <TwitterIcon sx={{ fontSize: 20 }} />,
+      icon: <TwitterIcon sx={{ fontSize: 13, p: 0 }} />,
     },
     {
       href: `https://t.me/share/url?url=${link}`,
       background: '#00aced',
       color: 'white',
-      icon: <TelegramIcon sx={{ fontSize: 20 }} />,
+      icon: <TelegramIcon sx={{ fontSize: 13, p: 0 }} />,
     },
   ]
 

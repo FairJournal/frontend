@@ -20,7 +20,7 @@ export const CardMediaMain = ({ src, title, text, url }: { src: string; title: s
             <Typography gutterBottom variant="h5" component="div">
               {title}
             </Typography>
-            <Typography variant="body2" color="text.primary">
+            <Typography variant="body1" color="text.primary">
               {text}
             </Typography>
           </Box>

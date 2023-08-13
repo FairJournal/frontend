@@ -93,7 +93,7 @@ export const extractArticleText = (data: OutputData): string => {
     .filter(block => block.type === 'paragraph')
     .map(block => block.data.text.replace(/<\/?[^>]+(>|$)/g, ''))
     .join(' ')
-  const concatenatedText = paragraphs.slice(0, 88)
+  const concatenatedText = paragraphs.slice(0, 100)
 
   return paragraphs ? concatenatedText : 'This article about'
 }

@@ -103,24 +103,24 @@ export const ArticlCard = ({
         ) : (
           <CardMedia component="img" height="200" image={image} alt={title} />
         )}
+        <CardContent sx={{ minHeight: 200 }}>
+          {isloading ? (
+            <>
+              <Skeleton animation="wave" height={15} style={{ marginBottom: 6 }} />
+              <Skeleton animation="wave" height={10} width="80%" />
+            </>
+          ) : (
+            <>
+              <Typography gutterBottom variant="h6" component="div">
+                {title}
+              </Typography>
+              <Typography variant="body2" color="text.primory">
+                {shortText + '...'}
+              </Typography>
+            </>
+          )}
+        </CardContent>
       </CardActionArea>
-      <CardContent>
-        {isloading ? (
-          <>
-            <Skeleton animation="wave" height={15} style={{ marginBottom: 6 }} />
-            <Skeleton animation="wave" height={10} width="80%" />
-          </>
-        ) : (
-          <>
-            <Typography gutterBottom variant="h5" component="div">
-              {title}
-            </Typography>
-            <Typography variant="body2" color="text.primory">
-              {shortText + '...'}
-            </Typography>
-          </>
-        )}
-      </CardContent>
     </Card>
   )
 }
