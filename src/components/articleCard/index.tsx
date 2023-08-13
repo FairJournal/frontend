@@ -103,7 +103,7 @@ export const ArticlCard = ({
         ) : (
           <CardMedia component="img" height="200" image={image} alt={title} />
         )}
-        <CardContent sx={{ minHeight: 200 }}>
+        <CardContent sx={{ minHeight: 200, maxHeight: 350 }}>
           {isloading ? (
             <>
               <Skeleton animation="wave" height={15} style={{ marginBottom: 6 }} />
