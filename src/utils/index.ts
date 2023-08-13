@@ -1,4 +1,5 @@
 import { OutputBlockData, OutputData } from '@editorjs/editorjs'
+import { slugify } from 'transliteration'
 import { ArticleInfo } from '../types'
 
 export const shortenString = (str: string | null): string => {
@@ -35,13 +36,11 @@ export const removeArticleBySlug = (articles: ArticleInfo[], slug: string): Arti
 }
 
 export const createSlug = (title: string): string => {
-  const slug = title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+  const slug = slugify(title)
 
   const randomChars = 'abcdefghijklmnopqrstuvwxyz0123456789'
   let newSlug = slug
+
   for (let i = 0; i < 4; i++) {
     const randomIndex = Math.floor(Math.random() * randomChars.length)
     const randomChar = randomChars[randomIndex]
