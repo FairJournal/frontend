@@ -10,6 +10,7 @@ import { geArticleBySlug } from '../../api/article'
 import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { ProfileInfo } from '../../types'
+import { useTonAddress } from '@tonconnect/ui-react'
 
 interface CodeBlockData {
   code: string
@@ -24,6 +25,8 @@ export const RenderArticle = () => {
   const [article, setArticle] = useState<OutputData | null>(null)
   const [profile, setProfile] = useState<ProfileInfo | null>(null)
   const [status, setStatus] = useState<string>('ok')
+  const userFriendlyAddress = useTonAddress()
+  const shortWallet = shortenString(userFriendlyAddress)
 
   useEffect(() => {
     const checkAddressAndFetchData = async () => {
@@ -102,7 +105,7 @@ export const RenderArticle = () => {
                 {profile && (
                   <SmallAvatar
                     to={`/profile/${address}`}
-                    profile={{ name: profile.name, avatar: profile.avatar, wallet: shortenString(address) }}
+                    profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
                   />
                 )}
               </Grid>

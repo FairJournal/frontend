@@ -9,12 +9,15 @@ import { NotFoundComponent } from '../../components/notfound'
 import { Footer } from '../../components/footer'
 import { getUserArticles } from '../../api/article'
 import { ArticlCard } from '../../components/articleCard'
+import { useTonAddress } from '@tonconnect/ui-react'
 
 export const Profile = () => {
   const { address } = useParams()
   const [profile, setProfile] = useState<ProfileInfo | null>(null)
   const [articles, setArticles] = useState<ArticleInfo[] | null>(null)
   const [status, setStatus] = useState<string>('ok')
+  const userFriendlyAddress = useTonAddress()
+  const shortWallet = shortenString(userFriendlyAddress)
 
   useEffect(() => {
     const checkAddressAndFetchData = async () => {
@@ -57,8 +60,6 @@ export const Profile = () => {
     }
     getArticle()
   }, [profile])
-
-  const shortWallet = address ? shortenString(address) : ''
 
   return (
     <>
