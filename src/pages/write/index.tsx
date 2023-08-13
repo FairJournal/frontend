@@ -2,7 +2,7 @@
 import React, { useRef, useCallback, useEffect, useState } from 'react'
 import { createReactEditorJS } from 'react-editor-js'
 import { getEditorJsTools } from './tools'
-import { Container, Toolbar, AppBar, Button, Box, ThemeProvider } from '@mui/material'
+import { Container, Toolbar, AppBar, Button, Box, ThemeProvider, Typography } from '@mui/material'
 import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { isValidAddress, shortenString } from '../../utils'
@@ -132,27 +132,54 @@ export const Write = () => {
     <>
       <Box sx={{ backgroundColor: '#fff', minHeight: '100vh', minWidth: '90vw' }}>
         <Container maxWidth="md">
-          <AppBar position="fixed" sx={{ backgroundColor: '#fff' }}>
-            <Toolbar
-              sx={{
-                display: 'flex',
-                backgroundColor: 'fff',
-                justifyContent: { md: 'space-between', xs: 'space-around' },
-              }}
-            >
-              {profile && (
-                <SmallAvatar
-                  to="/dashboard"
-                  profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
-                />
-              )}
-              <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={handleSave}>
-                Publish
-              </Button>
-            </Toolbar>
-          </AppBar>
-          <Toolbar />
-          {article !== null && (
+          {profile && (
+            <>
+              <AppBar position="fixed" sx={{ backgroundColor: '#fff' }}>
+                <Toolbar
+                  sx={{
+                    display: 'flex',
+                    backgroundColor: 'fff',
+                    justifyContent: { md: 'space-between', xs: 'space-around' },
+                  }}
+                >
+                  <SmallAvatar
+                    to="/dashboard"
+                    profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
+                  />
+
+                  <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={handleSave}>
+                    Publish
+                  </Button>
+                </Toolbar>
+              </AppBar>
+              <Toolbar />
+            </>
+          )}
+          {!profile && (
+            <>
+              <Box
+                sx={{
+                  minHeight: '80vh',
+                  display: 'flex',
+                  alignItems: 'center',
+                  width: '100%',
+                  justifyContent: 'center',
+                }}
+              >
+                <Box sx={{ textAlign: 'center' }}>
+                  <Typography align="center" variant="h5" sx={{ mb: 2, mt: 2 }}>
+                    Something went wrong!
+                  </Typography>
+                  <Box>
+                    <Button variant="outlined" color="inherit" onClick={() => navigate('/dashboard')}>
+                      Go Dashboard
+                    </Button>
+                  </Box>
+                </Box>
+              </Box>
+            </>
+          )}
+          {article !== null && profile && (
             <ThemeProvider theme={theme}>
               <ReactEditorJS
                 autofocus={true}

@@ -32,7 +32,6 @@ export const Header = () => {
       ;(async () => {
         const profile = await getProfileInfo(publickey)
         dispatch(changeProfile(profile))
-        console.log(profile)
       })()
     }
   }, [publickey])
