@@ -1,14 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { ArticleInfo, ProfileInfo } from '../../types'
+import { Preview, ProfileInfo } from '../../types'
 import { removeArticleBySlug } from '../../utils'
 
 interface MainState {
   wallet: string
   publickey: string
   profile: ProfileInfo | null
-  articles: ArticleInfo[]
+  articles: Preview[]
 }
 
 const initialState: MainState = {
@@ -34,10 +34,7 @@ export const MainSlice = createSlice({
     changeProfile: (state, action: PayloadAction<ProfileInfo>) => {
       state.profile = action.payload
     },
-    saveArticle: (state, action: PayloadAction<ArticleInfo>) => {
-      state.articles.push(action.payload)
-    },
-    getAllArticles: (state, action: PayloadAction<ArticleInfo[]>) => {
+    getAllArticles: (state, action: PayloadAction<Preview[]>) => {
       state.articles = action.payload
     },
     deleteArticleBySlug: (state, action: PayloadAction<string>) => {
@@ -48,6 +45,6 @@ export const MainSlice = createSlice({
 
 export const selectMain = (state: RootState) => state.main
 
-export const { logout, login, changeProfile, saveArticle, getAllArticles, deleteArticleBySlug } = MainSlice.actions
+export const { logout, login, changeProfile, getAllArticles, deleteArticleBySlug } = MainSlice.actions
 
 export default MainSlice.reducer

@@ -1,6 +1,6 @@
 import { OutputBlockData, OutputData } from '@editorjs/editorjs'
 import { slugify } from 'transliteration'
-import { ArticleInfo } from '../types'
+import { Preview } from '../types'
 
 export const shortenString = (str: string | null): string => {
   if (!str) return ''
@@ -22,7 +22,7 @@ export const formatDate = (timestamp: number): string => {
   return `${dateString}`
 }
 
-export const removeArticleBySlug = (articles: ArticleInfo[], slug: string): ArticleInfo[] => {
+export const removeArticleBySlug = (articles: Preview[], slug: string): Preview[] => {
   const index = articles.findIndex(article => article.slug === slug)
 
   if (index === -1) {
@@ -54,7 +54,15 @@ export const findHeaderBlock = (data: OutputData): string => {
   const arr = data.blocks
   const headerBlock = arr.find((block: OutputBlockData) => block.type === 'header')
 
-  return headerBlock ? headerBlock.data.text : 'New Article'
+  if (headerBlock) {
+    const headerText = document.createElement('div')
+    headerText.innerHTML = headerBlock.data.text
+    const decodedHeaderText = headerText.textContent || headerText.innerText
+
+    return decodedHeaderText.length <= 25 ? decodedHeaderText : decodedHeaderText.substring(0, 25) + '...'
+  }
+
+  return 'New Article'
 }
 
 export const findImageBlock = (data: OutputData): string => {
@@ -91,9 +99,16 @@ export const slugToHeader = (slug: string): string => {
 export const extractArticleText = (data: OutputData): string => {
   const paragraphs = data.blocks
     .filter(block => block.type === 'paragraph')
-    .map(block => block.data.text.replace(/<\/?[^>]+(>|$)/g, ''))
+    .map(block => {
+      const paragraphText = document.createElement('div')
+      paragraphText.innerHTML = block.data.text
+      const decodedParagraphText = paragraphText.textContent || paragraphText.innerText
+
+      return decodedParagraphText.replace(/<\/?[^>]+>/g, '')
+    })
     .join(' ')
+
   const concatenatedText = paragraphs.slice(0, 100)
 
-  return paragraphs ? concatenatedText : 'This article about'
+  return paragraphs ? concatenatedText : 'This article is about'
 }

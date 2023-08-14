@@ -48,7 +48,7 @@ export const RenderArticle = () => {
             if (slug) {
               // eslint-disable-next-line max-depth
               try {
-                const res = (await geArticleBySlug({ userAddress: address, slug })).article.data.data
+                const res = (await geArticleBySlug({ userAddress: address, slug })).article.data
                 setArticle(res)
                 setStatus('ok')
               } catch {

@@ -4,7 +4,7 @@ import { Avatar, Box, Chip, Container, Typography, Divider, Grid, Toolbar, Skele
 import { isValidAddress, shortenString } from '../../utils'
 import { getProfileInfo, getUserInfo } from '../../api/users'
 import { useParams } from 'react-router-dom'
-import { ArticleInfo, ProfileInfo } from '../../types'
+import { Preview, ProfileInfo } from '../../types'
 import { NotFoundComponent } from '../../components/notfound'
 import { Footer } from '../../components/footer'
 import { getUserArticles } from '../../api/article'
@@ -14,7 +14,7 @@ import { useTonAddress } from '@tonconnect/ui-react'
 export const Profile = () => {
   const { address } = useParams()
   const [profile, setProfile] = useState<ProfileInfo | null>(null)
-  const [articles, setArticles] = useState<ArticleInfo[] | null>(null)
+  const [articles, setArticles] = useState<Preview[] | null>(null)
   const [status, setStatus] = useState<string>('ok')
   const userFriendlyAddress = useTonAddress()
   const shortWallet = shortenString(userFriendlyAddress)
@@ -52,7 +52,8 @@ export const Profile = () => {
       if (profile && address) {
         try {
           const articles = await (await getUserArticles(address)).articles
-          setArticles(articles)
+          const arr = articles.map(el => el.previewData)
+          setArticles(arr)
         } catch (e) {
           console.log(e)
         }
@@ -79,7 +80,16 @@ export const Profile = () => {
             <Divider sx={{ mt: 2 }} />
             <Grid container spacing={2} sx={{ pt: 2, pb: 4 }}>
               <Grid item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                <ArticlCard time={1} slug={''} isEdit={false} publickey={''} isloading={true} img={''} shortText={''} />
+                <ArticlCard
+                  title={''}
+                  time={1}
+                  slug={''}
+                  isEdit={false}
+                  publickey={''}
+                  isloading={true}
+                  img={''}
+                  shortText={''}
+                />
               </Grid>
             </Grid>
           </>
@@ -112,14 +122,7 @@ export const Profile = () => {
                 address &&
                 articles.map(el => (
                   <Grid key={el.slug} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <ArticlCard
-                      {...el}
-                      time={1691590642808}
-                      isEdit={false}
-                      isloading={false}
-                      img={''}
-                      publickey={address}
-                    />
+                    <ArticlCard {...el} isEdit={false} isloading={false} publickey={address} />
                   </Grid>
                 ))}
             </Grid>

@@ -12,13 +12,14 @@ import {
   Skeleton,
 } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { formatDate, slugToHeader } from '../../utils'
+import { formatDate } from '../../utils'
 import { deleteArticleBySlug } from '../../store/slices/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { removeArticleToFs } from '../../utils/fs'
 
 export const ArticlCard = ({
+  title,
   time,
   slug,
   img,
@@ -27,6 +28,7 @@ export const ArticlCard = ({
   publickey,
   isloading,
 }: {
+  title: string
   time: number
   slug: string
   img: string
@@ -59,7 +61,7 @@ export const ArticlCard = ({
   }
 
   const timeArticle = formatDate(time)
-  const title = slug ? slugToHeader(slug) : 'New Article'
+  const titleCur = title ? title : 'New Article'
   const image = img ? img : '/images/F2.png'
 
   return (
@@ -103,7 +105,7 @@ export const ArticlCard = ({
         ) : (
           <CardMedia component="img" height="200" image={image} alt={title} />
         )}
-        <CardContent sx={{ minHeight: 200, maxHeight: 350 }}>
+        <CardContent sx={{ minHeight: 200 }}>
           {isloading ? (
             <>
               <Skeleton animation="wave" height={15} style={{ marginBottom: 6 }} />
@@ -112,7 +114,7 @@ export const ArticlCard = ({
           ) : (
             <>
               <Typography gutterBottom variant="h6" component="div">
-                {title}
+                {titleCur}
               </Typography>
               <Typography variant="body2" color="text.primory">
                 {shortText + '...'}

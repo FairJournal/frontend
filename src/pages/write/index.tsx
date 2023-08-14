@@ -71,7 +71,7 @@ export const Write = () => {
             try {
               if (slug) {
                 try {
-                  const res = (await geArticleBySlug({ userAddress: address, slug })).article.data.data
+                  const res = (await geArticleBySlug({ userAddress: address, slug })).article.data
                   setArticle(res)
                   setStatus('ok')
                 } catch {

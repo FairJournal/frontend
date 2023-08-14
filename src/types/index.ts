@@ -6,14 +6,18 @@ export interface ProfileInfo {
   description: string
 }
 
-export interface Article {
+export interface Preview {
   slug: string
-  data: { slug: string; data: OutputData }
+  img: string
+  shortText: string
+  time: number
+  title: string
 }
 
-export interface ArticleInfo {
+export interface Article {
   slug: string
-  shortText: string
+  data: OutputData
+  preview: Preview
 }
 
 export interface ResUserArticle {
@@ -25,7 +29,7 @@ export interface ResUserArticle {
 export interface ResUserArticles {
   status: string
   userAddress: string
-  articles: ArticleInfo[]
+  articles: Array<{ previewData: Preview }>
 }
 
 export interface ResPath {

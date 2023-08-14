@@ -64,7 +64,8 @@ export const Dashboard = (props: Props) => {
       try {
         setStatus('pending')
         const articles = await (await getUserArticles(publickey)).articles
-        dispatch(getAllArticles(articles))
+        const arr = articles.map(el => el.previewData)
+        dispatch(getAllArticles(arr))
         setStatus('ok')
       } catch {
         setStatus('error')
@@ -271,6 +272,7 @@ export const Dashboard = (props: Props) => {
                       isloading={true}
                       img={''}
                       shortText={''}
+                      title={''}
                     />
                   )}
                   {status === 'error' && (
@@ -309,14 +311,7 @@ export const Dashboard = (props: Props) => {
                               xs={12}
                               sx={{ display: 'flex', justifyContent: 'center' }}
                             >
-                              <ArticlCard
-                                {...el}
-                                time={1691590642808}
-                                isEdit={true}
-                                isloading={false}
-                                img={''}
-                                publickey={publickey}
-                              />
+                              <ArticlCard {...el} isEdit={true} isloading={false} publickey={publickey} />
                             </Grid>
                           ))}
                         </Grid>
