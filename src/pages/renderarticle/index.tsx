@@ -49,7 +49,31 @@ export const RenderArticle = () => {
               // eslint-disable-next-line max-depth
               try {
                 const res = (await geArticleBySlug({ userAddress: address, slug })).article.data
-                setArticle(res)
+                const updatedArticle = {
+                  ...res,
+                  blocks: res.blocks.map(block => {
+                    if (block.type === 'image' && block.data?.file?.url) {
+                      const updatedUrl = block.data.file.url.replace(
+                        /ton:\/\/([A-Za-z0-9]+)/,
+                        'https://api.fairjournal.net/ton/$1/blob',
+                      )
+
+                      return {
+                        ...block,
+                        data: {
+                          ...block.data,
+                          file: {
+                            ...block.data.file,
+                            url: updatedUrl,
+                          },
+                        },
+                      }
+                    }
+
+                    return block
+                  }),
+                }
+                setArticle(updatedArticle)
                 setStatus('ok')
               } catch {
                 setStatus('notfound')

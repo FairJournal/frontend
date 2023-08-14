@@ -103,22 +103,48 @@ export const Write = () => {
   }, [])
 
   const handleSave = useCallback(async () => {
-    try {
-      if (!profile) {
-        return
-      }
-      const savedData = await editorCore.current?.save()
+    const savedData = await editorCore.current?.save()
 
-      if (savedData !== undefined && savedData.time && savedData.blocks) {
+    if (savedData) {
+      const updatedData = {
+        ...savedData,
+        blocks: savedData.blocks.map(block => {
+          if (block.type === 'image' && block.data?.file?.url) {
+            const updatedUrl = block.data.file.url.replace(
+              /https:\/\/api\.fairjournal\.net\/ton\/([A-Za-z0-9]+)\/blob/,
+              'ton://$1',
+            )
+
+            return {
+              ...block,
+              data: {
+                ...block.data,
+                file: {
+                  ...block.data.file,
+                  url: updatedUrl,
+                },
+              },
+            }
+          }
+
+          return block
+        }),
+      }
+
+      try {
+        if (!profile) {
+          return
+        }
+
         if (!slug) {
-          await addArticleToFs({ data: savedData, address: publickey })
+          await addArticleToFs({ data: updatedData, address: publickey })
         } else {
-          await updateArticleToFs({ data: savedData, address: publickey, slug })
+          await updateArticleToFs({ data: updatedData, address: publickey, slug })
         }
         navigate('/dashboard')
+      } catch (e) {
+        console.log(e)
       }
-    } catch (e) {
-      console.log(e)
     }
   }, [])
 

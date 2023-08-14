@@ -37,6 +37,8 @@ export const removeArticleBySlug = (articles: Preview[], slug: string): Preview[
 
 export const createSlug = (title: string): string => {
   const slug = slugify(title)
+    .replace(/^-+|-+$/g, '')
+    .replace(/\./g, '')
 
   const randomChars = 'abcdefghijklmnopqrstuvwxyz0123456789'
   let newSlug = slug

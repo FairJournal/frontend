@@ -193,8 +193,6 @@ export async function addArticleToFs({
     time: data.time,
   }
   const article = { slug, preview, data }
-  console.log(article)
-  console.log(address)
   const articleData = JSON.stringify(article)
   const res = await uploadJsonFile(articleData)
   const hash = res.data.reference
