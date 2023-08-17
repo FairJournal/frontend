@@ -115,6 +115,10 @@ export const extractArticleText = (data: OutputData): string => {
   return paragraphs ? concatenatedText : 'This article is about'
 }
 
-export const hashToUrl = (hash: string): string => {
-  return `${process.env.REACT_APP_URL_API}ton/${hash.toUpperCase()}/blob`
+export const hashToUrl = (hash: string | undefined): string => {
+  if (hash) {
+    return `${process.env.REACT_APP_URL_API}ton/${hash.toUpperCase()}/blob`
+  }
+
+  return ''
 }

@@ -18,7 +18,7 @@ import { createUser } from '../../utils/fs'
 import { getPublicKey } from '../../utils/ton'
 import { getProfileInfo, getUserInfo } from '../../api/users'
 
-const pages = [{ page: 'About Us', route: 'aboutus' }]
+const pages = [{ page: 'About Us', route: 'about' }]
 
 export const Header = () => {
   const { publickey } = useAppSelector(selectMain)

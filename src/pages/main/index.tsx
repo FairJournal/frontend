@@ -82,7 +82,7 @@ export const Main = () => {
                 <Button
                   variant="outlined"
                   sx={{ m: 1, pt: '1.3rem', pb: '1.3rem', pl: '1.9rem', pr: '1.9rem' }}
-                  onClick={() => navigate('/aboutus')}
+                  onClick={() => navigate('/about')}
                 >
                   Learn More
                 </Button>
