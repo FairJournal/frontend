@@ -1,5 +1,5 @@
 import { ProfileInfo, ResPath, ResUserInfo } from '../types'
-import { getFsApiUrl } from '../utils'
+import { getFsApiUrl, hashToUrl } from '../utils'
 
 // Get info about file/directory
 export const getPathInfo = async ({
@@ -37,9 +37,9 @@ export const getProfileInfo = async (userAddress: string): Promise<ProfileInfo> 
   const dataProfile = await getPathInfo({ userAddress, path: '/profile-json' })
 
   if (dataProfile) {
-    const hash = dataProfile.data.hash.toUpperCase()
+    const hash = dataProfile.data.hash
 
-    return (await fetch(`https://api.fairjournal.net/ton/${hash}/blob`)).json()
+    return (await fetch(hashToUrl(hash))).json()
   }
 
   return {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Header } from '../../components/header'
 import { Avatar, Box, Chip, Container, Typography, Divider, Grid, Toolbar, Skeleton } from '@mui/material'
-import { isValidAddress, shortenString } from '../../utils'
+import { hashToUrl, isValidAddress, shortenString } from '../../utils'
 import { getProfileInfo, getUserInfo } from '../../api/users'
 import { useParams } from 'react-router-dom'
 import { Preview, ProfileInfo } from '../../types'
@@ -98,11 +98,7 @@ export const Profile = () => {
         {profile && status === 'ok' && (
           <>
             <Box sx={{ display: 'flex', mt: 10, mb: 2 }}>
-              <Avatar
-                alt="Avatar"
-                src={`https://api.fairjournal.net/ton/${profile.avatar.toUpperCase()}/blob`}
-                sx={{ width: 150, height: 150, mr: 2 }}
-              />
+              <Avatar alt="Avatar" src={hashToUrl(profile.avatar)} sx={{ width: 150, height: 150, mr: 2 }} />
               <Box>
                 <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
                   {profile?.name}

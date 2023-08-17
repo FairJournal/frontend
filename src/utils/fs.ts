@@ -122,7 +122,7 @@ export async function uploadFile(blob: File): Promise<StatusResponseUpload> {
   formData.append('blob', blob)
 
   try {
-    const response = await fetch(`${process.env.REACT_APP_URL_API}fs/blob/upload`, {
+    const response = await fetch(`${process.env.REACT_APP_URL_API}v1/fs/blob/upload`, {
       method: 'POST',
       body: formData,
     })
@@ -151,7 +151,7 @@ export async function uploadJsonFile(data: string): Promise<StatusResponseUpload
   formData.append('blob', file)
 
   try {
-    const response = await fetch(`${process.env.REACT_APP_URL_API}/fs/blob/upload`, {
+    const response = await fetch(`${process.env.REACT_APP_URL_API}v1/fs/blob/upload`, {
       method: 'POST',
       body: formData,
     })

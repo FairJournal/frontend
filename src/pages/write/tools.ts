@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import Embed from '@editorjs/embed'
 import List from '@editorjs/list'
 import Code from '@editorjs/code'
@@ -8,6 +7,7 @@ import Delimiter from '@editorjs/delimiter'
 import InlineCode from '@editorjs/inline-code'
 import Paragraph from '@editorjs/paragraph'
 import { uploadFile } from '../../utils/fs'
+import { hashToUrl } from '../../utils'
 
 export const getEditorJsTools = () => {
   return {
@@ -28,7 +28,7 @@ export const getEditorJsTools = () => {
             return {
               success: 1,
               file: {
-                url: `https://api.fairjournal.net/ton/${res.data.reference.toUpperCase()}/blob`,
+                url: hashToUrl(res.data.reference),
               },
             }
           },

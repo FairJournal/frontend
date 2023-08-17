@@ -77,7 +77,7 @@ export const findImageBlock = (data: OutputData): string => {
 export const getFsApiUrl = (url: string, params?: { [key: string]: string }): string => {
   const queryParams = params ? `?${new URLSearchParams(params).toString()}` : ''
 
-  return `${process.env.REACT_APP_URL_API}/fs/${url}${queryParams}`
+  return `${process.env.REACT_APP_URL_API}v1/fs/${url}${queryParams}`
 }
 
 export const isValidAddress = (address: string): boolean => {
@@ -113,4 +113,8 @@ export const extractArticleText = (data: OutputData): string => {
   const concatenatedText = paragraphs.slice(0, 100)
 
   return paragraphs ? concatenatedText : 'This article is about'
+}
+
+export const hashToUrl = (hash: string): string => {
+  return `${process.env.REACT_APP_URL_API}ton/${hash.toUpperCase()}/blob`
 }

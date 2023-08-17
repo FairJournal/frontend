@@ -63,7 +63,7 @@ export const ArticlCard = ({
   const timeArticle = formatDate(time)
   const titleCur = title ? title : 'New Article'
   const regex = /ton:\/\/([A-Za-z0-9]+)/
-  const image = img ? img.replace(regex, 'https://api.fairjournal.net/ton/$1/blob') : '/images/F2.png'
+  const image = img ? img.replace(regex, `${process.env.REACT_APP_URL_API}ton/$1/blob`) : '/images/F2.png'
 
   return (
     <Card sx={{ width: 300, backgroundColor: 'secondary' }}>

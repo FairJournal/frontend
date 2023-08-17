@@ -55,7 +55,7 @@ export const RenderArticle = () => {
                     if (block.type === 'image' && block.data?.file?.url) {
                       const updatedUrl = block.data.file.url.replace(
                         /ton:\/\/([A-Za-z0-9]+)/,
-                        'https://api.fairjournal.net/ton/$1/blob',
+                        `${process.env.REACT_APP_URL_API}ton/$1/blob`,
                       )
 
                       return {

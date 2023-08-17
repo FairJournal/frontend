@@ -5,6 +5,7 @@ import { Box } from '@mui/material'
 import UploadOutlinedIcon from '@mui/icons-material/UploadOutlined'
 import { useAppSelector } from '../../store/hooks'
 import { selectMain } from '../../store/slices/mainSlice'
+import { hashToUrl } from '../../utils'
 
 interface AvatarPickerProps {
   avatarUrl: File | undefined
@@ -26,15 +27,19 @@ export const AvatarPicker: React.FC<AvatarPickerProps> = ({ avatarUrl, onAvatarC
 
   return (
     <Box>
-      <IconButton color="primary" component="label">
-        <Avatar
-          src={avatar ?? `${`https://api.fairjournal.net/ton/${profile?.avatar.toUpperCase()}/blob`}`}
-          sx={{ width: 150, height: 150, mr: 2, backgroundColor: '#fff' }}
-        >
-          <UploadOutlinedIcon sx={{ width: 56, height: 56, color: '#616161' }} />
-        </Avatar>
-        <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
-      </IconButton>
+      {profile && (
+        <Box>
+          <IconButton color="primary" component="label">
+            <Avatar
+              src={avatar ?? `${hashToUrl(profile.avatar)}`}
+              sx={{ width: 150, height: 150, mr: 2, backgroundColor: '#fff' }}
+            >
+              <UploadOutlinedIcon sx={{ width: 56, height: 56, color: '#616161' }} />
+            </Avatar>
+            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleAvatarChange} />
+          </IconButton>
+        </Box>
+      )}
     </Box>
   )
 }
