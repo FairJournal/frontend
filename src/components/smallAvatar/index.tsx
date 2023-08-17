@@ -2,6 +2,7 @@ import React from 'react'
 import Avatar from '@mui/material/Avatar'
 import { Box, Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
+import { shortenString } from '../../utils'
 
 interface SmallAvatarProps {
   to: string
@@ -9,6 +10,8 @@ interface SmallAvatarProps {
 }
 
 export const SmallAvatar: React.FC<SmallAvatarProps> = ({ to, profile }) => {
+  const shortWallet = shortenString(profile.wallet)
+
   return (
     <Box sx={{ display: 'flex', mt: 0, mb: 0 }}>
       <Link to={to} style={{ textDecoration: 'none', color: '#000', display: 'flex', alignItems: 'center' }}>
@@ -17,8 +20,8 @@ export const SmallAvatar: React.FC<SmallAvatarProps> = ({ to, profile }) => {
           <Typography variant="subtitle2" sx={{ mb: 0, mt: 1, whiteSpace: 'nowrap' }}>
             {profile.name}
           </Typography>
-          <Typography variant="caption" gutterBottom>
-            {profile.wallet}
+          <Typography title={profile.wallet} variant="caption" gutterBottom>
+            {shortWallet}
           </Typography>
         </Box>
       </Link>

@@ -54,7 +54,7 @@ export const Settings = () => {
               inputProps={{ maxLength: 30 }}
               fullWidth
             />
-            <Chip label={shortWallet} />
+            <Chip title={wallet} label={shortWallet} />
           </Grid>
         </Grid>
         <Divider sx={{ mb: 2 }} />

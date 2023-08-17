@@ -104,6 +104,7 @@ export const Profile = () => {
                   {profile?.name}
                 </Typography>
                 <Chip
+                  title={userFriendlyAddress}
                   label={shortWallet}
                   onClick={() => window.open(`https://tonviewer.com/${userFriendlyAddress}`, '_blank')}
                 />

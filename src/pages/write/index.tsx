@@ -5,7 +5,7 @@ import { getEditorJsTools } from './tools'
 import { Container, Toolbar, AppBar, Button, Box, ThemeProvider, Typography } from '@mui/material'
 import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
-import { isValidAddress, shortenString } from '../../utils'
+import { isValidAddress } from '../../utils'
 import { useAppSelector } from '../../store/hooks'
 import { selectMain } from '../../store/slices/mainSlice'
 import { useTonAddress } from '@tonconnect/ui-react'
@@ -68,19 +68,11 @@ export const Write = () => {
           const { isUserExists } = await getUserInfo(address)
 
           if (isUserExists) {
-            try {
-              if (slug) {
-                try {
-                  const res = (await geArticleBySlug({ userAddress: address, slug })).article.data
-                  setArticle(res)
-                  setStatus('ok')
-                } catch {
-                  setStatus('notfound')
-                }
-              } else {
-                setStatus('notfound')
-              }
-            } catch {
+            if (slug) {
+              const res = (await geArticleBySlug({ userAddress: address, slug })).article.data
+              setArticle(res)
+              setStatus('ok')
+            } else {
               setStatus('notfound')
             }
           } else {
@@ -148,8 +140,6 @@ export const Write = () => {
     }
   }, [])
 
-  const shortWallet = shortenString(userFriendlyAddress)
-
   if (status === 'notfound') {
     return <NotFoundComponent />
   }
@@ -170,7 +160,7 @@ export const Write = () => {
                 >
                   <SmallAvatar
                     to="/dashboard"
-                    profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
+                    profile={{ name: profile.name, avatar: profile.avatar, wallet: userFriendlyAddress }}
                   />
 
                   <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={handleSave}>

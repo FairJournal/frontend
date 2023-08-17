@@ -24,7 +24,6 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { getAllArticles, login, logout, selectMain } from '../../store/slices/mainSlice'
 import { Settings } from '../../components/settings'
 import { ArticlCard } from '../../components/articleCard'
-import { shortenString } from '../../utils'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { Header } from '../../components/header'
@@ -129,7 +128,6 @@ export const Dashboard = (props: Props) => {
   )
 
   const container = window !== undefined ? () => window().document.body : undefined
-  const shortWallet = shortenString(userFriendlyAddress)
 
   const connectWallet = async () => {
     try {
@@ -215,7 +213,7 @@ export const Dashboard = (props: Props) => {
                 </IconButton>
                 <SmallAvatar
                   to={`/profile/${publickey}`}
-                  profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
+                  profile={{ name: profile.name, avatar: profile.avatar, wallet: userFriendlyAddress }}
                 />
                 <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
                   <AddIcon sx={{ fontSize: 19 }} />

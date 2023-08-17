@@ -3,7 +3,7 @@ import { Box, Container, Grid, LinearProgress, Typography } from '@mui/material'
 import Output from 'editorjs-react-renderer'
 import { useParams } from 'react-router-dom'
 import { getProfileInfo, getUserInfo } from '../../api/users'
-import { formatDate, isValidAddress, shortenString } from '../../utils'
+import { formatDate, isValidAddress } from '../../utils'
 import { NotFoundComponent } from '../../components/notfound'
 import { ShareButtons } from '../../components/shareButtons'
 import { geArticleBySlug } from '../../api/article'
@@ -26,7 +26,6 @@ export const RenderArticle = () => {
   const [profile, setProfile] = useState<ProfileInfo | null>(null)
   const [status, setStatus] = useState<string>('ok')
   const userFriendlyAddress = useTonAddress()
-  const shortWallet = shortenString(userFriendlyAddress)
 
   useEffect(() => {
     const checkAddressAndFetchData = async () => {
@@ -47,37 +46,33 @@ export const RenderArticle = () => {
 
             if (slug) {
               // eslint-disable-next-line max-depth
-              try {
-                const res = (await geArticleBySlug({ userAddress: address, slug })).article.data
-                const updatedArticle = {
-                  ...res,
-                  blocks: res.blocks.map(block => {
-                    if (block.type === 'image' && block.data?.file?.url) {
-                      const updatedUrl = block.data.file.url.replace(
-                        /ton:\/\/([A-Za-z0-9]+)/,
-                        `${process.env.REACT_APP_URL_API}ton/$1/blob`,
-                      )
+              const res = (await geArticleBySlug({ userAddress: address, slug })).article.data
+              const updatedArticle = {
+                ...res,
+                blocks: res.blocks.map(block => {
+                  if (block.type === 'image' && block.data?.file?.url) {
+                    const updatedUrl = block.data.file.url.replace(
+                      /ton:\/\/([A-Za-z0-9]+)/,
+                      `${process.env.REACT_APP_URL_API}ton/$1/blob`,
+                    )
 
-                      return {
-                        ...block,
-                        data: {
-                          ...block.data,
-                          file: {
-                            ...block.data.file,
-                            url: updatedUrl,
-                          },
+                    return {
+                      ...block,
+                      data: {
+                        ...block.data,
+                        file: {
+                          ...block.data.file,
+                          url: updatedUrl,
                         },
-                      }
+                      },
                     }
+                  }
 
-                    return block
-                  }),
-                }
-                setArticle(updatedArticle)
-                setStatus('ok')
-              } catch {
-                setStatus('notfound')
+                  return block
+                }),
               }
+              setArticle(updatedArticle)
+              setStatus('ok')
             } else {
               setStatus('notfound')
             }
@@ -121,7 +116,7 @@ export const RenderArticle = () => {
                 {profile && (
                   <SmallAvatar
                     to={`/profile/${address}`}
-                    profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
+                    profile={{ name: profile.name, avatar: profile.avatar, wallet: userFriendlyAddress }}
                   />
                 )}
               </Grid>
