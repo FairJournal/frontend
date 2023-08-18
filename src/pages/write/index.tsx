@@ -5,7 +5,7 @@ import { getEditorJsTools } from './tools'
 import { Container, Toolbar, AppBar, Button, Box, ThemeProvider, Typography } from '@mui/material'
 import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
-import { isValidAddress } from '../../utils'
+import { isValidAddress, restoreImageData, updateImageData } from '../../utils'
 import { useAppSelector } from '../../store/hooks'
 import { selectMain } from '../../store/slices/mainSlice'
 import { useTonAddress } from '@tonconnect/ui-react'
@@ -70,7 +70,8 @@ export const Write = () => {
           if (isUserExists) {
             if (slug) {
               const res = (await geArticleBySlug({ userAddress: address, slug })).article.data
-              setArticle(res)
+              const updateData = restoreImageData(res)
+              setArticle(updateData)
               setStatus('ok')
             } else {
               setStatus('notfound')
@@ -98,31 +99,7 @@ export const Write = () => {
     const savedData = await editorCore.current?.save()
 
     if (savedData) {
-      const updatedData = {
-        ...savedData,
-        blocks: savedData.blocks.map(block => {
-          if (block.type === 'image' && block.data?.file?.url) {
-            const updatedUrl = block.data.file.url.replace(
-              /https:\/\/api\.fairjournal\.net\/ton\/([A-Za-z0-9]+)\/blob/,
-              'ton://$1',
-            )
-
-            return {
-              ...block,
-              data: {
-                ...block.data,
-                file: {
-                  ...block.data.file,
-                  url: updatedUrl,
-                },
-              },
-            }
-          }
-
-          return block
-        }),
-      }
-
+      const updatedData = updateImageData(savedData)
       try {
         if (!profile) {
           return

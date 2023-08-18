@@ -42,7 +42,6 @@ code {
 
 
 a:-webkit-any-link {
-  color: #5479F7;
   cursor: pointer;
   text-decoration: none;
 }

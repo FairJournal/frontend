@@ -10,6 +10,7 @@ import {
   Menu,
   MenuItem,
   Skeleton,
+  Link,
 } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { formatDate } from '../../utils'
@@ -100,30 +101,38 @@ export const ArticlCard = ({
         }
         subheader={isloading ? <Skeleton animation="wave" height={15} width="80%" /> : timeArticle}
       />
-      <CardActionArea onClick={() => window.open(`/${publickey}/${slug}`, '_blank')}>
-        {isloading ? (
-          <Skeleton sx={{ height: 200 }} animation="wave" variant="rectangular" />
-        ) : (
+
+      {isloading ? (
+        <Skeleton sx={{ height: 200 }} animation="wave" variant="rectangular" />
+      ) : (
+        <CardActionArea onClick={() => window.open(`/${publickey}/${slug}`, '_blank')}>
           <CardMedia component="img" height="200" image={image} alt={title} />
-        )}
-        <CardContent sx={{ minHeight: 200 }}>
-          {isloading ? (
-            <>
-              <Skeleton animation="wave" height={15} style={{ marginBottom: 6 }} />
-              <Skeleton animation="wave" height={10} width="80%" />
-            </>
-          ) : (
-            <>
-              <Typography gutterBottom variant="h6" component="div">
+        </CardActionArea>
+      )}
+      <CardContent sx={{ minHeight: 100, p: 1 }}>
+        {isloading ? (
+          <>
+            <Skeleton animation="wave" height={15} style={{ marginBottom: 6 }} />
+            <Skeleton animation="wave" height={10} width="80%" />
+          </>
+        ) : (
+          <>
+            <Typography gutterBottom variant="body1" component="div">
+              <Link
+                href={`/${publickey}/${slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ color: '#000', fontWeight: 600, '&:hover': { color: '#5479F7' } }}
+              >
                 {titleCur}
-              </Typography>
-              <Typography variant="body2" color="text.primory">
-                {shortText + '...'}
-              </Typography>
-            </>
-          )}
-        </CardContent>
-      </CardActionArea>
+              </Link>
+            </Typography>
+            <Typography variant="body2" color="text.primory">
+              {shortText + '...'}
+            </Typography>
+          </>
+        )}
+      </CardContent>
     </Card>
   )
 }

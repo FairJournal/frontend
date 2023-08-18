@@ -160,7 +160,7 @@ export const Dashboard = (props: Props) => {
       {profile === null ? (
         <>
           <Header />
-          <Container maxWidth="lg">
+          <Container maxWidth="lg" sx={{ position: 'relative' }}>
             <Box
               sx={{
                 minHeight: '80vh',

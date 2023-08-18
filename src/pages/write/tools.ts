@@ -6,7 +6,7 @@ import Header from '@editorjs/header'
 import Delimiter from '@editorjs/delimiter'
 import InlineCode from '@editorjs/inline-code'
 import Paragraph from '@editorjs/paragraph'
-import { uploadFile } from '../../utils/fs'
+import { uploadFile, uploadJsonFile } from '../../utils/fs'
 import { hashToUrl } from '../../utils'
 
 export const getEditorJsTools = () => {
@@ -23,13 +23,46 @@ export const getEditorJsTools = () => {
       config: {
         uploader: {
           async uploadByFile(file: File) {
-            const res = await uploadFile(file)
+            try {
+              if (file.size >= Number(process.env.REACT_APP_MAX_SIZE_FILE)) {
+                throw new Error('Image size exceeds the limit of 10MB')
+              }
 
-            return {
-              success: 1,
-              file: {
-                url: hashToUrl(res.data.reference),
-              },
+              const res = await uploadFile(file)
+
+              return {
+                success: 1,
+                file: {
+                  url: hashToUrl(res.data.reference),
+                },
+              }
+            } catch (error) {
+              return {
+                success: 0,
+                error: 'Error uploading image',
+              }
+            }
+          },
+          async uploadByUrl(url: string) {
+            try {
+              // Implement your logic here to handle image upload by URL
+              // You can use fetch or any other method to upload the image by URL
+
+              const response = await fetch(url)
+              const blob = await response.blob()
+              const res = await uploadJsonFile(blob)
+
+              return {
+                success: 1,
+                file: {
+                  url: hashToUrl(res.data.reference),
+                },
+              }
+            } catch (error) {
+              return {
+                success: 0,
+                error: 'Error uploading image from URL',
+              }
             }
           },
         },

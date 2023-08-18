@@ -61,7 +61,7 @@ export const findHeaderBlock = (data: OutputData): string => {
     headerText.innerHTML = headerBlock.data.text
     const decodedHeaderText = headerText.textContent || headerText.innerText
 
-    return decodedHeaderText.length <= 25 ? decodedHeaderText : decodedHeaderText.substring(0, 25) + '...'
+    return decodedHeaderText.length <= 25 ? decodedHeaderText : decodedHeaderText.substring(0, 60) + '...'
   }
 
   return 'New Article'
@@ -121,4 +121,62 @@ export const hashToUrl = (hash: string | undefined): string => {
   }
 
   return ''
+}
+
+export const updateImageData = (savedData: OutputData) => {
+  const updatedData = {
+    ...savedData,
+    blocks: savedData.blocks.map(block => {
+      if (block.type === 'image' && block.data?.file?.url) {
+        const updatedUrl = block.data.file.url.replace(
+          /https:\/\/api\.fairjournal\.net\/ton\/([A-Za-z0-9]+)\/blob/,
+          'ton://$1',
+        )
+
+        return {
+          ...block,
+          data: {
+            ...block.data,
+            file: {
+              ...block.data.file,
+              url: updatedUrl,
+            },
+          },
+        }
+      }
+
+      return block
+    }),
+  }
+
+  return updatedData
+}
+
+export const restoreImageData = (updatedArticle: OutputData) => {
+  const restoredData = {
+    ...updatedArticle,
+    blocks: updatedArticle.blocks.map(block => {
+      if (block.type === 'image' && block.data?.file?.url) {
+        const restoredUrl = block.data.file.url.replace(
+          /ton:\/\/([A-Za-z0-9]+)/,
+          `${process.env.REACT_APP_URL_API}ton/$1/blob`,
+        )
+
+        return {
+          ...block,
+          data: {
+            ...block.data,
+            file: {
+              ...block.data.file,
+              url: restoredUrl,
+            },
+          },
+        }
+      }
+
+      return block
+    }),
+  }
+
+  return restoredData
 }

@@ -145,7 +145,7 @@ export async function uploadFile(blob: File): Promise<StatusResponseUpload> {
  * @param data Object
  */
 
-export async function uploadJsonFile(data: string): Promise<StatusResponseUpload> {
+export async function uploadJsonFile(data: string | Blob): Promise<StatusResponseUpload> {
   const file = new File([data], 'file.json', { type: 'application/json' })
   const formData = new FormData()
   formData.append('blob', file)

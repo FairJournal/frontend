@@ -3,7 +3,7 @@ import { Box, Container, Grid, LinearProgress, Typography } from '@mui/material'
 import Output from 'editorjs-react-renderer'
 import { useParams } from 'react-router-dom'
 import { getProfileInfo, getUserInfo } from '../../api/users'
-import { formatDate, isValidAddress } from '../../utils'
+import { formatDate, isValidAddress, restoreImageData } from '../../utils'
 import { NotFoundComponent } from '../../components/notfound'
 import { ShareButtons } from '../../components/shareButtons'
 import { geArticleBySlug } from '../../api/article'
@@ -47,30 +47,7 @@ export const RenderArticle = () => {
             if (slug) {
               // eslint-disable-next-line max-depth
               const res = (await geArticleBySlug({ userAddress: address, slug })).article.data
-              const updatedArticle = {
-                ...res,
-                blocks: res.blocks.map(block => {
-                  if (block.type === 'image' && block.data?.file?.url) {
-                    const updatedUrl = block.data.file.url.replace(
-                      /ton:\/\/([A-Za-z0-9]+)/,
-                      `${process.env.REACT_APP_URL_API}ton/$1/blob`,
-                    )
-
-                    return {
-                      ...block,
-                      data: {
-                        ...block.data,
-                        file: {
-                          ...block.data.file,
-                          url: updatedUrl,
-                        },
-                      },
-                    }
-                  }
-
-                  return block
-                }),
-              }
+              const updatedArticle = restoreImageData(res)
               setArticle(updatedArticle)
               setStatus('ok')
             } else {
