@@ -13,6 +13,37 @@ code {
     monospace;
 }
 
+ol {
+  margin: 0;
+  padding-left: 40px;
+  outline: none;
+}
+
+li {
+  padding: 5.5px 0 5.5px 3px;
+  line-height: 1.6em;
+}
+
+p {
+  line-height: 1.6em;
+  outline: none;
+}
+
+h1, h2, h3 {
+  padding: 0.6em 0 3px;
+  margin: 0;
+  line-height: 1.25em;
+  outline: none;
+}
+
+.zoomable {
+  transition: transform 0.3s ease;
+}
+
+.zoomable:hover {
+  transform: scale(0.9);
+}
+
 .custom-code {
   color: #41314e;
   line-height: 1.6em;

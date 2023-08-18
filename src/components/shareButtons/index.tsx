@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { IconButton } from '@mui/material'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import TelegramIcon from '@mui/icons-material/Telegram'
+import LinkIcon from '@mui/icons-material/Link'
 
 interface SocialButtonProps {
   href: string
@@ -24,6 +25,21 @@ const SocialButton: React.FC<SocialButtonProps> = ({ href, background, color, ic
 }
 
 export const ShareButtons: React.FC<{ link: string }> = ({ link }) => {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = () => {
+    navigator.clipboard
+      .writeText(link)
+      .then(() => {
+        setCopied(true)
+        setTimeout(() => {
+          setCopied(false)
+        }, 1500)
+      })
+      .catch(error => {
+        console.error('Copy failed:', error)
+      })
+  }
   const socials = [
     {
       href: `${process.env.REACT_APP_URL_SHARE_LINKEDIN}${link}`,
@@ -50,6 +66,10 @@ export const ShareButtons: React.FC<{ link: string }> = ({ link }) => {
       {socials.map((social, index) => (
         <SocialButton key={index} {...social} />
       ))}
+      <IconButton sx={{ color: '#000', mr: 1 }} onClick={handleCopy}>
+        <LinkIcon sx={{ fontSize: 18, p: 0 }} />
+        {copied && <span style={{ marginLeft: '4px', fontSize: '12px' }}>Copied!</span>}
+      </IconButton>
     </div>
   )
 }

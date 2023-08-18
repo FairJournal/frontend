@@ -105,7 +105,7 @@ export const ArticlCard = ({
       {isloading ? (
         <Skeleton sx={{ height: 200 }} animation="wave" variant="rectangular" />
       ) : (
-        <CardActionArea onClick={() => window.open(`/${publickey}/${slug}`, '_blank')}>
+        <CardActionArea className="zoomable" onClick={() => window.open(`/${publickey}/${slug}`, '_blank')}>
           <CardMedia component="img" height="200" image={image} alt={title} />
         </CardActionArea>
       )}

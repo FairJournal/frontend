@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Container, Grid, LinearProgress, Typography } from '@mui/material'
+import { Box, Container, Grid, LinearProgress, ThemeProvider, Typography } from '@mui/material'
 import Output from 'editorjs-react-renderer'
 import { useParams } from 'react-router-dom'
 import { getProfileInfo, getUserInfo } from '../../api/users'
@@ -11,6 +11,8 @@ import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { ProfileInfo } from '../../types'
 import { useTonAddress } from '@tonconnect/ui-react'
+import { theme } from '../../App'
+import { Footer } from '../../components/footer'
 
 interface CodeBlockData {
   code: string
@@ -86,7 +88,7 @@ export const RenderArticle = () => {
   return (
     <>
       {article && address && (
-        <Box sx={{ backgroundColor: '#fff', minHeight: '90vh', minWidth: '90vw', pb: 10 }}>
+        <Box sx={{ backgroundColor: '#fff', minHeight: '90vh', minWidth: '90vw', pb: { lg: 20, md: 25, xs: 10 } }}>
           <Container maxWidth="md" sx={{ pt: 4 }}>
             <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
               <Grid item xs={6}>
@@ -104,8 +106,11 @@ export const RenderArticle = () => {
             <Typography variant="caption" display="block" gutterBottom sx={{ color: '#728a96' }}>
               {formatDate(article.time ?? 0)}
             </Typography>
-            <Output data={article} renderers={{ code: CustomCode }} />
+            <ThemeProvider theme={theme}>
+              <Output data={article} renderers={{ code: CustomCode }} />
+            </ThemeProvider>
           </Container>
+          <Footer />
         </Box>
       )}
     </>
