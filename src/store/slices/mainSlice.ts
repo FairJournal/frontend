@@ -35,7 +35,7 @@ export const MainSlice = createSlice({
       state.profile = action.payload
     },
     getAllArticles: (state, action: PayloadAction<Preview[]>) => {
-      state.articles = action.payload
+      state.articles = action.payload.sort((a, b) => b.time - a.time)
     },
     deleteArticleBySlug: (state, action: PayloadAction<string>) => {
       state.articles = removeArticleBySlug(state.articles, action.payload)

@@ -180,3 +180,11 @@ export const restoreImageData = (updatedArticle: OutputData) => {
 
   return restoredData
 }
+
+export const shortenName = (name: string): string => {
+  if (name.length > 11) {
+    return name.substring(0, 11) + '...'
+  }
+
+  return name
+}
