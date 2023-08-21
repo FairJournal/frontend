@@ -77,7 +77,7 @@ export const findImageBlock = (data: OutputData): string => {
 export const getFsApiUrl = (url: string, params?: { [key: string]: string }): string => {
   const queryParams = params ? `?${new URLSearchParams(params).toString()}` : ''
 
-  return `${process.env.REACT_APP_URL_API}v1/fs/${url}${queryParams}`
+  return `${process.env.REACT_APP_URL_API}fs/${url}${queryParams}`
 }
 
 export const isValidAddress = (address: string): boolean => {
@@ -117,14 +117,14 @@ export const extractArticleText = (data: OutputData): string => {
 
 export const hashToUrl = (hash: string | undefined): string => {
   if (hash) {
-    return `${process.env.REACT_APP_URL_API}ton/${hash.toUpperCase()}/blob`
+    return `${process.env.REACT_APP_URL_TON_STORAGE}ton/${hash.toUpperCase()}/blob`
   }
 
   return ''
 }
 
 export const updateImageData = (savedData: OutputData) => {
-  const updatedData = {
+  return {
     ...savedData,
     blocks: savedData.blocks.map(block => {
       if (block.type === 'image' && block.data?.file?.url) {
@@ -148,18 +148,16 @@ export const updateImageData = (savedData: OutputData) => {
       return block
     }),
   }
-
-  return updatedData
 }
 
 export const restoreImageData = (updatedArticle: OutputData) => {
-  const restoredData = {
+  return {
     ...updatedArticle,
     blocks: updatedArticle.blocks.map(block => {
       if (block.type === 'image' && block.data?.file?.url) {
         const restoredUrl = block.data.file.url.replace(
           /ton:\/\/([A-Za-z0-9]+)/,
-          `${process.env.REACT_APP_URL_API}ton/$1/blob`,
+          `${process.env.REACT_APP_URL_TON_STORAGE}ton/$1/blob`,
         )
 
         return {
@@ -177,8 +175,6 @@ export const restoreImageData = (updatedArticle: OutputData) => {
       return block
     }),
   }
-
-  return restoredData
 }
 
 export const shortenName = (name: string): string => {
