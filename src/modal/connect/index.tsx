@@ -23,8 +23,15 @@ const ConnectModal: React.FC<ConnectModalProps> = ({ handleClose }: ConnectModal
           Close
         </Button>
         <Typography variant="body2" color="textSecondary" style={{ marginTop: '10px', fontSize: '12px' }}>
-          OpenMask allows you to control changes on your personal file system without giving third-party access to make
-          changes.
+          OpenMask{' '}
+          <a
+            href="https://www.openmask.app/docs/api-reference/rpc-api#ton_personalsign"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            allows
+          </a>{' '}
+          you to control changes on your personal file system without giving third-party access to make changes.
         </Typography>
       </div>
     </Dialog>
