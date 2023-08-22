@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, MouseEvent } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -12,11 +12,9 @@ import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { selectMain, login, changeProfile } from '../../store/slices/mainSlice'
-import { useTonConnectUI } from '@tonconnect/ui-react'
-import { createUser } from '../../utils/fs'
-import { getPublicKey } from '../../utils/ton'
-import { getProfileInfo, getUserInfo } from '../../api/users'
+import { selectMain, changeProfile } from '../../store/slices/mainSlice'
+import { getProfileInfo } from '../../api/users'
+import { ConnectWalletButton } from '../connect-wallet-button'
 
 const pages = [{ page: 'About Us', route: 'about' }]
 
@@ -24,8 +22,7 @@ export const Header = () => {
   const { publickey } = useAppSelector(selectMain)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
-  const [tonConnectUI] = useTonConnectUI()
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
 
   useEffect(() => {
     if (publickey) {
@@ -36,34 +33,8 @@ export const Header = () => {
     }
   }, [publickey])
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
-  }
-
-  const connectWallet = async () => {
-    try {
-      if (tonConnectUI.connected) {
-        await tonConnectUI.disconnect()
-      }
-      await tonConnectUI.connectWallet()
-      const { publicKey, address } = await getPublicKey()
-      const userInfo = await getUserInfo(publicKey)
-
-      if (!userInfo.isUserExists) {
-        await createUser(publicKey)
-      }
-
-      dispatch(
-        login({
-          wallet: address,
-          publickey: publicKey,
-        }),
-      )
-    } catch (e) {
-      console.error(e)
-
-      return
-    }
   }
 
   const handleCloseNavMenu = (route: string) => {
@@ -142,11 +113,7 @@ export const Header = () => {
               Dashboard
             </Button>
           ) : (
-            <>
-              <Button variant="contained" color="primary" onClick={connectWallet}>
-                Connect wallet
-              </Button>
-            </>
+            <ConnectWalletButton variant="contained" color="primary" />
           )}
         </Toolbar>
       </Container>

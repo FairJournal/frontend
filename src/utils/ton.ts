@@ -6,7 +6,7 @@ declare const window: WindowWithTon
  * Ton provider
  */
 export interface TonProvider {
-  send: (method: string, params: any) => Promise<any>
+  send: (method: string, params?: any) => Promise<any>
 }
 
 /**
@@ -58,4 +58,20 @@ export async function getPublicKey(): Promise<{ publicKey: string; address: stri
   }
 
   return { publicKey, address }
+}
+
+/**
+ * Checks that open mask is available
+ */
+export function isOpenMask(): boolean {
+  return window?.ton?.isOpenMask
+}
+
+/**
+ * Gets OpenMast account
+ */
+export async function getOpenMaskAccount(): Promise<string> {
+  const accounts = await getTonProvider().send('ton_requestAccounts')
+
+  return accounts[0]
 }

@@ -21,7 +21,7 @@ import {
 } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { getAllArticles, login, logout, selectMain } from '../../store/slices/mainSlice'
+import { getAllArticles, logout, selectMain } from '../../store/slices/mainSlice'
 import { Settings } from '../../components/settings'
 import { ArticlCard } from '../../components/articleCard'
 import { SmallAvatar } from '../../components/smallAvatar'
@@ -32,9 +32,7 @@ import ArticleIcon from '@mui/icons-material/Article'
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { getUserArticles } from '../../api/article'
-import { getUserInfo } from '../../api/users'
-import { getPublicKey } from '../../utils/ton'
-import { createUser } from '../../utils/fs'
+import { ConnectWalletButton } from '../../components/connect-wallet-button'
 
 const drawerWidth = 240
 
@@ -86,7 +84,7 @@ export const Dashboard = (props: Props) => {
   }
 
   const logOut = async () => {
-    await tonConnectUI.disconnect()
+    // await tonConnectUI.disconnect()
     dispatch(logout())
     navigate('/')
   }
@@ -129,32 +127,6 @@ export const Dashboard = (props: Props) => {
 
   const container = window !== undefined ? () => window().document.body : undefined
 
-  const connectWallet = async () => {
-    try {
-      if (tonConnectUI.connected) {
-        await tonConnectUI.disconnect()
-      }
-      await tonConnectUI.connectWallet()
-      const { publicKey, address } = await getPublicKey()
-      const userInfo = await getUserInfo(publicKey)
-
-      if (!userInfo.isUserExists) {
-        await createUser(publicKey)
-      }
-
-      dispatch(
-        login({
-          wallet: address,
-          publickey: publicKey,
-        }),
-      )
-    } catch (e) {
-      console.error(e)
-
-      return
-    }
-  }
-
   return (
     <>
       {profile === null ? (
@@ -175,9 +147,7 @@ export const Dashboard = (props: Props) => {
                   To create articles, you need to connect a wallet.
                 </Typography>
                 <Box>
-                  <Button variant="outlined" color="inherit" onClick={connectWallet}>
-                    Connect wallet
-                  </Button>
+                  <ConnectWalletButton variant="outlined" color="inherit" />
                 </Box>
               </Box>
             </Box>

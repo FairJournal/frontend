@@ -47,7 +47,8 @@
     "test": "jest",
     "eject": "react-scripts eject",
     "lint:check": "eslint \"src/**/*.ts\" && prettier --check \"src/**/*.ts\"",
-    "check:types": "tsc --project tsconfig.test.json"
+    "check:types": "tsc --project tsconfig.test.json",
+    "check": "npm run lint:check && npm run check:types"
   },
   "eslintConfig": {
     "extends": [
