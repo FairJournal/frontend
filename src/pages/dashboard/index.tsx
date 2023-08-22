@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react'
 import MenuIcon from '@mui/icons-material/Menu'
 import AddIcon from '@mui/icons-material/Add'
@@ -25,15 +24,15 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { getAllArticles, logout, selectMain } from '../../store/slices/mainSlice'
 import { Settings } from '../../components/settings'
 import { ArticlCard } from '../../components/articleCard'
-import { shortenString } from '../../utils'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { Header } from '../../components/header'
-import { getArticlesByUserId } from '../../api/users'
 import UpdateRoundedIcon from '@mui/icons-material/UpdateRounded'
 import ArticleIcon from '@mui/icons-material/Article'
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
 import LogoutIcon from '@mui/icons-material/Logout'
+import { getUserArticles } from '../../api/article'
+import { ConnectWalletButton } from '../../components/connect-wallet-button'
 
 const drawerWidth = 240
 
@@ -48,11 +47,10 @@ const dataList = [
 
 export const Dashboard = (props: Props) => {
   const { window } = props
-  const { profile, articles } = useAppSelector(selectMain)
+  const { profile, articles, publickey } = useAppSelector(selectMain)
   const [mobileOpen, setMobileOpen] = useState<boolean>(false)
   const [tab, setTab] = useState<string>('1')
   const [status, setStatus] = useState<'pending' | 'error' | 'ok'>('ok')
-
   const [tonConnectUI] = useTonConnectUI()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -62,8 +60,9 @@ export const Dashboard = (props: Props) => {
     if (profile) {
       try {
         setStatus('pending')
-        const articles = await getArticlesByUserId(profile.id)
-        dispatch(getAllArticles(articles))
+        const articles = await (await getUserArticles(publickey)).articles
+        const arr = articles.map(el => el.previewData)
+        dispatch(getAllArticles(arr))
         setStatus('ok')
       } catch {
         setStatus('error')
@@ -85,13 +84,13 @@ export const Dashboard = (props: Props) => {
   }
 
   const logOut = async () => {
-    await tonConnectUI.disconnect()
+    // await tonConnectUI.disconnect()
     dispatch(logout())
     navigate('/')
   }
 
   const goWrite = () => {
-    navigate('/write/new')
+    navigate('/write')
   }
 
   const drawer = (
@@ -127,22 +126,13 @@ export const Dashboard = (props: Props) => {
   )
 
   const container = window !== undefined ? () => window().document.body : undefined
-  const shortWallet = shortenString(userFriendlyAddress)
-
-  const connectWallet = async () => {
-    // const result = await tonConnectUI.connectWallet()
-    // const user = await loginUser(result.account.address)
-    // dispatch(login(user))
-    // eslint-disable-next-line no-alert
-    alert('Implement new login method')
-  }
 
   return (
     <>
       {profile === null ? (
         <>
           <Header />
-          <Container maxWidth="lg">
+          <Container maxWidth="lg" sx={{ position: 'relative' }}>
             <Box
               sx={{
                 minHeight: '80vh',
@@ -157,9 +147,7 @@ export const Dashboard = (props: Props) => {
                   To create articles, you need to connect a wallet.
                 </Typography>
                 <Box>
-                  <Button variant="outlined" color="inherit" onClick={connectWallet}>
-                    Connect wallet
-                  </Button>
+                  <ConnectWalletButton variant="outlined" color="inherit" />
                 </Box>
               </Box>
             </Box>
@@ -194,8 +182,8 @@ export const Dashboard = (props: Props) => {
                   <MenuIcon />
                 </IconButton>
                 <SmallAvatar
-                  to={`/profile/${profile.id}`}
-                  profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
+                  to={`/profile/${publickey}`}
+                  profile={{ name: profile.name, avatar: profile.avatar, wallet: userFriendlyAddress }}
                 />
                 <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
                   <AddIcon sx={{ fontSize: 19 }} />
@@ -244,7 +232,16 @@ export const Dashboard = (props: Props) => {
               {tab === '1' && (
                 <>
                   {status === 'pending' && (
-                    <ArticlCard blocks={[]} time={1} id={1} isEdit={false} idAuthor={1} isloading={true} />
+                    <ArticlCard
+                      time={1}
+                      slug={''}
+                      isEdit={false}
+                      publickey={''}
+                      isloading={true}
+                      img={''}
+                      shortText={''}
+                      title={''}
+                    />
                   )}
                   {status === 'error' && (
                     <Box
@@ -275,21 +272,14 @@ export const Dashboard = (props: Props) => {
                         <Grid container spacing={2} sx={{ pt: 2, mb: 8, textAlign: 'center' }}>
                           {articles.map(el => (
                             <Grid
-                              key={el.id}
+                              key={el.slug}
                               item
                               lg={4}
                               md={6}
                               xs={12}
                               sx={{ display: 'flex', justifyContent: 'center' }}
                             >
-                              <ArticlCard
-                                blocks={el.blocks}
-                                time={el.time}
-                                id={el.id}
-                                isEdit={true}
-                                idAuthor={profile.id}
-                                isloading={false}
-                              />
+                              <ArticlCard {...el} isEdit={true} isloading={false} publickey={publickey} />
                             </Grid>
                           ))}
                         </Grid>

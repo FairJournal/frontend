@@ -1,38 +1,42 @@
-/* eslint-disable no-console */
 import React, { useState } from 'react'
 import { Box, Chip, Container, Divider, Paper, Button, TextField, Grid } from '@mui/material'
 import { AvatarPicker } from './avatarPicker'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { changeProfile, selectMain } from '../../store/slices/mainSlice'
 import { shortenString } from '../../utils'
-import { useTonAddress } from '@tonconnect/ui-react'
-import { updateUser } from '../../api/users'
+import { addProfileInfo, uploadFile } from '../../utils/fs'
 
 export const Settings = () => {
-  const { profile, wallet } = useAppSelector(selectMain)
+  const { profile, publickey, wallet } = useAppSelector(selectMain)
   const dispatch = useAppDispatch()
   const [avatar, setAvatar] = useState<File | undefined>()
   const [name, setName] = useState(profile ? profile.name : '')
   const [description, setDescription] = useState(profile ? profile.description : '')
-  const userFriendlyAddress = useTonAddress()
 
   const saveSettings = async () => {
     try {
       if (profile) {
-        const res = await updateUser(profile.id, {
-          name,
-          description,
-          avatar,
-          wallet,
+        let hashAvatar = profile.avatar
+
+        if (avatar) {
+          hashAvatar = (await uploadFile(avatar)).data.reference
+        }
+        await addProfileInfo({
+          address: publickey,
+          data: {
+            avatar: hashAvatar,
+            name,
+            description,
+          },
         })
-        dispatch(changeProfile({ ...profile, name, description, avatar: res.avatar }))
+        dispatch(changeProfile({ ...profile, name, description, avatar: hashAvatar }))
       }
     } catch (e) {
       console.log(e)
     }
   }
 
-  const shortWallet = shortenString(userFriendlyAddress)
+  const shortWallet = shortenString(wallet)
 
   return (
     <Paper sx={{ with: '600px', backgroundColor: 'secondary', pt: 2 }} elevation={3}>
@@ -50,7 +54,7 @@ export const Settings = () => {
               inputProps={{ maxLength: 30 }}
               fullWidth
             />
-            <Chip label={shortWallet} />
+            <Chip title={wallet} label={shortWallet} />
           </Grid>
         </Grid>
         <Divider sx={{ mb: 2 }} />

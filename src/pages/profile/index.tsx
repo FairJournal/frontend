@@ -1,52 +1,66 @@
 import React, { useEffect, useState } from 'react'
 import { Header } from '../../components/header'
 import { Avatar, Box, Chip, Container, Typography, Divider, Grid, Toolbar, Skeleton } from '@mui/material'
-import { ArticlCard } from '../../components/articleCard'
-import { shortenString } from '../../utils'
-import { getArticlesByUserId, getUserById } from '../../api/users'
+import { hashToUrl, isValidAddress, shortenString } from '../../utils'
+import { getProfileInfo, getUserInfo } from '../../api/users'
 import { useParams } from 'react-router-dom'
-import { Article, User } from '../../types'
+import { Preview, ProfileInfo } from '../../types'
 import { NotFoundComponent } from '../../components/notfound'
 import { Footer } from '../../components/footer'
+import { getUserArticles } from '../../api/article'
+import { ArticlCard } from '../../components/articleCard'
+import { useTonAddress } from '@tonconnect/ui-react'
 
 export const Profile = () => {
-  const { id } = useParams()
-  const [profile, setProfile] = useState<User | null>(null)
-  const [articles, setArticles] = useState<Article[] | null>(null)
+  const { address } = useParams()
+  const [profile, setProfile] = useState<ProfileInfo | null>(null)
+  const [articles, setArticles] = useState<Preview[] | null>(null)
   const [status, setStatus] = useState<string>('ok')
+  const userFriendlyAddress = useTonAddress()
+  const shortWallet = shortenString(userFriendlyAddress)
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const checkAddressAndFetchData = async () => {
+      setStatus('pending')
+
+      if (!address || !isValidAddress(address)) {
+        setStatus('notfound')
+
+        return
+      }
+
       try {
-        setStatus('pending')
-        setProfile(await getUserById(id as string))
-        setStatus('ok')
-      } catch (e) {
+        const { isUserExists } = await getUserInfo(address)
+
+        if (isUserExists) {
+          const res = await getProfileInfo(address)
+          setProfile(res)
+          setStatus('ok')
+        } else {
+          setStatus('notfound')
+        }
+      } catch (error) {
         setStatus('notfound')
       }
     }
 
-    if (id) {
-      fetchUser()
-    }
-  }, [id])
+    checkAddressAndFetchData()
+  }, [address])
 
   useEffect(() => {
-    const fetchArticle = async () => {
-      try {
-        setArticles(await getArticlesByUserId(Number(id)))
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log(e)
+    const getArticle = async () => {
+      if (profile && address) {
+        try {
+          const articles = await (await getUserArticles(address)).articles
+          const arr = articles.map(el => el.previewData)
+          setArticles(arr)
+        } catch (e) {
+          console.log(e)
+        }
       }
     }
-
-    if (id && status !== 'notfound') {
-      fetchArticle()
-    }
-  }, [id])
-
-  const shortWallet = profile ? shortenString(profile.wallet) : ''
+    getArticle()
+  }, [profile])
 
   return (
     <>
@@ -63,23 +77,36 @@ export const Profile = () => {
               </Box>
             </Box>
             <Typography variant="subtitle1" gutterBottom></Typography>
+            <Divider sx={{ mt: 2 }} />
+            <Grid container spacing={2} sx={{ pt: 2, pb: 4 }}>
+              <Grid item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+                <ArticlCard
+                  title={''}
+                  time={1}
+                  slug={''}
+                  isEdit={false}
+                  publickey={''}
+                  isloading={true}
+                  img={''}
+                  shortText={''}
+                />
+              </Grid>
+            </Grid>
           </>
         )}
+
         {profile && status === 'ok' && (
           <>
             <Box sx={{ display: 'flex', mt: 10, mb: 2 }}>
-              <Avatar
-                alt="Avatar"
-                src={`${process.env.REACT_APP_URL_API}${profile.avatar}`}
-                sx={{ width: 150, height: 150, mr: 2 }}
-              />
+              <Avatar alt="Avatar" src={hashToUrl(profile.avatar)} sx={{ width: 150, height: 150, mr: 2 }} />
               <Box>
                 <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
                   {profile?.name}
                 </Typography>
                 <Chip
+                  title={userFriendlyAddress}
                   label={shortWallet}
-                  onClick={() => window.open(`https://tonviewer.com/${profile.wallet}`, '_blank')}
+                  onClick={() => window.open(`https://tonviewer.com/${userFriendlyAddress}`, '_blank')}
                 />
               </Box>
             </Box>
@@ -89,16 +116,10 @@ export const Profile = () => {
             <Divider sx={{ mt: 2 }} />
             <Grid container spacing={2} sx={{ pt: 2, pb: 4 }}>
               {articles &&
+                address &&
                 articles.map(el => (
-                  <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <ArticlCard
-                      blocks={el.blocks}
-                      time={el.time}
-                      id={el.id}
-                      isEdit={false}
-                      idAuthor={profile.id}
-                      isloading={false}
-                    />
+                  <Grid key={el.slug} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <ArticlCard {...el} isEdit={false} isloading={false} publickey={address} />
                   </Grid>
                 ))}
             </Grid>

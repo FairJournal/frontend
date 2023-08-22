@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, MouseEvent } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -12,76 +12,29 @@ import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { selectMain, login } from '../../store/slices/mainSlice'
-import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
-import { createAddDirectoryAction, createAddUserAction, Update } from '@fairjournal/file-system'
-import { DEFAULT_DIRECTORY, getUserInfo, PROJECT_NAME, updateApply } from '../../utils/fs'
-import { getPublicKey, personalSignString } from '../../utils/ton'
+import { selectMain, changeProfile } from '../../store/slices/mainSlice'
+import { getProfileInfo } from '../../api/users'
+import { ConnectWalletButton } from '../connect-wallet-button'
 
-const pages = [{ page: 'About Us', route: 'aboutus' }]
+const pages = [{ page: 'About Us', route: 'about' }]
 
 export const Header = () => {
-  const { wallet } = useAppSelector(selectMain)
+  const { publickey } = useAppSelector(selectMain)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
-  const [tonConnectUI] = useTonConnectUI()
-  const walletTon = useTonWallet()
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
 
   useEffect(() => {
-    // if (walletTon) {
-    //   ;(async () => {
-    //     const user = await loginUser(walletTon.account.address)
-    //     dispatch(login(user))
-    //   })()
-    // }
-    // todo use new login method
-  }, [walletTon])
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    // eslint-disable-next-line no-console
-    setAnchorElNav(event.currentTarget)
-  }
-
-  const connectWallet = async () => {
-    try {
-      if (tonConnectUI.connected) {
-        await tonConnectUI.disconnect()
-      }
-
-      const result = await tonConnectUI.connectWallet()
-      const publicKey = await getPublicKey()
-      const userInfo = await getUserInfo(publicKey)
-
-      if (!userInfo.isUserExists) {
-        const update = new Update(PROJECT_NAME, publicKey, 1)
-        update.addAction(createAddUserAction(publicKey))
-        update.addAction(createAddDirectoryAction(`/${DEFAULT_DIRECTORY}`))
-        const signData = update.getSignData()
-        const signature = await personalSignString(signData)
-        update.setSignature(signature)
-        const signedData = update.getUpdateDataSigned()
-        await updateApply(signedData)
-      }
-
-      // todo don't use this login http method
-      // const user = await loginUser(result.account.address)
-      dispatch(
-        login({
-          id: 0,
-          wallet: publicKey,
-          avatar: '',
-          name: 'No User Name',
-          description: 'No User Description',
-          articles: [0],
-        }),
-      )
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e)
-
-      return
+    if (publickey) {
+      ;(async () => {
+        const profile = await getProfileInfo(publickey)
+        dispatch(changeProfile(profile))
+      })()
     }
+  }, [publickey])
+
+  const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget)
   }
 
   const handleCloseNavMenu = (route: string) => {
@@ -155,16 +108,12 @@ export const Header = () => {
               </Button>
             ))}
           </Box>
-          {wallet ? (
+          {publickey ? (
             <Button variant="contained" color="primary" onClick={() => navigate('/dashboard')}>
               Dashboard
             </Button>
           ) : (
-            <>
-              <Button variant="contained" color="primary" onClick={connectWallet}>
-                Connect wallet
-              </Button>
-            </>
+            <ConnectWalletButton variant="contained" color="primary" />
           )}
         </Toolbar>
       </Container>

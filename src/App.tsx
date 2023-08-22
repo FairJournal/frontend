@@ -64,7 +64,7 @@ export const theme = createTheme({
       fontSize: '20px',
     },
     body2: {
-      fontSize: '20px',
+      fontSize: '16px',
     },
   },
   palette: {
@@ -86,7 +86,7 @@ export const theme = createTheme({
 function App() {
   return (
     <>
-      <TonConnectUIProvider manifestUrl="https://fairjournal.net/tonconnect-manifest.json">
+      <TonConnectUIProvider manifestUrl={`${process.env.REACT_APP_URL_MAINFEST}`}>
         <ThemeProvider theme={theme}>
           <Box
             sx={{
@@ -97,14 +97,14 @@ function App() {
           >
             <Routes>
               <Route path="/" element={<Main />} />
-              <Route path="/aboutus" element={<AboutUs />} />
+              <Route path="/about" element={<AboutUs />} />
               <Route path="/howitworks" element={<HowItWorks />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/community" element={<Community />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/profile/:id" element={<Profile />} />
-              <Route path="/write/:edit" element={<Write />} />
-              <Route path="/:authorId/:articleId" element={<RenderArticle />} />
+              <Route path="/profile/:address" element={<Profile />} />
+              <Route path="/write/:address?/:slug?" element={<Write />} />
+              <Route path="/:address/:slug" element={<RenderArticle />} />
               <Route path="/*" element={<NotFound />} />
             </Routes>
           </Box>

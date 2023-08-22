@@ -82,7 +82,7 @@ export const Main = () => {
                 <Button
                   variant="outlined"
                   sx={{ m: 1, pt: '1.3rem', pb: '1.3rem', pl: '1.9rem', pr: '1.9rem' }}
-                  onClick={() => navigate('/aboutus')}
+                  onClick={() => navigate('/about')}
                 >
                   Learn More
                 </Button>
@@ -124,7 +124,7 @@ export const Main = () => {
               <Typography gutterBottom variant="h5" component="div" color="secondary">
                 Fair compensation for creators
               </Typography>
-              <Typography variant="body2" color="secondary">
+              <Typography variant="body1" color="secondary">
                 Creators on our platform can earn fair compensation through unique NFT articles, which they can sell and
                 collect. Additionally, users can subscribe to their favorite creators via our Telegram bot and access
                 exclusive content through paid subscriptions. This provides reliable and sustainable income sources for
@@ -159,7 +159,7 @@ export const Main = () => {
             <Typography gutterBottom variant="h5" component="div">
               Your Community-Driven Platform!
             </Typography>
-            <Typography variant="body2">
+            <Typography variant="body1">
               At Fair Journal, we value community above all else. Join us to freely share ideas, connect with
               like-minded individuals, and engage in meaningful discussions. Together, we shape the direction of Fair
               Journal, celebrating diverse perspectives and fostering creativity. Whether you're a blogger, journalist,
@@ -214,7 +214,7 @@ export const Main = () => {
           <Typography gutterBottom variant="h5" component="div">
             Development Roadmap
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="body1">
             Stay tuned for upcoming milestones, platform enhancements, and new features. As we evolve and grow together,
             we aim to provide you with the best blogging experience possible. Join us on this journey of innovation and
             progress.
@@ -249,12 +249,12 @@ export const Main = () => {
               }}
             >
               {steps.map(label => (
-                <>
+                <div key={label}>
                   <Divider />
                   <ListItem alignItems="flex-start">
                     <ListItemText primaryTypographyProps={{ variant: 'h6' }} primary={label} />
                   </ListItem>
-                </>
+                </div>
               ))}
             </List>
           </Box>

@@ -1,47 +1,28 @@
-/* eslint-disable no-console */
-import { OutputData } from '@editorjs/editorjs'
+import { ResUserArticles, ResUserArticle } from '../types'
+import { getFsApiUrl } from '../utils'
 
-export const deleteArticle = async (id: number): Promise<number> => {
-  const response = await fetch(`${process.env.REACT_APP_URL_API}api/articles/${id}`, {
-    method: 'DELETE',
-  })
+export const getUserArticles = async (userAddress: string): Promise<ResUserArticles> => {
+  const response = await fetch(getFsApiUrl('blob/get-articles', { userAddress }))
 
   if (!response.ok) {
-    throw new Error(`Failed to delete article with id ${id}`)
+    throw new Error(`HTTP error! Status: ${response.status}`)
   }
 
-  return id
+  return response.json()
 }
 
-export const updateArticle = async (
-  articleId: number,
-  authorId: number,
-  hash: string,
-  content: OutputData,
-): Promise<number | null> => {
-  try {
-    const response = await fetch(`${process.env.REACT_APP_URL_API}api/articles/${articleId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ authorId, hash, content }),
-    })
+export const geArticleBySlug = async ({
+  userAddress,
+  slug,
+}: {
+  userAddress: string
+  slug: string
+}): Promise<ResUserArticle> => {
+  const response = await fetch(getFsApiUrl('blob/get-article', { userAddress, slug }))
 
-    if (response.ok) {
-      return articleId
-    } else if (response.status === 404) {
-      console.error(`Article with id ${articleId} not found`)
-
-      return null
-    } else {
-      console.error(`Failed to update article with id ${articleId}`)
-
-      return null
-    }
-  } catch (error) {
-    console.error(`Failed to update article with id ${articleId}:`, error)
-
-    return null
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`)
   }
+
+  return response.json()
 }

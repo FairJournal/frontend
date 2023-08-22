@@ -1,91 +1,50 @@
-import { UpdateUserPayload, User } from '../types'
+import { ProfileInfo, ResPath, ResUserInfo } from '../types'
+import { getFsApiUrl, hashToUrl } from '../utils'
 
-export const loginUser = async (wallet: string): Promise<User> => {
-  const response = await fetch(`${process.env.REACT_APP_URL_API}api/auth`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ wallet }),
-  })
+// Get info about file/directory
+export const getPathInfo = async ({
+  userAddress,
+  path,
+}: {
+  userAddress: string
+  path: string
+}): Promise<ResPath | false> => {
+  const response = await fetch(getFsApiUrl('blob/get-path-info', { userAddress, path }))
 
   if (!response.ok) {
-    throw new Error('Unable to login')
+    if (response.status === 500) {
+      return false
+    }
+    throw new Error(`HTTP error! Status: ${response.status}`)
   }
 
   return response.json()
 }
 
-export const getUserById = async (id: string) => {
-  return (await fetch(`${process.env.REACT_APP_URL_API}api/users/${id}`)).json()
-}
-
-export const updateUser = async (id: number, payload: UpdateUserPayload): Promise<User> => {
-  const { name, description, avatar, wallet } = payload
-  const formData = new FormData()
-  formData.append('name', name)
-  formData.append('description', description)
-
-  if (avatar) {
-    formData.append('avatar', avatar)
-  }
-
-  formData.append('wallet', wallet)
-
-  const response = await fetch(`${process.env.REACT_APP_URL_API}api/users/${id}`, {
-    method: 'POST',
-    body: formData,
-  })
+// Check User
+export const getUserInfo = async (address: string): Promise<ResUserInfo> => {
+  const response = await fetch(getFsApiUrl('user/info', { address }))
 
   if (!response.ok) {
-    const error = await response.text()
-    throw new Error(`Failed to update user: ${error}`)
+    throw new Error(`HTTP error! Status: ${response.status}`)
   }
 
-  const user = await response.json()
-
-  return user
+  return response.json()
 }
 
-interface ArticlePayload {
-  authorId: number
-  hash: string
-  content: object
-}
+// Get Profile User
+export const getProfileInfo = async (userAddress: string): Promise<ProfileInfo> => {
+  const dataProfile = await getPathInfo({ userAddress, path: '/profile-json' })
 
-export const createArticle = async (payload: ArticlePayload): Promise<number> => {
-  const response = await fetch(`${process.env.REACT_APP_URL_API}api/articles`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-  })
+  if (dataProfile) {
+    const hash = dataProfile.data.hash
 
-  if (!response.ok) {
-    const error = await response.text()
-    throw new Error(`Failed to create article: ${error}`)
+    return (await fetch(hashToUrl(hash))).json()
   }
 
-  const newArticle = await response.json()
-
-  return newArticle.id
-}
-
-export const getArticlesByUserId = async (id: number) => {
-  const response = await fetch(`${process.env.REACT_APP_URL_API}api/users/${id}/articles`)
-
-  if (!response.ok) {
-    const error = await response.text()
-    throw new Error(`Failed to get articles for user with id ${id}: ${error}`)
+  return {
+    avatar: '',
+    name: 'UserName',
+    description: 'The best user',
   }
-  const articles = await response.json()
-
-  return articles.map((item: { id: number; hash: string; content: string }) => {
-    return { id: item.id, time: JSON.parse(item.content).time, blocks: JSON.parse(item.content).blocks }
-  })
-}
-
-export const getArticleById = async (id: string) => {
-  return (await fetch(`${process.env.REACT_APP_URL_API}api/articles/${id}`)).json()
 }
