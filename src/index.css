@@ -102,3 +102,7 @@ a:-webkit-any-link {
 .card-container {
   height: 100%;
 }
+
+.MuiContainer-maxWidthMd {
+  max-width: 780px !important;
+}

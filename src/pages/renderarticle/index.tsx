@@ -10,7 +10,6 @@ import { geArticleBySlug } from '../../api/article'
 import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { ProfileInfo } from '../../types'
-import { useTonAddress } from '@tonconnect/ui-react'
 import { theme } from '../../App'
 import { Footer } from '../../components/footer'
 
@@ -27,7 +26,6 @@ export const RenderArticle = () => {
   const [article, setArticle] = useState<OutputData | null>(null)
   const [profile, setProfile] = useState<ProfileInfo | null>(null)
   const [status, setStatus] = useState<string>('ok')
-  const userFriendlyAddress = useTonAddress()
 
   useEffect(() => {
     const checkAddressAndFetchData = async () => {
@@ -88,18 +86,18 @@ export const RenderArticle = () => {
   return (
     <>
       {article && address && (
-        <Box sx={{ backgroundColor: '#fff', minHeight: '90vh', minWidth: '90vw', pb: { lg: 20, md: 25, xs: 10 } }}>
-          <Container maxWidth="md" sx={{ pt: 4 }}>
-            <Grid container spacing={2} alignItems="center" sx={{ mb: 3 }}>
-              <Grid item xs={6}>
+        <>
+          <Container maxWidth="md" sx={{ pt: 4, px: 0, pb: { lg: 20, md: 25, xs: 10 }, minHeight: '90vh' }}>
+            <Grid container spacing={2} justifyContent="space-between" alignItems="space-between" sx={{ mb: 3 }}>
+              <Grid item xs="auto">
                 {profile && (
                   <SmallAvatar
                     to={`/profile/${address}`}
-                    profile={{ name: profile.name, avatar: profile.avatar, wallet: userFriendlyAddress }}
+                    profile={{ name: profile.name, avatar: profile.avatar, wallet: profile.wallet }}
                   />
                 )}
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs="auto">
                 <ShareButtons link={`https://fairjournal.net/${address}/${slug}`} />
               </Grid>
             </Grid>
@@ -111,7 +109,7 @@ export const RenderArticle = () => {
             </ThemeProvider>
           </Container>
           <Footer />
-        </Box>
+        </>
       )}
     </>
   )

@@ -29,7 +29,7 @@ export const ConnectWalletButton: React.FC<ConnectWalletProps> = props => {
       const userInfo = await getUserInfo(publicKey)
 
       if (!userInfo.isUserExists) {
-        await createUser(publicKey)
+        await createUser({ publicKey, address })
       }
 
       dispatch(
