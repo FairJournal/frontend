@@ -16,8 +16,9 @@ const ConnectModal: React.FC<ConnectModalProps> = ({ handleClose }: ConnectModal
           <Typography variant="body1">
             To use the site, please install{' '}
             <a href="https://www.openmask.app/" target="_blank" rel="noopener noreferrer">
-              OpenMask!
+              OpenMask
             </a>
+            !
           </Typography>
           <Typography variant="body1">
             OpenMask{' '}
@@ -28,7 +29,11 @@ const ConnectModal: React.FC<ConnectModalProps> = ({ handleClose }: ConnectModal
             >
               allows
             </a>{' '}
-            you to control changes on your personal file system without giving third-party access to make changes.
+            you to control changes on your{' '}
+            <a href="https://github.com/FairJournal/file-system" target="_blank" rel="noopener noreferrer">
+              personal file system
+            </a>{' '}
+            without giving third-party access to make changes.
           </Typography>
         </DialogContentText>
       </DialogContent>
