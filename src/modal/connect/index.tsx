@@ -38,7 +38,7 @@ const ConnectModal: React.FC<ConnectModalProps> = ({ handleClose }: ConnectModal
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button color="error" onClick={handleClose} autoFocus>
+        <Button color="info" onClick={handleClose} autoFocus>
           Close
         </Button>
       </DialogActions>
