@@ -27,6 +27,7 @@ export const Settings = () => {
             avatar: hashAvatar,
             name,
             description,
+            wallet,
           },
         })
         dispatch(changeProfile({ ...profile, name, description, avatar: hashAvatar }))

@@ -4,6 +4,7 @@ export interface ProfileInfo {
   avatar: string
   name: string
   description: string
+  wallet: string
 }
 
 export interface Preview {

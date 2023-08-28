@@ -82,18 +82,25 @@ export function clearUpdateInstance(): void {
  * @param address public key
  */
 
-export async function createUser(address: string): Promise<StatusResponse> {
+export async function createUser({
+  publicKey,
+  address,
+}: {
+  publicKey: string
+  address: string
+}): Promise<StatusResponse> {
   const data = {
     avatar: '',
     name: 'UserName',
     description: 'The best user',
+    wallet: address,
   }
   const userData = JSON.stringify(data)
   const res = await uploadJsonFile(userData)
   const hash = res.data.reference
 
-  const update = new Update(PROJECT_NAME, address, 1)
-  update.addAction(createAddUserAction(address))
+  const update = new Update(PROJECT_NAME, publicKey, 1)
+  update.addAction(createAddUserAction(publicKey))
   update.addAction(createAddDirectoryAction(`/${DEFAULT_DIRECTORY}`))
   update.addAction(
     createAddFileAction({

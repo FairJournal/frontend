@@ -46,5 +46,6 @@ export const getProfileInfo = async (userAddress: string): Promise<ProfileInfo> 
     avatar: '',
     name: 'UserName',
     description: 'The best user',
+    wallet: '',
   }
 }
