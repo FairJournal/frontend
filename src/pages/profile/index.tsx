@@ -102,7 +102,7 @@ export const Profile = () => {
                 </Typography>
                 <Chip
                   title={profile.wallet}
-                  label={shortenString(profile.wallet)}
+                  label={shortenString({ str: profile.wallet })}
                   onClick={() => window.open(`https://tonviewer.com/${profile.wallet}`, '_blank')}
                 />
               </Box>

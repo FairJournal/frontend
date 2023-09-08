@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Container, Grid, LinearProgress, ThemeProvider, Typography } from '@mui/material'
+import { Box, Container, Divider, Grid, LinearProgress, ThemeProvider, Typography } from '@mui/material'
 import Output from 'editorjs-react-renderer'
 import { useParams } from 'react-router-dom'
 import { getProfileInfo, getUserInfo } from '../../api/users'
@@ -12,6 +12,7 @@ import { SmallAvatar } from '../../components/smallAvatar'
 import { ProfileInfo } from '../../types'
 import { theme } from '../../App'
 import { Footer } from '../../components/footer'
+import { Verification } from '../../components/verification'
 
 interface CodeBlockData {
   code: string
@@ -26,6 +27,7 @@ export const RenderArticle = () => {
   const [article, setArticle] = useState<OutputData | null>(null)
   const [profile, setProfile] = useState<ProfileInfo | null>(null)
   const [status, setStatus] = useState<string>('ok')
+  const [bagid, setBagid] = useState<string>('')
 
   useEffect(() => {
     const checkAddressAndFetchData = async () => {
@@ -46,8 +48,9 @@ export const RenderArticle = () => {
 
             if (slug) {
               // eslint-disable-next-line max-depth
-              const res = (await geArticleBySlug({ userAddress: address, slug })).article.data
-              const updatedArticle = restoreImageData(res)
+              const res = await geArticleBySlug({ userAddress: address, slug })
+              const updatedArticle = restoreImageData(res.article.data)
+              setBagid(res.reference)
               setArticle(updatedArticle)
               setStatus('ok')
             } else {
@@ -87,7 +90,7 @@ export const RenderArticle = () => {
     <>
       {article && address && (
         <>
-          <Container maxWidth="md" sx={{ pt: 4, px: 0, pb: { lg: 20, md: 25, xs: 10 }, minHeight: '90vh' }}>
+          <Container maxWidth="md" sx={{ pt: 4, px: 0, pb: { lg: 16, md: 25, xs: 10 }, minHeight: '90vh' }}>
             <Grid container spacing={2} justifyContent="space-between" alignItems="space-between" sx={{ mb: 3 }}>
               <Grid item xs="auto">
                 {profile && (
@@ -107,6 +110,8 @@ export const RenderArticle = () => {
             <ThemeProvider theme={theme}>
               <Output data={article} renderers={{ code: CustomCode }} />
             </ThemeProvider>
+            <Divider sx={{ mb: 2 }} />
+            <Verification bagid={bagid} address={profile?.wallet ?? ''} />
           </Container>
           <Footer />
         </>

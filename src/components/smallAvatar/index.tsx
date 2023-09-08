@@ -10,7 +10,7 @@ interface SmallAvatarProps {
 }
 
 export const SmallAvatar: React.FC<SmallAvatarProps> = ({ to, profile }) => {
-  const shortWallet = shortenString(profile.wallet)
+  const shortWallet = shortenString({ str: profile.wallet })
   const shortName = shortenName(profile.name)
 
   return (
