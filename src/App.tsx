@@ -3,7 +3,6 @@ import { Main } from './pages/main'
 import { Box, createTheme, ThemeProvider } from '@mui/material'
 import { Routes, Route } from 'react-router-dom'
 import { AboutUs } from './pages/aboutus'
-import { Footer } from './components/footer'
 import { HowItWorks } from './pages/howitworks'
 import { Blog } from './pages/blog'
 import { Community } from './pages/community'
@@ -14,69 +13,104 @@ import { RenderArticle } from './pages/renderarticle'
 import { TonConnectUIProvider } from '@tonconnect/ui-react'
 import { NotFound } from './pages/notfound'
 
-function App() {
-  const theme = createTheme({
-    typography: {
-      fontFamily: [
-        '-apple-system',
-        'BlinkMacSystemFont',
-        'GFS Didot',
-        'serif',
-        '"Segoe UI"',
-        'Roboto',
-        '"Helvetica Neue"',
-        'Arial',
-        'sans-serif',
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"',
-      ].join(','),
-      body1: {
-        fontSize: '1.1rem',
+export const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: '2rem',
+          fontSize: '1.2rem',
+          lineHeight: '1.2rem',
+          padding: '0.7rem 1.4rem',
+          textTransform: 'capitalize',
+        },
       },
     },
-    palette: {
-      primary: {
-        main: '#FAF7F5',
-        light: '#F2F3F4',
-      },
-      secondary: {
-        main: '#000000',
-      },
-      success: {
-        main: '#0EB8B7',
-      },
+  },
+  typography: {
+    fontSize: 20,
+    h1: {
+      fontWeight: 700,
     },
-  })
+    h2: {
+      fontWeight: 700,
+    },
+    h3: {
+      fontWeight: 600,
+    },
+    h4: {
+      fontWeight: 500,
+    },
+    h5: {
+      fontWeight: 400,
+    },
+    h6: {
+      fontWeight: 400,
+    },
+    fontFamily: [
+      'Inter',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+    body1: {
+      fontSize: '20px',
+    },
+    body2: {
+      fontSize: '16px',
+    },
+  },
+  palette: {
+    primary: {
+      main: '#5479F7',
+      light: '#CADDFF',
+    },
+    secondary: {
+      main: '#ffffff',
+      light: '#F2F3F4',
+    },
+    success: {
+      main: '#37A1AB',
+      light: '#000',
+    },
+  },
+})
 
+function App() {
   return (
-    <div>
-      <TonConnectUIProvider manifestUrl="https://ton-connect.github.io/demo-dapp-with-react-ui/tonconnect-manifest.json">
+    <>
+      <TonConnectUIProvider manifestUrl={`${process.env.REACT_APP_URL_MAINFEST}`}>
         <ThemeProvider theme={theme}>
           <Box
             sx={{
-              backgroundColor: 'primary.main',
+              backgroundColor: 'secondary.main',
               minHeight: '100vh',
               position: 'relative',
             }}
           >
             <Routes>
               <Route path="/" element={<Main />} />
-              <Route path="/aboutus" element={<AboutUs />} />
+              <Route path="/about" element={<AboutUs />} />
               <Route path="/howitworks" element={<HowItWorks />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/community" element={<Community />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/profile/:id" element={<Profile />} />
-              <Route path="/write/:edit" element={<Write />} />
-              <Route path="/:authorId/:articleId" element={<RenderArticle />} />
+              <Route path="/profile/:address" element={<Profile />} />
+              <Route path="/write/:address?/:slug?" element={<Write />} />
+              <Route path="/:address/:slug" element={<RenderArticle />} />
               <Route path="/*" element={<NotFound />} />
             </Routes>
-            <Footer />
           </Box>
         </ThemeProvider>
       </TonConnectUIProvider>
-    </div>
+    </>
   )
 }
 

@@ -4,9 +4,7 @@ import { MainSlice } from './slices/mainSlice'
 export const store = configureStore({
   reducer: {
     main: MainSlice.reducer,
-    //[api.reducerPath]: api.reducer
   },
-  //middleware: (getDefaultMiddleware)=>getDefaultMiddleware().concat(api.middleware)
 })
 
 export type AppDispatch = typeof store.dispatch

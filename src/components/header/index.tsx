@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, MouseEvent } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -12,54 +12,48 @@ import Button from '@mui/material/Button'
 import MenuItem from '@mui/material/MenuItem'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { selectMain, login } from '../../store/slices/mainSlice'
-import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
-import { loginUser } from '../../api/users'
+import { selectMain, changeProfile } from '../../store/slices/mainSlice'
+import { getProfileInfo } from '../../api/users'
+import { ConnectWalletButton } from '../connect-wallet-button'
 
-const pages = [{ page: 'About Us', route: 'aboutus' }]
+const pages = [{ page: 'About Us', route: 'about' }]
 
 export const Header = () => {
-  const { wallet } = useAppSelector(selectMain)
+  const { publickey } = useAppSelector(selectMain)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
-  const [tonConnectUI] = useTonConnectUI()
-  const walletTon = useTonWallet()
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
 
   useEffect(() => {
-    if (walletTon) {
+    if (publickey) {
       ;(async () => {
-        const user = await loginUser(walletTon.account.address)
-        dispatch(login(user))
+        const profile = await getProfileInfo(publickey)
+        dispatch(changeProfile(profile))
       })()
     }
-  }, [walletTon])
+  }, [publickey])
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
   }
 
-  const connectWallet = async () => {
-    if (tonConnectUI.connected) {
-      await tonConnectUI.disconnect()
-    }
-
-    const result = await tonConnectUI.connectWallet()
-    const user = await loginUser(result.account.address)
-    dispatch(login(user))
-  }
-
   const handleCloseNavMenu = (route: string) => {
-    setAnchorElNav(null)
-    navigate(`/${route}`)
+    const page = pages.find(page => page.route === route)
+
+    if (page) {
+      setAnchorElNav(null)
+      navigate(`/${route}`)
+    } else {
+      setAnchorElNav(null)
+    }
   }
 
   return (
-    <AppBar position="static">
+    <AppBar position="fixed" color="secondary" sx={{ mb: 6, opacity: [0.9, 0.8, 0.8] }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Link to="/">
-            <Avatar sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} alt="FJ" src="/images/F1.png" />
+            <Avatar sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} alt="FJ" src="/images/logo1.png" />
           </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -100,7 +94,7 @@ export const Header = () => {
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <Link to="/">
-              <Avatar alt="FJ" src="/images/F1.png" />
+              <Avatar alt="FJ" src="/images/logo1.png" />
             </Link>
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end', mr: 2 }}>
@@ -114,16 +108,12 @@ export const Header = () => {
               </Button>
             ))}
           </Box>
-          {wallet ? (
-            <Button variant="outlined" color="inherit" onClick={() => navigate('/dashboard')}>
+          {publickey ? (
+            <Button variant="contained" color="primary" onClick={() => navigate('/dashboard')}>
               Dashboard
             </Button>
           ) : (
-            <>
-              <Button variant="outlined" color="inherit" onClick={connectWallet}>
-                Connect wallet
-              </Button>
-            </>
+            <ConnectWalletButton variant="contained" color="primary" />
           )}
         </Toolbar>
       </Container>

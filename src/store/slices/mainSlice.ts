@@ -1,17 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { Article, User } from '../../types'
-import { removeArticleById, updateArticleById } from '../../utils'
+import { Preview, ProfileInfo } from '../../types'
+import { removeArticleBySlug } from '../../utils'
 
-export interface MainState {
+interface MainState {
   wallet: string
-  profile: User | null
-  articles: Array<Article>
+  publickey: string
+  profile: ProfileInfo | null
+  articles: Preview[]
 }
 
 const initialState: MainState = {
   wallet: '',
+  publickey: '',
   profile: null,
   articles: [],
 }
@@ -21,33 +23,28 @@ export const MainSlice = createSlice({
   reducers: {
     logout: state => {
       state.wallet = ''
+      state.publickey = ''
       state.profile = null
+      state.articles = []
     },
-    login: (state, action: PayloadAction<User>) => {
+    login: (state, action: PayloadAction<{ wallet: string; publickey: string }>) => {
       state.wallet = action.payload.wallet
+      state.publickey = action.payload.publickey
+    },
+    changeProfile: (state, action: PayloadAction<ProfileInfo>) => {
       state.profile = action.payload
     },
-    changeProfile: (state, action: PayloadAction<User>) => {
-      state.profile = action.payload
+    getAllArticles: (state, action: PayloadAction<Preview[]>) => {
+      state.articles = action.payload.sort((a, b) => b.time - a.time)
     },
-    saveArticle: (state, action: PayloadAction<Article>) => {
-      state.articles.push(action.payload)
-    },
-    getAllArticles: (state, action: PayloadAction<Article[]>) => {
-      state.articles = action.payload
-    },
-    deleteArticleById: (state, action: PayloadAction<number>) => {
-      state.articles = removeArticleById(state.articles, action.payload)
-    },
-    updateArticleBy: (state, action: PayloadAction<Article>) => {
-      state.articles = updateArticleById(action.payload, state.articles)
+    deleteArticleBySlug: (state, action: PayloadAction<string>) => {
+      state.articles = removeArticleBySlug(state.articles, action.payload)
     },
   },
 })
 
 export const selectMain = (state: RootState) => state.main
 
-export const { logout, login, changeProfile, saveArticle, getAllArticles, deleteArticleById, updateArticleBy } =
-  MainSlice.actions
+export const { logout, login, changeProfile, getAllArticles, deleteArticleBySlug } = MainSlice.actions
 
 export default MainSlice.reducer

@@ -6,7 +6,7 @@ declare const window: WindowWithTon
  * Ton provider
  */
 export interface TonProvider {
-  send: (method: string, params: any) => Promise<any>
+  send: (method: string, params?: any) => Promise<any>
 }
 
 /**
@@ -30,10 +30,48 @@ export function getTonProvider(): TonProvider {
 /**
  * Signs a string using Ton extension
  */
-export async function signString(data: string): Promise<string> {
+export async function personalSignString(data: string): Promise<string> {
   const provider = getTonProvider()
 
   return provider.send('ton_personalSign', {
     data,
   })
+}
+
+/**
+ * Get public key from Ton extension
+ */
+export async function getPublicKey(): Promise<{ publicKey: string; address: string }> {
+  const provider = getTonProvider()
+
+  const response = await provider.send('ton_requestWallets', {})
+
+  if (!response || !response.length) {
+    throw new Error('Failed to request wallets')
+  }
+
+  const publicKey = response[0].publicKey
+  const address = response[0].address
+
+  if (!publicKey) {
+    throw new Error('Failed to get public key from requested wallets')
+  }
+
+  return { publicKey, address }
+}
+
+/**
+ * Checks that open mask is available
+ */
+export function isOpenMask(): boolean {
+  return window?.ton?.isOpenMask
+}
+
+/**
+ * Gets OpenMast account
+ */
+export async function getOpenMaskAccount(): Promise<string> {
+  const accounts = await getTonProvider().send('ton_requestAccounts')
+
+  return accounts[0]
 }

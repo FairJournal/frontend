@@ -1,18 +1,20 @@
-/* eslint-disable no-console */
+/* eslint-disable max-depth */
 import React, { useRef, useCallback, useEffect, useState } from 'react'
 import { createReactEditorJS } from 'react-editor-js'
 import { getEditorJsTools } from './tools'
-import { Container, Toolbar, AppBar, Button, Box } from '@mui/material'
+import { Container, Toolbar, AppBar, Button, Box, ThemeProvider, Typography } from '@mui/material'
 import { OutputData } from '@editorjs/editorjs'
 import { SmallAvatar } from '../../components/smallAvatar'
-import { findArticleById, shortenString } from '../../utils'
+import { isValidAddress, restoreImageData, updateImageData } from '../../utils'
 import { useAppSelector } from '../../store/hooks'
-import { saveArticle, selectMain, updateArticleBy } from '../../store/slices/mainSlice'
-import { useDispatch } from 'react-redux'
+import { selectMain } from '../../store/slices/mainSlice'
 import { useTonAddress } from '@tonconnect/ui-react'
-import { createArticle } from '../../api/users'
 import { useNavigate, useParams } from 'react-router-dom'
-import { updateArticle } from '../../api/article'
+import { theme } from '../../App'
+import { getUserInfo } from '../../api/users'
+import { geArticleBySlug } from '../../api/article'
+import { addArticleToFs, updateArticleToFs } from '../../utils/fs'
+import { NotFoundComponent } from '../../components/notfound'
 
 const defaultValue = {
   time: 1556098174501,
@@ -42,88 +44,143 @@ interface EditorCore {
 
 export const Write = () => {
   const editorCore = useRef<EditorCore | null>(null)
-  const [editArticle, setEditArticle] = useState<OutputData | null | undefined>(null)
-  const { edit } = useParams()
-  const { profile, articles } = useAppSelector(selectMain)
-  const dispatch = useDispatch()
+  const { profile, publickey } = useAppSelector(selectMain)
   const userFriendlyAddress = useTonAddress()
   const navigate = useNavigate()
 
-  let EDITOR_JS_TOOLS
+  const { address, slug } = useParams()
+  const [article, setArticle] = useState<OutputData | null>(null)
+  const [status, setStatus] = useState<string>('ok')
 
-  if (profile) {
-    EDITOR_JS_TOOLS = getEditorJsTools(profile.id)
-  }
+  const EDITOR_JS_TOOLS = getEditorJsTools()
 
   useEffect(() => {
-    if (edit !== 'new' && typeof Number(edit) === 'number') {
-      const res = findArticleById(articles, Number(edit))
-      console.log(res)
-      setEditArticle(res)
-    } else {
-      setEditArticle(defaultValue)
+    const checkAddressAndFetchData = async () => {
+      setStatus('pending')
+
+      if (address) {
+        if (!address || !isValidAddress(address)) {
+          setStatus('notfound')
+
+          return
+        }
+        try {
+          const { isUserExists } = await getUserInfo(address)
+
+          if (isUserExists) {
+            if (slug) {
+              const res = (await geArticleBySlug({ userAddress: address, slug })).article.data
+              const updateData = restoreImageData(res)
+              setArticle(updateData)
+              setStatus('ok')
+            } else {
+              setStatus('notfound')
+            }
+          } else {
+            setStatus('notfound')
+          }
+        } catch {
+          setStatus('notfound')
+        }
+      } else {
+        setArticle(defaultValue)
+        setStatus('ok')
+      }
     }
-  }, [edit])
+
+    checkAddressAndFetchData()
+  }, [address, slug])
 
   const handleInitialize = useCallback((instance: EditorCore) => {
     editorCore.current = instance
   }, [])
 
   const handleSave = useCallback(async () => {
-    try {
-      if (!profile) {
-        return
-      }
+    const savedData = await editorCore.current?.save()
 
-      const savedData = await editorCore.current?.save()
-      console.log(savedData)
+    if (savedData) {
+      const updatedData = updateImageData(savedData)
+      try {
+        if (!profile) {
+          return
+        }
 
-      if (savedData !== undefined && savedData.time && savedData.blocks) {
-        if (edit === 'new') {
-          const id = await createArticle({ authorId: profile.id, hash: '00000000000', content: savedData })
-          dispatch(saveArticle({ id, time: savedData.time, blocks: savedData.blocks }))
+        if (!slug) {
+          await addArticleToFs({ data: updatedData, address: publickey })
         } else {
-          const id = await updateArticle(Number(edit), profile.id, '00000000000', savedData)
-
-          // eslint-disable-next-line max-depth
-          if (id) {
-            dispatch(updateArticleBy({ id, time: savedData.time, blocks: savedData.blocks }))
-          }
+          await updateArticleToFs({ data: updatedData, address: publickey, slug })
         }
         navigate('/dashboard')
+      } catch (e) {
+        console.log(e)
       }
-    } catch (e) {
-      console.log(e)
     }
   }, [])
 
-  const shortWallet = shortenString(userFriendlyAddress)
+  if (status === 'notfound') {
+    return <NotFoundComponent />
+  }
 
   return (
     <>
       <Box sx={{ backgroundColor: '#fff', minHeight: '100vh', minWidth: '90vw' }}>
         <Container maxWidth="md">
-          <AppBar position="fixed">
-            <Toolbar sx={{ display: 'flex', justifyContent: { md: 'space-between', xs: 'space-around' } }}>
-              {profile && (
-                <SmallAvatar
-                  to="/dashboard"
-                  profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
-                />
-              )}
-              <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={handleSave}>
-                Publish
-              </Button>
-            </Toolbar>
-          </AppBar>
-          <Toolbar />
-          {editArticle !== null && (
-            <ReactEditorJS
-              autofocus={true}
-              onInitialize={handleInitialize}
-              tools={EDITOR_JS_TOOLS}
-              defaultValue={editArticle}
-            />
+          {profile && (
+            <>
+              <AppBar position="fixed" sx={{ backgroundColor: '#fff' }}>
+                <Toolbar
+                  sx={{
+                    display: 'flex',
+                    backgroundColor: 'fff',
+                    justifyContent: { md: 'space-between', xs: 'space-around' },
+                  }}
+                >
+                  <SmallAvatar
+                    to="/dashboard"
+                    profile={{ name: profile.name, avatar: profile.avatar, wallet: userFriendlyAddress }}
+                  />
+
+                  <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={handleSave}>
+                    Publish
+                  </Button>
+                </Toolbar>
+              </AppBar>
+              <Toolbar />
+            </>
+          )}
+          {!profile && (
+            <>
+              <Box
+                sx={{
+                  minHeight: '80vh',
+                  display: 'flex',
+                  alignItems: 'center',
+                  width: '100%',
+                  justifyContent: 'center',
+                }}
+              >
+                <Box sx={{ textAlign: 'center' }}>
+                  <Typography align="center" variant="h5" sx={{ mb: 2, mt: 2 }}>
+                    Something went wrong!
+                  </Typography>
+                  <Box>
+                    <Button variant="outlined" color="inherit" onClick={() => navigate('/dashboard')}>
+                      Go Dashboard
+                    </Button>
+                  </Box>
+                </Box>
+              </Box>
+            </>
+          )}
+          {article !== null && profile && (
+            <ThemeProvider theme={theme}>
+              <ReactEditorJS
+                autofocus={true}
+                onInitialize={handleInitialize}
+                tools={EDITOR_JS_TOOLS}
+                defaultValue={article}
+              />
+            </ThemeProvider>
           )}
         </Container>
       </Box>

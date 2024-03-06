@@ -1,7 +1,4 @@
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react'
-import InboxIcon from '@mui/icons-material/MoveToInbox'
-import MailIcon from '@mui/icons-material/Mail'
 import MenuIcon from '@mui/icons-material/Menu'
 import AddIcon from '@mui/icons-material/Add'
 import {
@@ -24,15 +21,18 @@ import {
 } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { getAllArticles, login, logout, selectMain } from '../../store/slices/mainSlice'
+import { getAllArticles, logout, selectMain } from '../../store/slices/mainSlice'
 import { Settings } from '../../components/settings'
 import { ArticlCard } from '../../components/articleCard'
-import { shortenString } from '../../utils'
 import { SmallAvatar } from '../../components/smallAvatar'
 import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { Header } from '../../components/header'
-import { getArticlesByUserId, loginUser } from '../../api/users'
 import UpdateRoundedIcon from '@mui/icons-material/UpdateRounded'
+import ArticleIcon from '@mui/icons-material/Article'
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
+import LogoutIcon from '@mui/icons-material/Logout'
+import { getUserArticles } from '../../api/article'
+import { ConnectWalletButton } from '../../components/connect-wallet-button'
 
 const drawerWidth = 240
 
@@ -41,17 +41,16 @@ interface Props {
 }
 
 const dataList = [
-  { title: 'Articles', id: '1', icon: <InboxIcon /> },
-  { title: 'Settings', id: '2', icon: <InboxIcon /> },
+  { title: 'Articles', id: '1', icon: <ArticleIcon /> },
+  { title: 'Settings', id: '2', icon: <ManageAccountsIcon /> },
 ]
 
 export const Dashboard = (props: Props) => {
   const { window } = props
-  const { profile, articles } = useAppSelector(selectMain)
+  const { profile, articles, publickey } = useAppSelector(selectMain)
   const [mobileOpen, setMobileOpen] = useState<boolean>(false)
   const [tab, setTab] = useState<string>('1')
   const [status, setStatus] = useState<'pending' | 'error' | 'ok'>('ok')
-
   const [tonConnectUI] = useTonConnectUI()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
@@ -61,8 +60,9 @@ export const Dashboard = (props: Props) => {
     if (profile) {
       try {
         setStatus('pending')
-        const articles = await getArticlesByUserId(profile.id)
-        dispatch(getAllArticles(articles))
+        const articles = await (await getUserArticles(publickey)).articles
+        const arr = articles.map(el => el.previewData)
+        dispatch(getAllArticles(arr))
         setStatus('ok')
       } catch {
         setStatus('error')
@@ -84,13 +84,13 @@ export const Dashboard = (props: Props) => {
   }
 
   const logOut = async () => {
-    await tonConnectUI.disconnect()
+    // await tonConnectUI.disconnect()
     dispatch(logout())
     navigate('/')
   }
 
   const goWrite = () => {
-    navigate('/write/new')
+    navigate('/write')
   }
 
   const drawer = (
@@ -106,7 +106,7 @@ export const Dashboard = (props: Props) => {
           <ListItem key={el.id} disablePadding>
             <ListItemButton onClick={() => changeTab(el.id)}>
               <ListItemIcon>{el.icon}</ListItemIcon>
-              <ListItemText primary={el.title} />
+              <ListItemText primary={el.title} sx={{ fontSize: '1.2rem' }} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -116,7 +116,7 @@ export const Dashboard = (props: Props) => {
         <ListItem disablePadding>
           <ListItemButton onClick={logOut}>
             <ListItemIcon>
-              <MailIcon />
+              <LogoutIcon />
             </ListItemIcon>
             <ListItemText primary="Logout" />
           </ListItemButton>
@@ -126,20 +126,13 @@ export const Dashboard = (props: Props) => {
   )
 
   const container = window !== undefined ? () => window().document.body : undefined
-  const shortWallet = shortenString(userFriendlyAddress)
-
-  const connectWallet = async () => {
-    const result = await tonConnectUI.connectWallet()
-    const user = await loginUser(result.account.address)
-    dispatch(login(user))
-  }
 
   return (
     <>
       {profile === null ? (
         <>
           <Header />
-          <Container maxWidth="lg">
+          <Container maxWidth="lg" sx={{ position: 'relative' }}>
             <Box
               sx={{
                 minHeight: '80vh',
@@ -154,9 +147,7 @@ export const Dashboard = (props: Props) => {
                   To create articles, you need to connect a wallet.
                 </Typography>
                 <Box>
-                  <Button variant="outlined" color="inherit" onClick={connectWallet}>
-                    Connect wallet
-                  </Button>
+                  <ConnectWalletButton variant="outlined" color="inherit" />
                 </Box>
               </Box>
             </Box>
@@ -171,11 +162,18 @@ export const Dashboard = (props: Props) => {
               sx={{
                 width: { sm: `calc(100% - ${drawerWidth}px)` },
                 ml: { sm: `${drawerWidth}px` },
+                backgroundColor: '#fff',
               }}
             >
-              <Toolbar sx={{ display: 'flex', justifyContent: { md: 'space-between', xs: 'space-around' } }}>
+              <Toolbar
+                sx={{
+                  display: 'flex',
+                  backgroundColor: '#fff',
+                  justifyContent: { md: 'space-between', xs: 'space-around' },
+                }}
+              >
                 <IconButton
-                  color="inherit"
+                  color="primary"
                   aria-label="open drawer"
                   edge="start"
                   onClick={handleDrawerToggle}
@@ -184,11 +182,11 @@ export const Dashboard = (props: Props) => {
                   <MenuIcon />
                 </IconButton>
                 <SmallAvatar
-                  to={`/profile/${profile.id}`}
-                  profile={{ name: profile.name, avatar: profile.avatar, wallet: shortWallet }}
+                  to={`/profile/${publickey}`}
+                  profile={{ name: profile.name, avatar: profile.avatar, wallet: userFriendlyAddress }}
                 />
                 <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
-                  <AddIcon />
+                  <AddIcon sx={{ fontSize: 19 }} />
                   Write
                 </Button>
               </Toolbar>
@@ -201,7 +199,7 @@ export const Dashboard = (props: Props) => {
             <Drawer
               container={container}
               PaperProps={{
-                sx: { backgroundColor: 'primary.light' },
+                sx: { backgroundColor: 'secondary' },
               }}
               variant="temporary"
               open={mobileOpen}
@@ -219,7 +217,7 @@ export const Dashboard = (props: Props) => {
             <Drawer
               variant="permanent"
               PaperProps={{
-                sx: { backgroundColor: 'primary.light' },
+                sx: { backgroundColor: 'secondary' },
               }}
               sx={{
                 display: { xs: 'none', sm: 'block' },
@@ -234,7 +232,16 @@ export const Dashboard = (props: Props) => {
               {tab === '1' && (
                 <>
                   {status === 'pending' && (
-                    <ArticlCard blocks={[]} time={1} id={1} isEdit={false} idAuthor={1} isloading={true} />
+                    <ArticlCard
+                      time={1}
+                      slug={''}
+                      isEdit={false}
+                      publickey={''}
+                      isloading={true}
+                      img={''}
+                      shortText={''}
+                      title={''}
+                    />
                   )}
                   {status === 'error' && (
                     <Box
@@ -244,6 +251,7 @@ export const Dashboard = (props: Props) => {
                         alignItems: 'center',
                         flexDirection: 'column',
                         minHeight: '80vh',
+                        textAlign: 'center',
                       }}
                     >
                       <Typography variant="h6">Something went wrong, try again.</Typography>
@@ -253,7 +261,7 @@ export const Dashboard = (props: Props) => {
                         onClick={getArticle}
                         sx={{ color: '#ffffff', mt: 2, mb: 2 }}
                       >
-                        <UpdateRoundedIcon />
+                        <UpdateRoundedIcon sx={{ fontSize: 19 }} />
                         Update
                       </Button>
                     </Box>
@@ -264,21 +272,14 @@ export const Dashboard = (props: Props) => {
                         <Grid container spacing={2} sx={{ pt: 2, mb: 8, textAlign: 'center' }}>
                           {articles.map(el => (
                             <Grid
-                              key={el.id}
+                              key={el.slug}
                               item
                               lg={4}
                               md={6}
                               xs={12}
                               sx={{ display: 'flex', justifyContent: 'center' }}
                             >
-                              <ArticlCard
-                                blocks={el.blocks}
-                                time={el.time}
-                                id={el.id}
-                                isEdit={true}
-                                idAuthor={profile.id}
-                                isloading={false}
-                              />
+                              <ArticlCard {...el} isEdit={true} isloading={false} publickey={publickey} />
                             </Grid>
                           ))}
                         </Grid>
@@ -294,7 +295,7 @@ export const Dashboard = (props: Props) => {
                         >
                           <Typography variant="h6">You don't have any articles yet, let's create!</Typography>
                           <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
-                            <AddIcon />
+                            <AddIcon sx={{ fontSize: 19 }} />
                             Write
                           </Button>
                         </Box>

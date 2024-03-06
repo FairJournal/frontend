@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useState } from 'react'
 import {
   Card,
@@ -11,28 +10,32 @@ import {
   Menu,
   MenuItem,
   Skeleton,
+  Link,
 } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { formatDate, stripHtmlTags } from '../../utils'
-import { OutputBlockData } from '@editorjs/editorjs'
-import { deleteArticle } from '../../api/article'
-import { deleteArticleById } from '../../store/slices/mainSlice'
+import { formatDate } from '../../utils'
+import { deleteArticleBySlug } from '../../store/slices/mainSlice'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { removeArticleToFs } from '../../utils/fs'
 
 export const ArticlCard = ({
-  id,
-  blocks,
+  title,
   time,
+  slug,
+  img,
+  shortText,
   isEdit,
-  idAuthor,
+  publickey,
   isloading,
 }: {
-  id: number
+  title: string
   time: number
-  blocks: OutputBlockData<string, any>[]
+  slug: string
+  img: string
+  shortText: string
   isEdit: boolean
-  idAuthor: number
+  publickey: string
   isloading: boolean
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -47,24 +50,24 @@ export const ArticlCard = ({
     setAnchorEl(event.currentTarget)
   }
 
-  const handleDelete = async (id: number) => {
-    const res = await deleteArticle(id)
-    dispatch(deleteArticleById(res))
+  const handleDelete = async (address: string) => {
+    await removeArticleToFs({ address, slug })
+    dispatch(deleteArticleBySlug(slug))
     handleClose()
   }
 
-  const handleEdit = (id: number) => {
-    navigate(`/write/${id}`)
+  const handleEdit = (address: string) => {
+    navigate(`/write/${address}/${slug}`)
     handleClose()
   }
 
   const timeArticle = formatDate(time)
-  const title = blocks.find(el => el.type === 'header')?.data.text ?? 'New article!'
-  const text = stripHtmlTags(blocks.find(el => el.type === 'paragraph')?.data.text).slice(0, 100) + '...' ?? ''
-  const image = blocks.find(el => el.type === 'image')?.data.file.url ?? '/images/F2.png'
+  const titleCur = title ? title : 'New Article'
+  const regex = /ton:\/\/([A-Za-z0-9]+)/
+  const image = img ? img.replace(regex, `${process.env.REACT_APP_URL_TON_STORAGE}ton/$1/blob`) : '/images/F2.png'
 
   return (
-    <Card sx={{ maxWidth: 300, minWidth: 250, backgroundColor: 'primary.light' }}>
+    <Card sx={{ width: 300, backgroundColor: 'secondary' }}>
       <CardHeader
         action={
           // eslint-disable-next-line no-nested-ternary
@@ -88,8 +91,8 @@ export const ArticlCard = ({
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={() => handleEdit(id)}>Edit</MenuItem>
-                <MenuItem onClick={async () => handleDelete(id)}>Remove</MenuItem>
+                <MenuItem onClick={() => handleEdit(publickey)}>Edit</MenuItem>
+                <MenuItem onClick={async () => handleDelete(publickey)}>Remove</MenuItem>
               </Menu>
             </>
           ) : (
@@ -98,30 +101,38 @@ export const ArticlCard = ({
         }
         subheader={isloading ? <Skeleton animation="wave" height={15} width="80%" /> : timeArticle}
       />
-      <CardActionArea onClick={() => window.open(`/${idAuthor}/${id}`, '_blank')}>
-        {isloading ? (
-          <Skeleton sx={{ height: 200 }} animation="wave" variant="rectangular" />
-        ) : (
+
+      {isloading ? (
+        <Skeleton sx={{ height: 200 }} animation="wave" variant="rectangular" />
+      ) : (
+        <CardActionArea className="zoomable" onClick={() => window.open(`/${publickey}/${slug}`, '_blank')}>
           <CardMedia component="img" height="200" image={image} alt={title} />
+        </CardActionArea>
+      )}
+      <CardContent sx={{ minHeight: 100, p: 1 }}>
+        {isloading ? (
+          <>
+            <Skeleton animation="wave" height={15} style={{ marginBottom: 6 }} />
+            <Skeleton animation="wave" height={10} width="80%" />
+          </>
+        ) : (
+          <>
+            <Typography gutterBottom variant="body1" component="div">
+              <Link
+                href={`/${publickey}/${slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{ color: '#000', fontWeight: 600, '&:hover': { color: '#5479F7' } }}
+              >
+                {titleCur}
+              </Link>
+            </Typography>
+            <Typography variant="body2" color="text.primory">
+              {shortText + '...'}
+            </Typography>
+          </>
         )}
-        <CardContent>
-          {isloading ? (
-            <>
-              <Skeleton animation="wave" height={15} style={{ marginBottom: 6 }} />
-              <Skeleton animation="wave" height={10} width="80%" />
-            </>
-          ) : (
-            <>
-              <Typography gutterBottom variant="h5" component="div">
-                {title}
-              </Typography>
-              <Typography variant="body2" color="text.primory">
-                {text}
-              </Typography>
-            </>
-          )}
-        </CardContent>
-      </CardActionArea>
+      </CardContent>
     </Card>
   )
 }

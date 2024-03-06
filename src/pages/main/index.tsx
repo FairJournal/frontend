@@ -1,46 +1,48 @@
 import React from 'react'
-import { Alert, Box, Button, Container, Fade, Grid, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  Container,
+  Divider,
+  Fade,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Step,
+  StepLabel,
+  Stepper,
+  Typography,
+} from '@mui/material'
 import { CardMediaMain } from '../../components/card'
 import { Header } from '../../components/header'
 import { useNavigate } from 'react-router-dom'
+import { Footer } from '../../components/footer'
 
 const cardsData = [
   {
     id: '1',
     src: './images/M1.png',
-    title: 'Decentralized:',
-    text: 'As mentioned before, Fair Journal is a decentralized platform that is powered by blockchain technology. This means that there is no central authority controlling the platform, and users have complete control over their content and data. This ensures that the platform is resistant to censorship and provides users with the freedom to express themselves without fear of being silenced or removed.',
+    title: 'Full Decentralization with TON',
+    text: 'Fair Journal leverages TON blockchain, providing a decentralized ecosystem where users have complete control over their content.',
+    url: 'https://ton.org/',
   },
   {
     id: '2',
     src: './images/M2.png',
-    title: 'Censorship-resistant:',
-    text: 'Because Fair Journal is decentralized, it is highly resistant to censorship. This means that users can share their ideas and opinions without fear of being silenced or removed from the platform. In contrast, centralized blog platforms often have the power to remove or censor content that they deem to be inappropriate or controversial.',
+    title: 'Secured with TON Storage',
+    text: 'Fair Journal utilizes TON Storage for data storage, ensuring enhanced security and privacy.',
+    url: 'https://docs.ton.org/participate/ton-storage/storage-daemon',
   },
-  {
-    id: '3',
-    src: './images/M3.png',
-    title: 'Ownership of your data:',
-    text: "Fair Journal is designed to give users complete ownership and control over their data. This means that users can decide how their data is used and who has access to it. In contrast, centralized blogs often retain ownership of user data, which can be used for targeted advertising or sold to third parties without the user's consent.",
-  },
-  {
-    id: '4',
-    src: './images/M4.png',
-    title: 'Complete control of your content:',
-    text: 'With Fair Journal, users have complete control over their content. They can decide how their content is published, shared, and distributed, and they can choose whether or not to monetize their content. This gives users the ability to earn revenue from their content in a fair and transparent manner, without having to rely on ad revenue or other monetization strategies that are controlled by centralized blog platforms.',
-  },
-  {
-    id: '5',
-    src: './images/M5.png',
-    title: 'Fair compensation for creators:',
-    text: 'Fair Journal is designed to provide fair compensation for creators. Through features such as donations and NFT purchases, users can support the creators they love and help them earn a living from their work. This is in contrast to centralized blog platforms, which often do not provide fair compensation for creators and may even exploit them for their content.',
-  },
-  {
-    id: '6',
-    src: './images/M6.png',
-    title: 'Community-driven:',
-    text: ' Fair Journal is a community-driven platform that is built on the principles of collaboration and openness. Users can share their ideas and collaborate with other users to create new content and build a vibrant and supportive community. This is in contrast to centralized blog platforms, which often prioritize individual success over community collaboration and can foster a competitive rather than supportive environment.',
-  },
+]
+
+const steps = [
+  'MVP Development and Launch',
+  'Transition to Decentralization',
+  'Enhanced Features and Community Building',
+  'Scaling and Ecosystem Expansion',
+  'Governance and Sustainability',
 ]
 
 export const Main = () => {
@@ -48,13 +50,13 @@ export const Main = () => {
 
   return (
     <>
-      <Alert severity="error">
+      {/* <Alert severity="error">
         This is a development version of the website. Please note that all articles and data will be removed upon the
         release of the main version. Thank you for your understanding.
-      </Alert>
+      </Alert> */}
       <Header />
-      <Container maxWidth="lg">
-        <Grid container spacing={2}>
+      <Container maxWidth="lg" sx={{ mt: 10, pb: { lg: 20, md: 25, xs: 10 } }}>
+        <Grid container>
           <Grid
             item
             xs={12}
@@ -72,56 +74,193 @@ export const Main = () => {
                 <Button
                   variant="contained"
                   color="success"
-                  sx={{ m: 1, color: '#ffffff' }}
+                  sx={{ m: 1, pt: '1.3rem', pb: '1.3rem', pl: '1.9rem', pr: '1.9rem', color: 'secondary.main' }}
                   onClick={() => navigate('/dashboard')}
                 >
                   Get Started
                 </Button>
-                <Button variant="outlined" color="inherit" sx={{ m: 1 }} onClick={() => navigate('/aboutus')}>
+                <Button
+                  variant="outlined"
+                  sx={{ m: 1, pt: '1.3rem', pb: '1.3rem', pl: '1.9rem', pr: '1.9rem' }}
+                  onClick={() => navigate('/about')}
+                >
                   Learn More
                 </Button>
               </Box>
             </Fade>
           </Grid>
           <Grid item md={5} sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <Fade in={true} timeout={1500}>
-              <Box
-                component="img"
-                sx={{
-                  width: '100%',
-                  //maxWidth: 500,
-                }}
-                alt="The house from the offer."
-                src="./images/main.png"
-              />
-            </Fade>
+            <Box
+              component="img"
+              sx={{
+                width: '100%',
+              }}
+              alt="The house from the offer."
+              src="./images/main.png"
+              className="rotateX"
+            />
           </Grid>
         </Grid>
-        <Grid container spacing={2} sx={{ pt: 2, mb: 8 }}>
+        <Grid container spacing={2} sx={{ pt: 2, mb: 8, mt: 4, display: 'flex', justifyContent: 'center' }}>
           {cardsData.map(el => {
             return (
-              <Grid key={el.id} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                <CardMediaMain img={el.src} title={el.title} text={el.text} />
+              <Grid item key={el.id} lg={6} md={6} xs={12}>
+                <CardMediaMain {...el} />
               </Grid>
             )
           })}
         </Grid>
-        <Box sx={{ pb: 16 }}>
-          <Typography variant="h3" gutterBottom sx={{ mt: 4, textAlign: 'center' }}>
-            Join Fair Journal today!
-          </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Paper elevation={3} sx={{ borderRadius: 2 }}>
+          <Grid
+            container
+            sx={{
+              backgroundColor: 'primary.main',
+              display: 'flex',
+              justifyContent: 'center',
+              p: 3,
+            }}
+          >
+            <Grid item lg={8} md={8} xs={12}>
+              <Typography gutterBottom variant="h5" component="div" color="secondary">
+                Fair compensation for creators
+              </Typography>
+              <Typography variant="body1" color="secondary">
+                Creators on our platform can earn fair compensation through unique NFT articles, which they can sell and
+                collect. Additionally, users can subscribe to their favorite creators via our Telegram bot and access
+                exclusive content through paid subscriptions. This provides reliable and sustainable income sources for
+                talented creators on our platform.
+              </Typography>
+            </Grid>
+            <Grid item lg={4} md={4} xs={0}>
+              <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                <Box
+                  component="img"
+                  src="./images/M3.png"
+                  alt="NFT"
+                  sx={{
+                    width: { lg: '60%', md: '70%', xs: '0%' },
+                    height: 'auto',
+                  }}
+                />
+              </Box>
+            </Grid>
+          </Grid>
+        </Paper>
+        <Grid
+          container
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            p: 3,
+            mt: 4,
+          }}
+        >
+          <Grid item lg={8} md={8} xs={12}>
+            <Typography gutterBottom variant="h5" component="div">
+              Your Community-Driven Platform!
+            </Typography>
+            <Typography variant="body1">
+              At Fair Journal, we value community above all else. Join us to freely share ideas, connect with
+              like-minded individuals, and engage in meaningful discussions. Together, we shape the direction of Fair
+              Journal, celebrating diverse perspectives and fostering creativity. Whether you're a blogger, journalist,
+              artist, or avid reader, you're invited to our vibrant community.iptions. This provides reliable and
+              sustainable income sources for talented creators on our platform.
+            </Typography>
             <Button
               variant="contained"
-              color="success"
-              sx={{ ml: 'auto', mr: 'auto', color: '#ffffff' }}
-              onClick={() => navigate('/dashboard')}
+              sx={{
+                m: 1,
+                mt: 3,
+                pt: '1.3rem',
+                pb: '1.3rem',
+                pl: '1.9rem',
+                pr: '1.9rem',
+                color: 'secondary.main',
+                backgroundColor: '#000',
+              }}
+              onClick={() => window.open('https://github.com/FairJournal', '_blank')}
             >
-              Get Started
+              View GitHub
             </Button>
+            <Button
+              onClick={() => window.open('https://t.me/fair_journal_en', '_blank')}
+              variant="outlined"
+              color="success"
+              sx={{ m: 1, mt: 3, pt: '1.3rem', pb: '1.3rem', pl: '1.9rem', pr: '1.9rem' }}
+            >
+              Join Us
+            </Button>
+          </Grid>
+          <Grid item lg={4} md={4} xs={0}>
+            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+              <Box
+                component="img"
+                src="./images/M4.png"
+                alt="NFT"
+                sx={{
+                  width: { lg: '80%', md: '80%', xs: '0%' },
+                  height: 'auto',
+                }}
+              />
+            </Box>
+          </Grid>
+        </Grid>
+        <Box
+          sx={{
+            p: 3,
+            mt: 4,
+          }}
+        >
+          <Typography gutterBottom variant="h5" component="div">
+            Development Roadmap
+          </Typography>
+          <Typography variant="body1">
+            Stay tuned for upcoming milestones, platform enhancements, and new features. As we evolve and grow together,
+            we aim to provide you with the best blogging experience possible. Join us on this journey of innovation and
+            progress.
+          </Typography>
+          <Box sx={{ width: '100%', mt: 5, display: 'flex', justifyContent: 'center', textAlign: 'center' }}>
+            <Stepper
+              color="success"
+              activeStep={1}
+              alternativeLabel
+              sx={{
+                '@media (max-width: 600px)': {
+                  display: 'none',
+                },
+                '@media (max-width: 900px)': {
+                  transform: 'scale(0.85)',
+                  transformOrigin: 'top left',
+                },
+              }}
+            >
+              {steps.map(label => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+            <List
+              sx={{
+                display: 'none',
+                '@media (max-width: 600px)': {
+                  display: 'block',
+                },
+              }}
+            >
+              {steps.map(label => (
+                <div key={label}>
+                  <Divider />
+                  <ListItem alignItems="flex-start">
+                    <ListItemText primaryTypographyProps={{ variant: 'h6' }} primary={label} />
+                  </ListItem>
+                </div>
+              ))}
+            </List>
           </Box>
         </Box>
       </Container>
+      <Footer />
     </>
   )
 }
