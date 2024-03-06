@@ -184,14 +184,3 @@ export const shortenName = (name: string): string => {
 
   return name
 }
-
-export const extractArticleText = (jsonArticle: string, symbols: number): string => {
-  const blocks: [OutputBlockData] = JSON.parse(jsonArticle).blocks
-  const paragraphs = blocks
-    .filter(block => block.type === 'paragraph')
-    .map(block => block.data.text.replace(/<\/?[^>]+(>|$)/g, ''))
-    .join(' ')
-  const concatenatedText = paragraphs.slice(0, symbols)
-
-  return concatenatedText
-}
