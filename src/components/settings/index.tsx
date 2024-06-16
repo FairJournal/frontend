@@ -27,6 +27,7 @@ export const Settings = () => {
             avatar: hashAvatar,
             name,
             description,
+            wallet,
           },
         })
         dispatch(changeProfile({ ...profile, name, description, avatar: hashAvatar }))
@@ -36,7 +37,7 @@ export const Settings = () => {
     }
   }
 
-  const shortWallet = shortenString(wallet)
+  const shortWallet = shortenString({ str: wallet })
 
   return (
     <Paper sx={{ with: '600px', backgroundColor: 'secondary', pt: 2 }} elevation={3}>

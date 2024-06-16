@@ -25,7 +25,6 @@ import { getAllArticles, logout, selectMain } from '../../store/slices/mainSlice
 import { Settings } from '../../components/settings'
 import { ArticlCard } from '../../components/articleCard'
 import { SmallAvatar } from '../../components/smallAvatar'
-import { useTonAddress, useTonConnectUI } from '@tonconnect/ui-react'
 import { Header } from '../../components/header'
 import UpdateRoundedIcon from '@mui/icons-material/UpdateRounded'
 import ArticleIcon from '@mui/icons-material/Article'
@@ -51,10 +50,8 @@ export const Dashboard = (props: Props) => {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false)
   const [tab, setTab] = useState<string>('1')
   const [status, setStatus] = useState<'pending' | 'error' | 'ok'>('ok')
-  const [tonConnectUI] = useTonConnectUI()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const userFriendlyAddress = useTonAddress()
 
   const getArticle = async () => {
     if (profile) {
@@ -154,7 +151,7 @@ export const Dashboard = (props: Props) => {
           </Container>
         </>
       ) : (
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{ ml: 0 }}>
           <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar
@@ -183,7 +180,7 @@ export const Dashboard = (props: Props) => {
                 </IconButton>
                 <SmallAvatar
                   to={`/profile/${publickey}`}
-                  profile={{ name: profile.name, avatar: profile.avatar, wallet: userFriendlyAddress }}
+                  profile={{ name: profile.name, avatar: profile.avatar, wallet: profile.wallet }}
                 />
                 <Button variant="outlined" color="success" sx={{ m: 1 }} onClick={goWrite}>
                   <AddIcon sx={{ fontSize: 19 }} />

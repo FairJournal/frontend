@@ -9,15 +9,12 @@ import { NotFoundComponent } from '../../components/notfound'
 import { Footer } from '../../components/footer'
 import { getUserArticles } from '../../api/article'
 import { ArticlCard } from '../../components/articleCard'
-import { useTonAddress } from '@tonconnect/ui-react'
 
 export const Profile = () => {
   const { address } = useParams()
   const [profile, setProfile] = useState<ProfileInfo | null>(null)
   const [articles, setArticles] = useState<Preview[] | null>(null)
   const [status, setStatus] = useState<string>('ok')
-  const userFriendlyAddress = useTonAddress()
-  const shortWallet = shortenString(userFriendlyAddress)
 
   useEffect(() => {
     const checkAddressAndFetchData = async () => {
@@ -104,9 +101,9 @@ export const Profile = () => {
                   {profile?.name}
                 </Typography>
                 <Chip
-                  title={userFriendlyAddress}
-                  label={shortWallet}
-                  onClick={() => window.open(`https://tonviewer.com/${userFriendlyAddress}`, '_blank')}
+                  title={profile.wallet}
+                  label={shortenString({ str: profile.wallet })}
+                  onClick={() => window.open(`https://tonviewer.com/${profile.wallet}`, '_blank')}
                 />
               </Box>
             </Box>
@@ -118,7 +115,7 @@ export const Profile = () => {
               {articles &&
                 address &&
                 articles.map(el => (
-                  <Grid key={el.slug} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Grid key={el.slug} item lg={4} md={6} xs={12} sx={{ display: 'flex' }}>
                     <ArticlCard {...el} isEdit={false} isloading={false} publickey={address} />
                   </Grid>
                 ))}

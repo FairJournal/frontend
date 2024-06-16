@@ -2,14 +2,14 @@ import { OutputBlockData, OutputData } from '@editorjs/editorjs'
 import { slugify } from 'transliteration'
 import { Preview } from '../types'
 
-export const shortenString = (str: string | null): string => {
+export const shortenString = ({ str, num = 5 }: { str: string | null; num?: number }): string => {
   if (!str) return ''
 
   if (str.length <= 10) {
     return str
   }
-  const firstFive = str.substring(0, 5)
-  const lastFive = str.substring(str.length - 5)
+  const firstFive = str.substring(0, num)
+  const lastFive = str.substring(str.length - num)
 
   return `${firstFive}...${lastFive}`
 }

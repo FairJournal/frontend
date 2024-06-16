@@ -4,6 +4,7 @@ export interface ProfileInfo {
   avatar: string
   name: string
   description: string
+  wallet: string
 }
 
 export interface Preview {
@@ -24,6 +25,7 @@ export interface ResUserArticle {
   status: string
   userAddress: string
   article: Article
+  reference: string
 }
 
 export interface ResUserArticles {
