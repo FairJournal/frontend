@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Container, Divider, Grid, LinearProgress, ThemeProvider, Typography } from '@mui/material'
+import { Box, Button, Container, Divider, Grid, LinearProgress, ThemeProvider, Typography } from '@mui/material'
 import Output from 'editorjs-react-renderer'
 import { useParams } from 'react-router-dom'
 import { getProfileInfo, getUserInfo } from '../../api/users'
@@ -13,6 +13,7 @@ import { ProfileInfo } from '../../types'
 import { theme } from '../../App'
 import { Footer } from '../../components/footer'
 import { Verification } from '../../components/verification'
+import { SendTransactionRequest, useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
 
 interface CodeBlockData {
   code: string
@@ -28,6 +29,21 @@ export const RenderArticle = () => {
   const [profile, setProfile] = useState<ProfileInfo | null>(null)
   const [status, setStatus] = useState<string>('ok')
   const [bagid, setBagid] = useState<string>('')
+
+  const transaction: SendTransactionRequest = {
+    validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
+    messages: [
+      {
+        address: profile?.wallet || '',
+        amount: '1000000000',
+      },
+    ],
+  }
+  const wallet = useTonWallet()
+  const [tonConnectUi] = useTonConnectUI()
+  const [tx, setTx] = useState(transaction)
+
+  console.log(transaction)
 
   useEffect(() => {
     const checkAddressAndFetchData = async () => {
@@ -99,6 +115,15 @@ export const RenderArticle = () => {
                     profile={{ name: profile.name, avatar: profile.avatar, wallet: profile.wallet }}
                   />
                 )}
+              </Grid>
+              <Grid item xs="auto">
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={async () => (wallet ? tonConnectUi.sendTransaction(tx) : tonConnectUi.openModal())}
+                >
+                  Donate 1 TON
+                </Button>
               </Grid>
               <Grid item xs="auto">
                 <ShareButtons link={`https://fairjournal.net/${address}/${slug}`} />
