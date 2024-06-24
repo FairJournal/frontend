@@ -117,16 +117,18 @@ export const RenderArticle = () => {
                 )}
               </Grid>
               <Grid item xs="auto">
+                <ShareButtons link={`https://fairjournal.net/${address}/${slug}`} />
+              </Grid>
+              <Grid item xs="auto">
                 <Button
-                  variant="contained"
+                  variant="outlined"
+                  endIcon={<img src="/images/ton.png" style={{ width: '20px', height: '20px' }} alt="My Icon" />}
+                  size="small"
                   color="success"
                   onClick={async () => (wallet ? tonConnectUi.sendTransaction(tx) : tonConnectUi.openModal())}
                 >
-                  Donate 1 TON
+                  Donate
                 </Button>
-              </Grid>
-              <Grid item xs="auto">
-                <ShareButtons link={`https://fairjournal.net/${address}/${slug}`} />
               </Grid>
             </Grid>
             <Typography variant="caption" display="block" gutterBottom sx={{ color: '#728a96' }}>
@@ -136,7 +138,7 @@ export const RenderArticle = () => {
               <Output data={article} renderers={{ code: CustomCode }} />
             </ThemeProvider>
             <Divider sx={{ mb: 2 }} />
-            <Verification bagid={bagid} address={profile?.wallet ?? ''} />
+            <Verification bagid={bagid} address={profile?.wallet ?? ''} sub={address} />
           </Container>
           <Footer />
         </>

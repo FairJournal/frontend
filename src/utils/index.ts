@@ -184,3 +184,25 @@ export const shortenName = (name: string): string => {
 
   return name
 }
+export const sendNewArticle = async (authorHash: string, articleHash: string) => {
+  try {
+    console.log(authorHash)
+    console.log(articleHash)
+    const response = await fetch(`${process.env.REACT_APP_URL_API_BOT}new-article`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ authorHash: authorHash, articleHash: articleHash }),
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      console.log(data)
+    } else {
+      throw new Error(`Ошибка: ${response.status} ${response.statusText}`)
+    }
+  } catch (error) {
+    console.error('Ошибка при отправке запроса:', error)
+  }
+}

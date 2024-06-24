@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { Box, CardActionArea, Chip, Grid, Paper, Typography } from '@mui/material'
+import { Box, Button, CardActionArea, Chip, Grid, Paper, Typography } from '@mui/material'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import LinkIcon from '@mui/icons-material/Link'
+import TelegramIcon from '@mui/icons-material/Telegram'
 
-export const Verification = ({ bagid, address }: { bagid: string; address: string }) => {
+export const Verification = ({ bagid, address, sub }: { bagid: string; address: string; sub: string }) => {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
@@ -22,6 +23,19 @@ export const Verification = ({ bagid, address }: { bagid: string; address: strin
 
   return (
     <Grid container spacing={2} justifyContent="center" mb={3}>
+      <Grid item xs={10} md={3} lg={3}>
+        <Box sx={{ p: 1 }}>
+          <Button
+            variant="contained"
+            size="small"
+            color="success"
+            onClick={() => window.open(`https://t.me/fair_journal_bot?start=${sub}`, '_blank')}
+            endIcon={<TelegramIcon />}
+          >
+            Subscribe
+          </Button>
+        </Box>
+      </Grid>
       <Grid item xs={10} md={6} lg={3}>
         <CardActionArea>
           <Paper elevation={1}>
