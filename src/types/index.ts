@@ -25,6 +25,7 @@ export interface ResUserArticle {
   status: string
   userAddress: string
   article: Article
+  reference: string
 }
 
 export interface ResUserArticles {

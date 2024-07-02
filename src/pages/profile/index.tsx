@@ -102,7 +102,7 @@ export const Profile = () => {
                 </Typography>
                 <Chip
                   title={profile.wallet}
-                  label={shortenString(profile.wallet)}
+                  label={shortenString({ str: profile.wallet })}
                   onClick={() => window.open(`https://tonviewer.com/${profile.wallet}`, '_blank')}
                 />
               </Box>
@@ -115,7 +115,7 @@ export const Profile = () => {
               {articles &&
                 address &&
                 articles.map(el => (
-                  <Grid key={el.slug} item lg={4} md={6} xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Grid key={el.slug} item lg={4} md={6} xs={12} sx={{ display: 'flex' }}>
                     <ArticlCard {...el} isEdit={false} isloading={false} publickey={address} />
                   </Grid>
                 ))}

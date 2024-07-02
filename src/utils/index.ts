@@ -2,14 +2,14 @@ import { OutputBlockData, OutputData } from '@editorjs/editorjs'
 import { slugify } from 'transliteration'
 import { Preview } from '../types'
 
-export const shortenString = (str: string | null): string => {
+export const shortenString = ({ str, num = 5 }: { str: string | null; num?: number }): string => {
   if (!str) return ''
 
   if (str.length <= 10) {
     return str
   }
-  const firstFive = str.substring(0, 5)
-  const lastFive = str.substring(str.length - 5)
+  const firstFive = str.substring(0, num)
+  const lastFive = str.substring(str.length - num)
 
   return `${firstFive}...${lastFive}`
 }
@@ -183,4 +183,26 @@ export const shortenName = (name: string): string => {
   }
 
   return name
+}
+export const sendNewArticle = async (authorHash: string, articleHash: string) => {
+  try {
+    console.log(authorHash)
+    console.log(articleHash)
+    const response = await fetch(`${process.env.REACT_APP_URL_API_BOT}new-article`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ authorHash: authorHash, articleHash: articleHash }),
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      console.log(data)
+    } else {
+      throw new Error(`Ошибка: ${response.status} ${response.statusText}`)
+    }
+  } catch (error) {
+    console.error('Ошибка при отправке запроса:', error)
+  }
 }

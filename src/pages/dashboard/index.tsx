@@ -151,7 +151,7 @@ export const Dashboard = (props: Props) => {
           </Container>
         </>
       ) : (
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{ ml: 0 }}>
           <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar

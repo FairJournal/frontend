@@ -1,5 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Container, Grid, LinearProgress, ThemeProvider, Typography } from '@mui/material'
+import React, { ChangeEvent, useEffect, useState } from 'react'
+import {
+  Box,
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
+  Grid,
+  LinearProgress,
+  TextField,
+  ThemeProvider,
+  Typography,
+} from '@mui/material'
 import Output from 'editorjs-react-renderer'
 import { useParams } from 'react-router-dom'
 import { getProfileInfo, getUserInfo } from '../../api/users'
@@ -12,6 +27,8 @@ import { SmallAvatar } from '../../components/smallAvatar'
 import { ProfileInfo } from '../../types'
 import { theme } from '../../App'
 import { Footer } from '../../components/footer'
+import { Verification } from '../../components/verification'
+import { SendTransactionRequest, useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
 
 interface CodeBlockData {
   code: string
@@ -26,6 +43,44 @@ export const RenderArticle = () => {
   const [article, setArticle] = useState<OutputData | null>(null)
   const [profile, setProfile] = useState<ProfileInfo | null>(null)
   const [status, setStatus] = useState<string>('ok')
+  const [bagid, setBagid] = useState<string>('')
+
+  const [open, setOpen] = React.useState(false)
+  const [value, setValue] = useState<string>('2')
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    const inputValue = event.target.value
+
+    if (/^\d+$/.test(inputValue) && parseInt(inputValue) >= 0) {
+      setValue(inputValue)
+    }
+  }
+
+  const handleClickOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const wallet = useTonWallet()
+  const [tonConnectUi] = useTonConnectUI()
+
+  const sendDonate = async () => {
+    const transaction: SendTransactionRequest = {
+      validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sec
+      messages: [
+        {
+          address: profile?.wallet || '',
+          amount: `${value}000000000`,
+        },
+      ],
+    }
+
+    tonConnectUi.sendTransaction(transaction)
+    handleClose()
+  }
 
   useEffect(() => {
     const checkAddressAndFetchData = async () => {
@@ -46,8 +101,9 @@ export const RenderArticle = () => {
 
             if (slug) {
               // eslint-disable-next-line max-depth
-              const res = (await geArticleBySlug({ userAddress: address, slug })).article.data
-              const updatedArticle = restoreImageData(res)
+              const res = await geArticleBySlug({ userAddress: address, slug })
+              const updatedArticle = restoreImageData(res.article.data)
+              setBagid(res.reference)
               setArticle(updatedArticle)
               setStatus('ok')
             } else {
@@ -87,7 +143,7 @@ export const RenderArticle = () => {
     <>
       {article && address && (
         <>
-          <Container maxWidth="md" sx={{ pt: 4, px: 0, pb: { lg: 20, md: 25, xs: 10 }, minHeight: '90vh' }}>
+          <Container maxWidth="md" sx={{ pt: 4, px: 0, pb: { lg: 16, md: 25, xs: 10 }, minHeight: '90vh' }}>
             <Grid container spacing={2} justifyContent="space-between" alignItems="space-between" sx={{ mb: 3 }}>
               <Grid item xs="auto">
                 {profile && (
@@ -100,6 +156,17 @@ export const RenderArticle = () => {
               <Grid item xs="auto">
                 <ShareButtons link={`https://fairjournal.net/${address}/${slug}`} />
               </Grid>
+              <Grid item xs="auto">
+                <Button
+                  variant="outlined"
+                  endIcon={<img src="/images/ton.png" style={{ width: '20px', height: '20px' }} alt="My Icon" />}
+                  size="small"
+                  color="success"
+                  onClick={async () => (wallet ? handleClickOpen() : tonConnectUi.openModal())}
+                >
+                  Donate
+                </Button>
+              </Grid>
             </Grid>
             <Typography variant="caption" display="block" gutterBottom sx={{ color: '#728a96' }}>
               {formatDate(article.time ?? 0)}
@@ -107,7 +174,43 @@ export const RenderArticle = () => {
             <ThemeProvider theme={theme}>
               <Output data={article} renderers={{ code: CustomCode }} />
             </ThemeProvider>
+            <Divider sx={{ mb: 2 }} />
+            <Verification bagid={bagid} address={profile?.wallet ?? ''} sub={address} />
           </Container>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{'Donate today!'}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Support the authors on our platform! Your donation will help them continue creating and providing you
+                with quality content.
+              </DialogContentText>
+              <Grid container alignItems="center" justifyContent="flex-end">
+                <TextField
+                  id="fullWidth"
+                  label="TON"
+                  type="number"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  InputProps={{ inputProps: { min: 1 } }}
+                  variant="outlined"
+                  value={value}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button onClick={sendDonate} autoFocus>
+                Send
+              </Button>
+            </DialogActions>
+          </Dialog>
           <Footer />
         </>
       )}

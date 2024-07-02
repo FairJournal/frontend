@@ -9,7 +9,7 @@ import {
   createRemoveFileAction,
   createAddUserAction,
 } from '@fairjournal/file-system'
-import { createSlug, extractArticleText, findHeaderBlock, findImageBlock, getFsApiUrl } from '.'
+import { createSlug, extractArticleText, findHeaderBlock, findImageBlock, getFsApiUrl, sendNewArticle } from '.'
 import { getPathInfo } from '../api/users'
 import { ProfileInfo } from '../types'
 import { personalSignString } from './ton'
@@ -219,6 +219,7 @@ export async function addArticleToFs({
   const signature = await personalSignString(signData)
   update.setSignature(signature)
   const signedData = update.getUpdateDataSigned()
+  const result = await sendNewArticle(address, article.slug)
 
   return await updateApply(signedData)
 }
