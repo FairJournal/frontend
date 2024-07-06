@@ -46,13 +46,18 @@ export const RenderArticle = () => {
   const [bagid, setBagid] = useState<string>('')
 
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = useState<string>('2')
+  const [value, setValue] = useState<string>('1')
+  const [sendButton, setSendButton] = useState<boolean>(false)
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const inputValue = event.target.value
 
-    if (/^\d+$/.test(inputValue) && parseInt(inputValue) >= 0) {
+    if (/^\d+$/.test(inputValue)) {
       setValue(inputValue)
+    }
+
+    if (parseInt(inputValue) <= 0) {
+      setSendButton(true)
     }
   }
 
@@ -206,7 +211,7 @@ export const RenderArticle = () => {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={sendDonate} autoFocus>
+              <Button disabled={sendButton} onClick={sendDonate} autoFocus>
                 Send
               </Button>
             </DialogActions>
