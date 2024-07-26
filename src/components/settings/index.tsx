@@ -50,7 +50,7 @@ export const Settings = () => {
               label={`Name ${name.length}/30`}
               variant="outlined"
               value={name}
-              onChange={event => setName(event.target.value)}
+              onChange={(event: { target: { value: React.SetStateAction<string> } }) => setName(event.target.value)}
               sx={{ display: 'block', mb: 2 }}
               inputProps={{ maxLength: 30 }}
               fullWidth
@@ -65,7 +65,9 @@ export const Settings = () => {
             label={`Bio ${description.length}/180`}
             variant="outlined"
             value={description}
-            onChange={event => setDescription(event.target.value)}
+            onChange={(event: { target: { value: React.SetStateAction<string> } }) =>
+              setDescription(event.target.value)
+            }
             sx={{ display: 'block', mb: 2 }}
             inputProps={{ maxLength: 180 }}
             multiline

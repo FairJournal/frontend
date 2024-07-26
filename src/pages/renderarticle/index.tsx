@@ -46,17 +46,25 @@ export const RenderArticle = () => {
   const [bagid, setBagid] = useState<string>('')
 
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = useState<string>('1')
+  const [value, setValue] = useState<number | null>(1)
   const [sendButton, setSendButton] = useState<boolean>(false)
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const inputValue = event.target.value
 
-    if (/^\d+$/.test(inputValue)) {
-      setValue(inputValue)
-    }
-
-    if (parseInt(inputValue) <= 0) {
+    if (
+      inputValue === '' ||
+      (parseFloat(inputValue) !== 0 && /^\d*\.?\d*$/.test(inputValue) && /^\d{1,9}(\.\d{0,})?$/.test(inputValue))
+    ) {
+      if (inputValue === '' || parseFloat(inputValue) === 0) {
+        setValue(null)
+        setSendButton(true)
+      } else {
+        const num = parseFloat(inputValue).toFixed(9)
+        setValue(Number(num))
+        setSendButton(false)
+      }
+    } else {
       setSendButton(true)
     }
   }
@@ -78,7 +86,7 @@ export const RenderArticle = () => {
       messages: [
         {
           address: profile?.wallet || '',
-          amount: `${value}000000000`,
+          amount: `${value && value * 1000000000}`,
         },
       ],
     }
@@ -202,7 +210,6 @@ export const RenderArticle = () => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  InputProps={{ inputProps: { min: 1 } }}
                   variant="outlined"
                   value={value}
                   onChange={handleInputChange}

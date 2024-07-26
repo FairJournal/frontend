@@ -86,7 +86,7 @@ export const theme = createTheme({
 function App() {
   return (
     <>
-      <TonConnectUIProvider manifestUrl={`${process.env.REACT_APP_URL_MAINFEST}`}>
+      <TonConnectUIProvider manifestUrl="https://fairjournal.net/tonconnect-manifest.json">
         <ThemeProvider theme={theme}>
           <Box
             sx={{
