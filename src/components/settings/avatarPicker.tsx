@@ -10,9 +10,10 @@ import { hashToUrl } from '../../utils'
 interface AvatarPickerProps {
   avatarUrl: File | undefined
   onAvatarChange: (avatarFile: File) => void
+  isdisabled: boolean
 }
 
-export const AvatarPicker: React.FC<AvatarPickerProps> = ({ avatarUrl, onAvatarChange }) => {
+export const AvatarPicker: React.FC<AvatarPickerProps> = ({ avatarUrl, onAvatarChange, isdisabled }) => {
   const { profile } = useAppSelector(selectMain)
   const [showFileSizeError, setShowFileSizeError] = useState(false)
 
@@ -42,7 +43,7 @@ export const AvatarPicker: React.FC<AvatarPickerProps> = ({ avatarUrl, onAvatarC
     <Box>
       {profile && (
         <Box>
-          <IconButton color="primary" component="label">
+          <IconButton color="primary" component="label" disabled={isdisabled}>
             <Avatar
               src={avatar ?? `${hashToUrl(profile.avatar)}`}
               sx={{ width: 150, height: 150, backgroundColor: '#fff' }}

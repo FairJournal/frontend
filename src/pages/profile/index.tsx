@@ -16,6 +16,52 @@ export const Profile = () => {
   const [articles, setArticles] = useState<Preview[] | null>(null)
   const [status, setStatus] = useState<string>('ok')
 
+  const extractLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g
+
+    return text.match(urlRegex) || []
+  }
+
+  const renderTextWithLinksAndLineBreaks = (text: string) => {
+    const links = extractLinks(text)
+    let lastIndex = 0
+    const components = []
+
+    links.forEach((link, index) => {
+      const parts = text.split(link)
+
+      if (parts[0]) {
+        components.push(
+          parts[0],
+          <a key={`link${index}`} href={link} target="_blank" rel="noopener noreferrer">
+            {link}
+          </a>,
+        )
+      }
+      lastIndex = parts[0].length + link.length
+    })
+
+    components.push(text.slice(lastIndex))
+
+    const finalComponents: JSX.Element[] = []
+    components.forEach((component, index) => {
+      if (typeof component === 'string') {
+        finalComponents.push(
+          ...component.split('\n').map((line, i) => (
+            <React.Fragment key={`${index}-${i}`}>
+              {line}
+              <br />
+            </React.Fragment>
+          )),
+        )
+      } else {
+        finalComponents.push(component)
+      }
+    })
+
+    return finalComponents
+  }
+
   useEffect(() => {
     const checkAddressAndFetchData = async () => {
       setStatus('pending')
@@ -108,7 +154,7 @@ export const Profile = () => {
               </Box>
             </Box>
             <Typography variant="subtitle1" gutterBottom>
-              {profile?.description}
+              {renderTextWithLinksAndLineBreaks(profile?.description)}
             </Typography>
             <Divider sx={{ mt: 2 }} />
             <Grid container spacing={2} sx={{ pt: 2, pb: 4 }}>
