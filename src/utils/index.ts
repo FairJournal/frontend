@@ -186,8 +186,6 @@ export const shortenName = (name: string): string => {
 }
 export const sendNewArticle = async (authorHash: string, articleHash: string) => {
   try {
-    console.log(authorHash)
-    console.log(articleHash)
     const response = await fetch(`${process.env.REACT_APP_URL_API_BOT}new-article`, {
       method: 'POST',
       headers: {
@@ -198,7 +196,6 @@ export const sendNewArticle = async (authorHash: string, articleHash: string) =>
 
     if (response.ok) {
       const data = await response.json()
-      console.log(data)
     } else {
       throw new Error(`Ошибка: ${response.status} ${response.statusText}`)
     }

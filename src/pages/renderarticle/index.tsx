@@ -53,7 +53,7 @@ export const RenderArticle = () => {
     const inputValue = event.target.value
 
     if (inputValue === '') {
-      setValue('') // Устанавливаем пустую строку, если входное значение пустое
+      setValue('')
       setSendButton(true)
     } else if (
       parseFloat(inputValue) !== 0 ||
@@ -61,7 +61,7 @@ export const RenderArticle = () => {
       /^\d{1,9}(\.\d{0,})?$/.test(inputValue)
     ) {
       const num = parseFloat(inputValue).toFixed(9)
-      setValue(Number(num)) // Устанавливаем значение только если входная строка соответствует определенным условиям
+      setValue(Number(num))
       setSendButton(false)
     } else {
       setSendButton(true)
