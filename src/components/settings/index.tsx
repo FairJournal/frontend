@@ -48,6 +48,11 @@ export const Settings = () => {
     return text.match(urlRegex) || []
   }
 
+  const cancelEdit = () => {
+    setDescription(profile ? profile.description : '')
+    setIsEdit(false)
+  }
+
   const renderTextWithLinksAndLineBreaks = (text: string) => {
     const links = extractLinks(text)
     let lastIndex = 0
@@ -129,7 +134,6 @@ export const Settings = () => {
               inputProps={{ maxLength: 180 }}
               multiline
               fullWidth
-              maxRows={10}
             />
           ) : (
             <Typography component="div">{renderTextWithLinksAndLineBreaks(description)}</Typography>
@@ -139,7 +143,7 @@ export const Settings = () => {
         <Box sx={{ display: 'flex', justifyContent: 'end', p: 2 }}>
           {isEdit ? (
             <>
-              <Button sx={{ mr: 2 }} onClick={() => setIsEdit(false)} variant="outlined" color="success">
+              <Button sx={{ mr: 2 }} onClick={cancelEdit} variant="outlined" color="success">
                 Cancel
               </Button>
               <Button onClick={saveSettings} variant="contained" color="success">

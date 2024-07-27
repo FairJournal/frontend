@@ -46,24 +46,23 @@ export const RenderArticle = () => {
   const [bagid, setBagid] = useState<string>('')
 
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = useState<number | null>(1)
+  const [value, setValue] = useState<number | ''>(1)
   const [sendButton, setSendButton] = useState<boolean>(false)
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const inputValue = event.target.value
 
-    if (
-      inputValue === '' ||
-      (parseFloat(inputValue) !== 0 && /^\d*\.?\d*$/.test(inputValue) && /^\d{1,9}(\.\d{0,})?$/.test(inputValue))
+    if (inputValue === '') {
+      setValue('') // Устанавливаем пустую строку, если входное значение пустое
+      setSendButton(true)
+    } else if (
+      parseFloat(inputValue) !== 0 ||
+      /^\d*\.?\d*$/.test(inputValue) ||
+      /^\d{1,9}(\.\d{0,})?$/.test(inputValue)
     ) {
-      if (inputValue === '' || parseFloat(inputValue) === 0) {
-        setValue(null)
-        setSendButton(true)
-      } else {
-        const num = parseFloat(inputValue).toFixed(9)
-        setValue(Number(num))
-        setSendButton(false)
-      }
+      const num = parseFloat(inputValue).toFixed(9)
+      setValue(Number(num)) // Устанавливаем значение только если входная строка соответствует определенным условиям
+      setSendButton(false)
     } else {
       setSendButton(true)
     }
