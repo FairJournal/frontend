@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { SetStateAction, useState } from 'react'
 import { Box, Chip, Container, Divider, Paper, Button, TextField, Grid } from '@mui/material'
 import { AvatarPicker } from './avatarPicker'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
@@ -8,35 +8,57 @@ import { addProfileInfo, uploadFile } from '../../utils/fs'
 import EditIcon from '@mui/icons-material/Edit'
 import { Typography } from '@mui/material'
 
+function extractSocialHandler(url: string) {
+  const parts = url.split('/')
+  // Filter out empty parts (which can be caused by trailing slashes)
+  const filteredParts = parts.filter(part => part !== '')
+
+  return filteredParts[filteredParts.length - 1]
+}
+
 export const Settings = () => {
   const { profile, publickey, wallet } = useAppSelector(selectMain)
   const dispatch = useAppDispatch()
   const [avatar, setAvatar] = useState<File | undefined>()
   const [name, setName] = useState(profile ? profile.name : '')
   const [description, setDescription] = useState(profile ? profile.description : '')
-
+  const [telegram, setTelegram] = useState(profile?.telegram ?? '')
+  const [github, setGithub] = useState(profile?.github ?? '')
+  const [twitter, setTwitter] = useState(profile?.twitter ?? '')
+  const [linkedin, setLinkedin] = useState(profile?.linkedin ?? '')
   const [isEdit, setIsEdit] = useState<boolean>(false)
 
   const saveSettings = async () => {
     try {
-      if (profile) {
-        let hashAvatar = profile.avatar
-
-        if (avatar) {
-          hashAvatar = (await uploadFile(avatar)).data.reference
-        }
-        await addProfileInfo({
-          address: publickey,
-          data: {
-            avatar: hashAvatar,
-            name,
-            description,
-            wallet,
-          },
-        })
-        dispatch(changeProfile({ ...profile, name, description, avatar: hashAvatar }))
-        setIsEdit(false)
+      if (!profile) {
+        return
       }
+
+      setTelegram(extractSocialHandler(telegram))
+      setGithub(extractSocialHandler(github))
+      setTwitter(extractSocialHandler(twitter))
+      setLinkedin(extractSocialHandler(linkedin))
+
+      let hashAvatar = profile.avatar
+
+      if (avatar) {
+        hashAvatar = (await uploadFile(avatar)).data.reference
+      }
+      await addProfileInfo({
+        address: publickey,
+        data: {
+          avatar: hashAvatar,
+          name,
+          description,
+          wallet,
+          telegram,
+          twitter,
+          github,
+          linkedin,
+        },
+      })
+      dispatch(changeProfile({ ...profile, name, description, avatar: hashAvatar }))
+      setIsEdit(false)
     } catch (e) {
       console.log(e)
     }
@@ -121,22 +143,122 @@ export const Settings = () => {
         <Divider sx={{ mb: 2 }} />
         <Box>
           {isEdit ? (
-            <TextField
-              disabled={!isEdit}
-              id="standard-basic"
-              label="Bio"
-              variant="outlined"
-              value={description}
-              onChange={(event: { target: { value: React.SetStateAction<string> } }) =>
-                setDescription(event.target.value)
-              }
-              sx={{ display: 'block', mb: 2 }}
-              inputProps={{ maxLength: 180 }}
-              multiline
-              fullWidth
-            />
+            <>
+              <TextField
+                disabled={!isEdit}
+                id="standard-basic"
+                label="Bio"
+                variant="outlined"
+                value={description}
+                onChange={(event: { target: { value: SetStateAction<string> } }) => setDescription(event.target.value)}
+                sx={{ display: 'block', mb: 2 }}
+                inputProps={{ maxLength: 180 }}
+                multiline
+                fullWidth
+              />
+              <TextField
+                disabled={!isEdit}
+                id="standard-basic"
+                label="Telegram"
+                variant="outlined"
+                value={telegram}
+                onChange={(event: { target: { value: string } }) => setTelegram(event.target.value)}
+                sx={{ display: 'block', mb: 2 }}
+                inputProps={{ maxLength: 180 }}
+                fullWidth
+              />
+              <TextField
+                disabled={!isEdit}
+                id="standard-basic"
+                label="Github"
+                variant="outlined"
+                value={github}
+                onChange={(event: { target: { value: string } }) => setGithub(event.target.value)}
+                sx={{ display: 'block', mb: 2 }}
+                inputProps={{ maxLength: 180 }}
+                fullWidth
+              />
+              <TextField
+                disabled={!isEdit}
+                id="standard-basic"
+                label="Linkedin"
+                variant="outlined"
+                value={linkedin}
+                onChange={(event: { target: { value: string } }) => setLinkedin(event.target.value)}
+                sx={{ display: 'block', mb: 2 }}
+                inputProps={{ maxLength: 180 }}
+                fullWidth
+              />
+              <TextField
+                disabled={!isEdit}
+                id="standard-basic"
+                label="Twitter"
+                variant="outlined"
+                value={twitter}
+                onChange={(event: { target: { value: string } }) => setTwitter(event.target.value)}
+                sx={{ display: 'block', mb: 2 }}
+                inputProps={{ maxLength: 180 }}
+                fullWidth
+              />
+            </>
           ) : (
-            <Typography component="div">{renderTextWithLinksAndLineBreaks(description)}</Typography>
+            <>
+              <Typography component="div">{renderTextWithLinksAndLineBreaks(description)}</Typography>
+              <hr />
+              {telegram && (
+                <Typography component="div">
+                  {
+                    <a
+                      key={`link-telegram`}
+                      href={`https://t.me/${telegram}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      t.me/{telegram}
+                    </a>
+                  }
+                </Typography>
+              )}
+              {github && (
+                <Typography component="div">
+                  {
+                    <a
+                      key={`link-github`}
+                      href={`https://github.com/${github}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      github.com/{github}
+                    </a>
+                  }
+                </Typography>
+              )}
+
+              {linkedin && (
+                <Typography component="div">
+                  {
+                    <a
+                      key={`link-twitter`}
+                      href={`https://linkedin.com/in/${linkedin}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      linkedin.com/in/{linkedin}
+                    </a>
+                  }
+                </Typography>
+              )}
+
+              {twitter && (
+                <Typography component="div">
+                  {
+                    <a key={`link-twitter`} href={`https://x.com/${twitter}`} target="_blank" rel="noopener noreferrer">
+                      x.com/{twitter}
+                    </a>
+                  }
+                </Typography>
+              )}
+            </>
           )}
         </Box>
         <Divider sx={{ mt: 2 }} />

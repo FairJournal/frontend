@@ -5,6 +5,10 @@ export interface ProfileInfo {
   name: string
   description: string
   wallet: string
+  telegram?: string
+  github?: string
+  twitter?: string
+  linkedin?: string
 }
 
 export interface Preview {
