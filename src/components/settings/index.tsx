@@ -13,11 +13,15 @@ import LinkedinIcon from '@mui/icons-material/LinkedIn'
 import TwitterIcon from '@mui/icons-material/Twitter'
 
 function extractSocialHandler(url: string) {
-  const parts = url.split('/')
-  // Filter out empty parts (which can be caused by trailing slashes)
-  const filteredParts = parts.filter(part => part !== '')
+  try {
+    const parts = url.split('/')
+    // Filter out empty parts (which can be caused by trailing slashes)
+    const filteredParts = parts.filter(part => part !== '')
 
-  return filteredParts[filteredParts.length - 1]
+    return filteredParts[filteredParts.length - 1]
+  } catch (e) {
+    return ''
+  }
 }
 
 export const Settings = () => {
@@ -217,7 +221,7 @@ export const Settings = () => {
           ) : (
             <>
               <Typography component="div">{renderTextWithLinksAndLineBreaks(description)}</Typography>
-              <hr />
+              {(telegram || github || linkedin || twitter) && <hr />}
               {telegram && (
                 <Typography component="div">
                   <a
