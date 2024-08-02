@@ -7,6 +7,10 @@ import { shortenString } from '../../utils'
 import { addProfileInfo, uploadFile } from '../../utils/fs'
 import EditIcon from '@mui/icons-material/Edit'
 import { Typography } from '@mui/material'
+import TelegramIcon from '@mui/icons-material/Telegram'
+import GithubIcon from '@mui/icons-material/GitHub'
+import LinkedinIcon from '@mui/icons-material/LinkedIn'
+import TwitterIcon from '@mui/icons-material/Twitter'
 
 function extractSocialHandler(url: string) {
   const parts = url.split('/')
@@ -34,16 +38,24 @@ export const Settings = () => {
         return
       }
 
-      setTelegram(extractSocialHandler(telegram))
-      setGithub(extractSocialHandler(github))
-      setTwitter(extractSocialHandler(twitter))
-      setLinkedin(extractSocialHandler(linkedin))
+      // Update state and capture the new values synchronously
+      const newTelegram = extractSocialHandler(telegram)
+      const newGithub = extractSocialHandler(github)
+      const newTwitter = extractSocialHandler(twitter)
+      const newLinkedin = extractSocialHandler(linkedin)
+
+      // Set state with new values
+      setTelegram(newTelegram)
+      setGithub(newGithub)
+      setTwitter(newTwitter)
+      setLinkedin(newLinkedin)
 
       let hashAvatar = profile.avatar
 
       if (avatar) {
         hashAvatar = (await uploadFile(avatar)).data.reference
       }
+
       await addProfileInfo({
         address: publickey,
         data: {
@@ -51,12 +63,13 @@ export const Settings = () => {
           name,
           description,
           wallet,
-          telegram,
-          twitter,
-          github,
-          linkedin,
+          telegram: newTelegram,
+          twitter: newTwitter,
+          github: newGithub,
+          linkedin: newLinkedin,
         },
       })
+
       dispatch(changeProfile({ ...profile, name, description, avatar: hashAvatar }))
       setIsEdit(false)
     } catch (e) {
@@ -207,55 +220,58 @@ export const Settings = () => {
               <hr />
               {telegram && (
                 <Typography component="div">
-                  {
-                    <a
-                      key={`link-telegram`}
-                      href={`https://t.me/${telegram}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      t.me/{telegram}
-                    </a>
-                  }
+                  <a
+                    key={`link-telegram`}
+                    href={`https://t.me/${telegram}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}
+                  >
+                    <TelegramIcon style={{ marginRight: 8, width: 24 }} />
+                    t.me/{telegram}
+                  </a>
                 </Typography>
               )}
               {github && (
                 <Typography component="div">
-                  {
-                    <a
-                      key={`link-github`}
-                      href={`https://github.com/${github}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      github.com/{github}
-                    </a>
-                  }
+                  <a
+                    key={`link-github`}
+                    href={`https://github.com/${github}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}
+                  >
+                    <GithubIcon style={{ marginRight: 8, width: 24 }} />
+                    github.com/{github}
+                  </a>
                 </Typography>
               )}
-
               {linkedin && (
                 <Typography component="div">
-                  {
-                    <a
-                      key={`link-twitter`}
-                      href={`https://linkedin.com/in/${linkedin}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      linkedin.com/in/{linkedin}
-                    </a>
-                  }
+                  <a
+                    key={`link-linkedin`}
+                    href={`https://linkedin.com/in/${linkedin}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}
+                  >
+                    <LinkedinIcon style={{ marginRight: 8, width: 24 }} />
+                    linkedin.com/in/{linkedin}
+                  </a>
                 </Typography>
               )}
-
               {twitter && (
                 <Typography component="div">
-                  {
-                    <a key={`link-twitter`} href={`https://x.com/${twitter}`} target="_blank" rel="noopener noreferrer">
-                      x.com/{twitter}
-                    </a>
-                  }
+                  <a
+                    key={`link-twitter`}
+                    href={`https://x.com/${twitter}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}
+                  >
+                    <TwitterIcon style={{ marginRight: 8, width: 24 }} />
+                    x.com/{twitter}
+                  </a>
                 </Typography>
               )}
             </>
