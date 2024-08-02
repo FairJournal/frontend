@@ -48,7 +48,8 @@
     "eject": "react-scripts eject",
     "lint:check": "eslint \"src/**/*.ts\" && prettier --check \"src/**/*.ts\"",
     "check:types": "tsc --project tsconfig.test.json",
-    "check": "npm run lint:check && npm run check:types"
+    "check": "npm run lint:check && npm run check:types",
+    "deploy": "BUILD_PATH='./temp-build' NODE_OPTIONS=--max_old_space_size=4096 react-scripts build && rm -rf build && mv temp-build build"
   },
   "eslintConfig": {
     "extends": [
